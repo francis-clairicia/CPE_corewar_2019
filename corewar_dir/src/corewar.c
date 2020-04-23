@@ -5,3 +5,11 @@
 ** corewar.c
 */
 
+#include "corewar.h"
+#include "macro.h"
+#include "my.h"
+
+int corewar(int ac, char **av)
+{
+    return 0;
+}
