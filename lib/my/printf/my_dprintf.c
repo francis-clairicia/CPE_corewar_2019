@@ -7,19 +7,29 @@
 
 #include "my_printf.h"
 
-int my_dprintf(int fd, char const *format, ...)
+int my_vdprintf(int fd, char const *format, va_list ap)
 {
-    va_list args;
-    int nb_print = 0;
     int save_stdout = 0;
+    int nb_print = 0;
 
     if (fd < 0)
         return (-1);
     save_stdout = dup(STDOUT_FILENO);
     dup2(fd, STDOUT_FILENO);
-    va_start(args, format);
-    nb_print = my_vprintf(format, args);
-    va_end(args);
+    nb_print = my_vprintf(format, ap);
     dup2(save_stdout, STDOUT_FILENO);
+    return (nb_print);
+}
+
+int my_dprintf(int fd, char const *format, ...)
+{
+    va_list ap;
+    int nb_print = 0;
+
+    if (fd < 0)
+        return (-1);
+    va_start(ap, format);
+    nb_print = my_vdprintf(fd, format, ap);
+    va_end(ap);
     return (nb_print);
 }

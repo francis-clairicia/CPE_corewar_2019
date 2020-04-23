@@ -7,15 +7,14 @@
 
 #include "mylist.h"
 
-void *my_list_to_2d_array(list_t **list, int free_list)
+void *my_list_to_2d_array(list_t *list, int free_list)
 {
     int i = 0;
-    int size = my_list_size(*list);
-    list_t *node = NULL;
-    void **array = malloc(sizeof(void *) * (size + 1));
+    node_t *node = NULL;
+    void **array = (!list) ? NULL : malloc(sizeof(void *) * (list->size + 1));
 
     if (array != NULL) {
-        for (node = *list; node != NULL; node = node->next) {
+        for (node = list->start; node != NULL; node = node->next) {
             array[i] = NODE_DATA(node, void *);
             i += 1;
         }

@@ -6,25 +6,25 @@
 */
 
 #include "my.h"
-#include "mylist.h"
+#include "list/mylist.h"
 
 char *convert_to_base(int nbr, char const *base)
 {
-    list_t *result = NULL;
+    list_t result = my_list();
     char *str_result = NULL;
     int nb_base = my_strlen(base);
     int negative_result = (nbr < 0);
 
     if (nbr < 0)
         nbr = -nbr;
-    while (nbr != 0 || result == NULL) {
-        my_put_in_list(&result, base[nbr % nb_base]);
+    while (nbr != 0 || result.size == 0) {
+        my_put_in_list(&result, base[nbr % nb_base], char);
         nbr /= nb_base;
     }
     if (negative_result)
-        my_put_in_list(&result, '-');
+        my_put_in_list(&result, '-', char);
     str_result = my_list_to_str(result);
-    my_free_list(&result, 0);
+    my_free_list(&result, NULL);
     return (str_result);
 }
 

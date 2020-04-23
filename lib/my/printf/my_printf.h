@@ -39,7 +39,7 @@ typedef struct flag_s
 } flag_t;
 
 int my_printf(char const *format, ...);
-int my_vprintf(char const *format, va_list args);
+int my_vprintf(char const *format, va_list ap);
 int print_number(va_list args, modifier_t *infos);
 int print_binary(va_list args, modifier_t *infos);
 int print_octal(va_list args, modifier_t *infos);

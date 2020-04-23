@@ -54,20 +54,20 @@ SRC			=	my_put_nbr.c				\
 				my_malloc_array.c			\
 				my_array_contains.c
 
-LINKED_LIST	=	my_put_in_list.c			\
-				my_append_to_list.c			\
-				my_list.c					\
-				my_list_to_str.c			\
-				my_list_to_2d_array.c		\
-				my_concat_str_list.c		\
-				my_list_size.c				\
-				my_free_list.c				\
-				my_concat_list.c			\
-				my_rev_list.c				\
-				my_node.c					\
-				my_find_node.c				\
-				my_delete_node.c			\
-				my_delete_node_from.c
+LINKED_LIST	=	list/my_list.c				\
+				list/my_create_node.c		\
+				list/my_insert_in_list.c	\
+				list/my_list_to_str.c		\
+				list/my_list_to_2d_array.c	\
+				list/my_concat_str_list.c	\
+				list/my_free_list.c			\
+				list/my_concat_list.c		\
+				list/my_rev_list.c			\
+				list/my_node.c				\
+				list/my_node_from.c			\
+				list/my_find_node.c			\
+				list/my_delete_node.c		\
+				list/my_delete_node_from.c
 
 PRINTF		=	printf/my_printf.c					\
 				printf/my_dprintf.c					\
@@ -89,7 +89,7 @@ PRINTF		=	printf/my_printf.c					\
 
 CFLAGS		=	-Wall -Wextra
 
-override CPPFLAGS	+=	-I./ -I./printf
+override CPPFLAGS	+=	-I./ -I./printf -I./list
 
 OBJ	=	$(SRC:.c=.o) $(LINKED_LIST:.c=.o) $(PRINTF:.c=.o)
 
@@ -101,10 +101,10 @@ $(NAME):	$(OBJ)
 	$(AR) rc $(NAME) $(OBJ)
 	cp -u $(NAME) ../
 	mkdir -p ../../include
-	cp my*.h ../../include
+	cp ./my.h ./list/mylist.h ../../include
 
 clean:
-	$(RM) -f $(OBJ)
+	$(RM) $(OBJ)
 
 fclean:	clean
 	$(RM) ../$(NAME)

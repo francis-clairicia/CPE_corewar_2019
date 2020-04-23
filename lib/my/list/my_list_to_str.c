@@ -7,16 +7,15 @@
 
 #include "mylist.h"
 
-char *my_list_to_str(list_t *list)
+char *my_list_to_str(list_t list)
 {
-    int size_list = my_list_size(list);
-    char *str = malloc(sizeof(char) * (size_list + 1));
+    char *str = malloc(sizeof(char) * (list.size + 1));
     int i = 0;
-    list_t *node = list;
+    node_t *node = list.start;
 
     if (str != NULL) {
         while (node != NULL) {
-            str[i] = (char)(node->data);
+            str[i] = NODE_DATA(node, char);
             i += 1;
             node = node->next;
         }
