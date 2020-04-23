@@ -60,9 +60,6 @@ char *my_strndup(char const *src, int n);
 char *my_strdup_char(char c);
 char *my_nbr_to_str(int nb);
 int my_nbr_len(long nb);
-int my_printf(char const *format, ...);
-int my_dprintf(int fd, char const *format, ...);
-int my_vprintf(char const *format, va_list ap);
 char *my_strchr(char *str, int c);
 int my_strchr_index(char const *str, int c);
 char *convert_base(char const *nbr, char const *base_from, char const *base_to);
@@ -72,5 +69,11 @@ char *join_path(char const *path_1, char const *path_2);
 void *my_memset(void *buffer, int c, size_t size);
 void *my_malloc_array(size_t width, size_t height, size_t size);
 void my_free_array(void *array);
+
+int my_printf(char const *format, ...);
+int my_dprintf(int fd, char const *format, ...);
+
+int my_vprintf(char const *format, va_list ap);
+int my_vdprintf(int fd, char const *format, va_list ap);
 
 #endif

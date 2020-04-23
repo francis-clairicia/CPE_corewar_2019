@@ -31,27 +31,6 @@ typedef struct linked_list
     size_t size;
 } list_t;
 
-/////////// Internal functions/Macros used for linked lists ///////////
-// You don't have to use it !
-// Use macros instead.
-node_t *_create_node(const void *data, size_t size);
-int _insert_in_list(list_t *list, const void *data, size_t size, int index);
-node_t *_node_from_data(list_t list, const void *data, size_t size);
-void _delete_node_from_data(list_t *list, const void *data, size_t size,
-    void (*free_func)());
-#define _FDATA(data, type) (type [1]){data}, sizeof(type)
-#define _INS_D(list, data, type, index) \
-    _insert_in_list(list, _FDATA(data, type), index)
-#define _ADD_S(list, data, type) \
-    my_insert_data(list, data, type, START_LIST)
-#define _ADD_E(list, data, type) \
-    my_insert_data(list, data, type, END_LIST)
-#define _GET_N(list, data, type) \
-    _node_from_data(list, _FDATA(data, type))
-#define _DEL(list, data, type, func) \
-    _delete_node_from_data(list, _FDATA(data, type), func)
-//////////////////////////////////////////////////////////////////////
-
 
 /////////// Init a linked list ///////////
 // This function will set default values to the list_t struct
@@ -120,5 +99,27 @@ void *my_list_to_2d_array(list_t *list, int free_list);
 // Get the value of the data inside the node
 #define NODE_DATA(node, type) (*NODE_DATA_PTR(node, type))
 /////////////////////////////////////////////////////////////////////////////
+
+
+/////////// Internal functions/Macros used for linked lists ///////////
+// You don't have to use it !
+// Use the macros above instead.
+node_t *_create_node(const void *data, size_t size);
+int _insert_in_list(list_t *list, const void *data, size_t size, int index);
+node_t *_node_from_data(list_t list, const void *data, size_t size);
+void _delete_node_from_data(list_t *list, const void *data, size_t size,
+    void (*free_func)());
+#define _FDATA(data, type) (type [1]){data}, sizeof(type)
+#define _INS_D(list, data, type, index) \
+    _insert_in_list(list, _FDATA(data, type), index)
+#define _ADD_S(list, data, type) \
+    my_insert_data(list, data, type, START_LIST)
+#define _ADD_E(list, data, type) \
+    my_insert_data(list, data, type, END_LIST)
+#define _GET_N(list, data, type) \
+    _node_from_data(list, _FDATA(data, type))
+#define _DEL(list, data, type, func) \
+    _delete_node_from_data(list, _FDATA(data, type), func)
+//////////////////////////////////////////////////////////////////////
 
 #endif
