@@ -112,10 +112,6 @@ void _delete_node_from_data(list_t *list, const void *data, size_t size,
 #define _FDATA(data, type) (type [1]){data}, sizeof(type)
 #define _INS_D(list, data, type, index) \
     _insert_in_list(list, _FDATA(data, type), index)
-#define _ADD_S(list, data, type) \
-    my_insert_data(list, data, type, START_LIST)
-#define _ADD_E(list, data, type) \
-    my_insert_data(list, data, type, END_LIST)
 #define _GET_N(list, data, type) \
     _node_from_data(list, _FDATA(data, type))
 #define _DEL(list, data, type, func) \
