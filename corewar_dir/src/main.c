@@ -15,5 +15,5 @@ int main(int ac, char **av)
     } 
     if (help(ac, av))
         return 0;
-    return corewar(ac, av);
+    return corewar(av);
 }

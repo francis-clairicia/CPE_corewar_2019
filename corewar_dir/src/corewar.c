@@ -9,7 +9,14 @@
 #include "macro.h"
 #include "my.h"
 
-int corewar(int ac, char **av)
+int corewar(char **av)
 {
+    champ_t *champ = NULL;
+    battle_t *battle = IMALLOC(battle, sizeof(battle_t));
+
+    if (parse_arg(av, champ, battle) == 84) {
+        print_help(2);
+        return 84;
+    }
     return 0;
 }

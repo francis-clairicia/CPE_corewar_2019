@@ -9,6 +9,8 @@ SRC_NO_TEST			=	src/main.c
 
 SRC_TEST			=	src/corewar.c						\
 						src/help.c							\
+						src/parser.c						\
+						src/args.c							\
 						src/op.c
 
 SRC					=	$(SRC_NO_TEST) $(SRC_TEST)
