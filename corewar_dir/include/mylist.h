@@ -67,6 +67,11 @@ void my_delete_node_from_node(list_t *list, node_t *node, void (*free_func)());
 //
 // Insert a data at the end of the list
 #define my_append_to_list(list, data, type) _INS_D(list, data, type, -1)
+//
+// Insert a node into a linked list
+// (If 'copy' is not 0, the function create a new node with the data of the node
+// passed in parameter)
+int my_insert_node(list_t *list, node_t *node, int index, int copy);
 //////////////////////////////////////////////////
 
 ///////////// Get/Find node in list /////////////
@@ -105,13 +110,12 @@ void *my_list_to_2d_array(list_t *list, int free_list);
 // You don't have to use it !
 // Use the macros above instead.
 node_t *_create_node(const void *data, size_t size);
-int _insert_in_list(list_t *list, const void *data, size_t size, int index);
 node_t *_node_from_data(list_t list, const void *data, size_t size);
 void _delete_node_from_data(list_t *list, const void *data, size_t size,
     void (*free_func)());
 #define _FDATA(data, type) (type [1]){data}, sizeof(type)
 #define _INS_D(list, data, type, index) \
-    _insert_in_list(list, _FDATA(data, type), index)
+    my_insert_node(list, _create_node(_FDATA(data, type)), index, 0)
 #define _GET_N(list, data, type) \
     _node_from_data(list, _FDATA(data, type))
 #define _DEL(list, data, type, func) \

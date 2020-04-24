@@ -7,20 +7,14 @@
 
 #include "mylist.h"
 
-static void increase_index(node_t *node)
+static int put_node_as_start(list_t *list, node_t *element)
 {
-    while (node != NULL) {
-        node->index += 1;
-        node = node->next;
-    }
-}
-
-static int put_node_as_start(list_t *list, const void *data, size_t size)
-{
-    node_t *element = _create_node(data, size);
+    node_t *node = NULL;
 
     if (element == NULL)
         return (0);
+    element->previous = NULL;
+    element->index = 0;
     element->next = list->start;
     if (list->size == 0)
         list->end = element;
@@ -28,17 +22,19 @@ static int put_node_as_start(list_t *list, const void *data, size_t size)
         list->start->previous = element;
     list->start = element;
     list->size += 1;
-    increase_index(list->start->next);
+    for (node = list->start->next; node != NULL; node = node->next)
+        node->index += 1;
     return (1);
 }
 
-static int put_node_as_end(list_t *list, const void *data, size_t size)
+static int put_node_as_end(list_t *list, node_t *element)
 {
-    node_t *element = _create_node(data, size);
-
     if (element == NULL)
         return (0);
+    element->previous = NULL;
+    element->next = NULL;
     if (list->size == 0) {
+        element->index = 0;
         list->start = element;
     } else {
         element->index = list->end->index + 1;
@@ -50,11 +46,9 @@ static int put_node_as_end(list_t *list, const void *data, size_t size)
     return (1);
 }
 
-static int put_node_at_index(list_t *list, const void *data,
-    size_t size, size_t index)
+static int put_node_at_index(list_t *list, node_t *element, size_t index)
 {
     node_t *node_index = list->start;
-    node_t *element = _create_node(data, size);
 
     if (element == NULL)
         return (0);
@@ -65,28 +59,32 @@ static int put_node_at_index(list_t *list, const void *data,
     element->next = node_index;
     element->index = node_index->index;
     node_index->previous = element;
-    increase_index(node_index);
+    for (; node_index != NULL; node_index = node_index->next)
+        node_index->index += 1;
     list->size += 1;
     return (1);
 }
 
-int _insert_in_list(list_t *list, const void *data, size_t size, int index)
+int my_insert_node(list_t *list, node_t *node, int index, int copy)
 {
     size_t idx = 0;
+    node_t *node_to_add = node;
 
-    if (list == NULL)
+    if (list == NULL || node == NULL)
         return (0);
+    if (copy != 0)
+        node_to_add = _create_node(node->data.ptr, node->data.size);
     if (index >= 0) {
         if (index == 0)
-            return (put_node_as_start(list, data, size));
+            return (put_node_as_start(list, node_to_add));
         if ((size_t)index >= list->size)
-            return (put_node_as_end(list, data, size));
+            return (put_node_as_end(list, node_to_add));
     } else {
         if (index == -1)
-            return (put_node_as_end(list, data, size));
+            return (put_node_as_end(list, node_to_add));
         if ((int)(list->size + index) <= 0)
-            return (put_node_as_start(list, data, size));
+            return (put_node_as_start(list, node_to_add));
     }
     idx = (index < 0) ? list->size + 1 + index : (size_t)index;
-    return (put_node_at_index(list, data, size, idx));
+    return (put_node_at_index(list, node_to_add, idx));
 }

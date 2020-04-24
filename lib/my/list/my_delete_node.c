@@ -27,11 +27,14 @@ static void delete_middle_node(node_t *node)
 {
     node_t *previous_node;
     node_t *next_node;
+    int index = node->index;
 
     previous_node = node->previous;
     next_node = node->next;
     previous_node->next = next_node;
     next_node->previous = previous_node;
+    for (node = next_node; node != NULL; node = node->next)
+        node->index = index++;
 }
 
 static void delete_last_node(list_t *list)
