@@ -55,7 +55,7 @@ champ_t *add_champ(champ_t *champ, char *brut_name, utils_parser_t *up)
     return tmp;
 }
 
-utils_parser_t *init_util_parser()
+utils_parser_t *init_util_parser(void)
 {
     utils_parser_t *up = PMALLOC(up, sizeof(utils_parser_t));
 
@@ -74,13 +74,17 @@ int parse_arg(char **av, champ_t *champ, battle_t *battle)
     battle->mem = IMALLOC(battle->mem, sizeof(char) * (MEM_SIZE + 1));
     battle->nb_champ = 0;
 
-    if (!up)
+    if (!up) {
+        print_help(2);
         return 84;
+    }
     for (; av[up->i]; up->i += 1) {
         for (int j = 0; parser_list[j].arg; j++) {
             if (my_strcmp(av[up->i], parser_list[j].arg) == 0) {
-                if (parser_list[j].parse(av, battle, up) == 84)
+                if (parser_list[j].parse(av, battle, up) == 84) {
+                    print_help(2);
                     return 84;
+                }
                 check = true;
                 break;
             }
@@ -89,15 +93,23 @@ int parse_arg(char **av, champ_t *champ, battle_t *battle)
             if (my_strncmp(my_revstr(av[up->i]), "roc.", 4) == 0) {
                 champ = add_champ(champ, av[up->i], up);
                 battle->nb_champ += 1;
-                if (!champ)
+                if (!champ) {
+                    print_help(2);
                     return 84;
-            } else
+                }
+            } else {
+                print_help(2);
                 return 84;
+            }
         }
         check = false;
     }
-    if (battle->nb_champ < 1 || battle->nb_champ > 4) {
-        my_putstr_fd(2, "The number of champions must be between 1 and 4\n");
+    if (battle->nb_champ < 2) {
+        my_putstr_fd(2, "The number of champion load is below the limit.\n");
+        return 84;
+    }
+    if (battle->nb_champ > 4) {
+        my_putstr_fd(2, "The number of champion load is above the limit.\n");
         return 84;
     }
     return 0;

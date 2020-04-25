@@ -14,6 +14,8 @@ void print_help(int syntax)
     my_putstr_fd(syntax, "USAGE\n");
     my_putstr_fd(syntax, "\t./corewar [-dump nbr_cycle] [[-n prog_number]"
     " [-a load_address] prog_name] ...\n\n");
+    if (syntax == 2)
+        return;
     my_putstr_fd(syntax, "DESCRIPTION\n");
     my_putstr_fd(syntax, "\t-dump nbr_cycle dumps the memory after the "
     "nbr_cycle execution (if the round isn't\n\t\t\talready over) with the "
