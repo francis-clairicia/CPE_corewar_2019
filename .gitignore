@@ -3,8 +3,8 @@ __pycache__
 *.o
 *.a
 a.out
-asm
-corewar
+asm/asm
+corewar/corewar
 unit_tests
 coverage
 vgcore.*

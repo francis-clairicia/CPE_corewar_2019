@@ -9,6 +9,7 @@
 #define HEADER_MY_H
 
 #include <sys/types.h>
+#include <stddef.h>
 #include <stdbool.h>
 #include <stdarg.h>
 
