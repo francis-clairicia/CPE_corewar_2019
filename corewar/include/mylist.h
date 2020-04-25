@@ -49,7 +49,8 @@ void my_free_list(list_t *list, void (*free_function)());
 void my_delete_node(list_t *list, int index, void (*free_function)());
 //
 // Delete the first occurence of a node according to a data
-#define my_delete_node_data(list, data, type, func) _DEL(list, data, type, func)
+#define my_delete_node_data(list, data, type, func) \
+    _DEL_DATA(list, data, type, func)
 //
 // Remove a node pointer from a list and free it
 void my_delete_node_from_node(list_t *list, node_t *node, void (*free_func)());
@@ -58,20 +59,23 @@ void my_delete_node_from_node(list_t *list, node_t *node, void (*free_func)());
 
 ///////////// Add data to linked lists ///////////
 //// All of theses function return 1 if it was a success, 0 otherwise
-// Insert a data at a certain index
-// (If 'index' is negative the search will begin at the end)
-#define my_insert_data(list, data, type, index) _INS_D(list, data, type, index)
-//
-// Insert a data at the begin of the list
-#define my_put_in_list(list, data, type) _INS_D(list, data, type, 0)
-//
-// Insert a data at the end of the list
-#define my_append_to_list(list, data, type) _INS_D(list, data, type, -1)
-//
 // Insert a node into a linked list
 // (If 'copy' is not 0, the function create a new node with the data of the node
 // passed in parameter)
 int my_insert_node(list_t *list, node_t *node, int index, int copy);
+//
+// Insert a data at a certain index
+// (If 'index' is negative the search will begin at the end)
+#define my_insert_data(list, data, type, index) \
+    _INSERT_DATA(list, data, type, index)
+//
+// Insert a data at the begin of the list
+#define my_put_in_list(list, data, type) \
+    _INSERT_DATA(list, data, type, 0)
+//
+// Insert a data at the end of the list
+#define my_append_to_list(list, data, type) \
+    _INSERT_DATA(list, data, type, -1)
 //////////////////////////////////////////////////
 
 ///////////// Get/Find node in list /////////////
@@ -84,7 +88,7 @@ node_t *my_node(list_t list, int index);
 int my_find_node(list_t list, const node_t *to_find);
 //
 // Get the first occurence of a node according to a data, NULL otherewise
-#define my_node_from_data(list, data, type) _GET_N(list, data, type)
+#define my_node_from_data(list, data, type) _GET_NODE(list, data, type)
 /////////////////////////////////////////////////
 
 
@@ -114,11 +118,10 @@ node_t *_node_from_data(list_t list, const void *data, size_t size);
 void _delete_node_from_data(list_t *list, const void *data, size_t size,
     void (*free_func)());
 #define _FDATA(data, type) (type [1]){data}, sizeof(type)
-#define _INS_D(list, data, type, index) \
+#define _INSERT_DATA(list, data, type, index) \
     my_insert_node(list, _create_node(_FDATA(data, type)), index, 0)
-#define _GET_N(list, data, type) \
-    _node_from_data(list, _FDATA(data, type))
-#define _DEL(list, data, type, func) \
+#define _GET_NODE(list, data, type) _node_from_data(list, _FDATA(data, type))
+#define _DEL_DATA(list, data, type, func) \
     _delete_node_from_data(list, _FDATA(data, type), func)
 //////////////////////////////////////////////////////////////////////
 

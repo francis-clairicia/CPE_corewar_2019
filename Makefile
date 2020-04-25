@@ -10,31 +10,27 @@ ASM		=	asm
 COREWAR	=	corewar
 
 all:
-	$(MAKE) -C $(ASM)_dir
-	$(MAKE) -C $(COREWAR)_dir
-	cp $(ASM)_dir/$(ASM) .
-	cp $(COREWAR)_dir/$(COREWAR) .
+	$(MAKE) -C $(ASM)
+	$(MAKE) -C $(COREWAR)
 
 lib:
 	$(MAKE) -C lib/my
-	cp include/*.h $(ASM)_dir/include/
-	cp include/*.h $(COREWAR)_dir/include/
+	cp include/*.h $(ASM)/include/
+	cp include/*.h $(COREWAR)/include/
 
 clean:
 	$(MAKE) clean -C lib/my
-	$(MAKE) clean -C $(ASM)_dir
-	$(MAKE) clean -C $(COREWAR)_dir
+	$(MAKE) clean -C $(ASM)
+	$(MAKE) clean -C $(COREWAR)
 
 fclean:
 	$(MAKE) fclean -C lib/my
-	$(MAKE) fclean -C $(ASM)_dir
-	$(RM) $(ASM)
-	$(MAKE) fclean -C $(COREWAR)_dir
-	$(RM) $(COREWAR)
+	$(MAKE) fclean -C $(ASM)
+	$(MAKE) fclean -C $(COREWAR)
 
 tests_run:
-	$(MAKE) tests_run -C $(ASM)_dir
-	$(MAKE) tests_run -C corewar
+	$(MAKE) tests_run -C $(ASM)
+	$(MAKE) tests_run -C $(COREWAR)
 
 re:	fclean all
 
