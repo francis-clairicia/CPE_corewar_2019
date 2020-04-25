@@ -9,10 +9,10 @@
 
 int main(int ac, char **av)
 {
-    if (ac < 2 || ac > 14){
+    if (ac < 2 || ac > 14) {
         print_help(2);
         return 84;
-    } 
+    }
     if (help(ac, av))
         return 0;
     return corewar(av);

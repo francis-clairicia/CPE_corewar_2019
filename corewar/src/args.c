@@ -40,7 +40,8 @@ int n_arg(char **av, __attribute__((unused)) battle_t *battle,
     return 0;
 }
 
-int a_arg(char **av, __attribute__((unused)) battle_t *battle, utils_parser_t *up)
+int a_arg(char **av, __attribute__((unused)) battle_t *battle,
+            utils_parser_t *up)
 {
     if (up->bool_address == true || !av[up->i + 1])
         return 84;
