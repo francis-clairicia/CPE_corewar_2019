@@ -24,5 +24,5 @@ void print_number(int nb, FILE *file)
     int reversed_nb = rev_nb(nb);
 
     if (file != NULL)
-        fwrite(&reversed_nb, sizeof(int), 1, file); 
+        fwrite(&reversed_nb, sizeof(int), 1, file);
 }
