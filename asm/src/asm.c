@@ -15,13 +15,15 @@ static char *my_strcat_malloc(char const *s1, char const *s2)
     char *final = malloc(sizeof(char) * (my_strlen(s1) + my_strlen(s2) + 1));
     int i = 0;
 
-    for (; s1[i]; i++) {
-        final[i] = s1[i];
+    if (final != NULL) {
+        for (; s1[i]; i++) {
+            final[i] = s1[i];
+        }
+        for (int f = 0; s2[f]; f++, i++) {
+            final[i] = s2[f];
+        }
+        final[i] = '\0';
     }
-    for (int f = 0; s2[f]; f++, i++) {
-        final[i] = s2[f];
-    }
-    final[i] = '\0';
     return final;
 }
 
