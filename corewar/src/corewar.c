@@ -12,7 +12,7 @@
 int corewar(char **av)
 {
     champ_t *champ = NULL;
-    battle_t *battle = IMALLOC(battle, sizeof(battle_t));
+    battle_t *battle = NULL;
 
     if (parse_arg(av, champ, battle) == 84)
         return 84;

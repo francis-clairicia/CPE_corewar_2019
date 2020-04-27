@@ -10,12 +10,16 @@
 
 #include "op.h"
 #include "stdbool.h"
+#include "stdio.h"
 
 typedef struct champ_s
 {
+    FILE *fp;
+    int wait;
     header_t *header;
     op_t *op;
     int *reg;
+    int address;
     int pc;
     int carry;
     int live;
@@ -53,7 +57,8 @@ int parse_arg(char **av, champ_t *champ, battle_t *battle);
 int dump_arg(char **av, battle_t *battle, utils_parser_t *up);
 int n_arg(char **av, battle_t *battle, utils_parser_t *up);
 int a_arg(char **av, battle_t *battle, utils_parser_t *up);
-champ_t *add_champ(champ_t *champ, char *brut_name, utils_parser_t *up);
+battle_t *init_empty_battle(void);
+utils_parser_t *init_util_parser(void);
 
 void print_help(int syntax);
 int help(int ac, char **av);
