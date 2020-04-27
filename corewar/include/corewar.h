@@ -59,6 +59,9 @@ int n_arg(char **av, battle_t *battle, utils_parser_t *up);
 int a_arg(char **av, battle_t *battle, utils_parser_t *up);
 battle_t *init_empty_battle(void);
 utils_parser_t *init_util_parser(void);
+void free_all(champ_t *champ, battle_t *battle);
+void free_champ(champ_t *champ);
+void free_battle(battle_t *battle);
 
 void print_help(int syntax);
 int help(int ac, char **av);

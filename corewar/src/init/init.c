@@ -8,6 +8,7 @@
 #include "my.h"
 #include "corewar.h"
 #include "macro.h"
+#include "string.h"
 
 utils_parser_t *init_util_parser(void)
 {
@@ -28,6 +29,7 @@ battle_t *init_empty_battle(void)
     battle->cycle = 0;
     battle->dump = 0;
     battle->mem = PMALLOC(battle->mem, sizeof(char) * (MEM_SIZE + 1));
+    battle->mem[MEM_SIZE] = '\0';
     battle->nb_champ = 0;
     return battle;
 }

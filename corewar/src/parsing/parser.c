@@ -47,8 +47,7 @@ static champ_t *add_champ(champ_t *champ, char *brut_name, utils_parser_t *up)
     last_address * nb_prog;
     tmp->nb_champ = nb++;
     tmp->nb = nb_prog++ - 1;
-    while (tmp->address > MEM_SIZE)
-        tmp->address -= MEM_SIZE;
+    for (; tmp->address > MEM_SIZE; tmp->address -= 1);
     tmp->reg = PMALLOC(tmp->reg, sizeof(int) * (REG_NUMBER));
     add_champ2(tmp, up);
     tmp->next = champ;
@@ -94,7 +93,6 @@ int parse_arg(char **av, champ_t *champ, battle_t *battle)
 {
     utils_parser_t *up = NULL;
 
-    ICHECK((battle = init_empty_battle()));
     ICHECK((up = init_util_parser()));
     for (; av[up->i]; up->i += 1) {
         if (parse_arg_loop(av, battle, up, champ) == 84)

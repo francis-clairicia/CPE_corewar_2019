@@ -7,11 +7,14 @@
 
 SRC_NO_TEST			=	src/main.c
 
-SRC_TEST			=	src/corewar.c						\
-						src/help.c							\
-						src/parser.c						\
-						src/args.c							\
-						src/init.c							\
+SRC_TEST			=	src/help/help.c						\
+						src/parsing/parser.c				\
+						src/parsing/args.c					\
+						src/init/init.c						\
+						src/free/free.c						\
+						src/free/free_battle.c				\
+						src/free/free_champ.c				\
+						src/corewar.c						\
 						src/op.c
 
 SRC					=	$(SRC_NO_TEST) $(SRC_TEST)
