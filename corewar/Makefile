@@ -11,6 +11,9 @@ SRC_TEST			=	src/help/help.c						\
 						src/parsing/parser.c				\
 						src/parsing/args.c					\
 						src/init/init.c						\
+						src/champion/add_champion.c			\
+						src/champion/check_champion.c		\
+						src/champion/sort_champion.c		\
 						src/free/free.c						\
 						src/free/free_battle.c				\
 						src/free/free_champ.c				\

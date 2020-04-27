@@ -5,7 +5,6 @@
 ** init.c
 */
 
-#include "my.h"
 #include "corewar.h"
 #include "macro.h"
 #include "string.h"
