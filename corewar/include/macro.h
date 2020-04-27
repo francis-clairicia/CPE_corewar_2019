@@ -47,4 +47,8 @@ if (!var)               \
 if (!var)               \
     return NULL;
 
+#define IRETURN(var)    \
+if (var == 84)          \
+    return 84;
+
 #endif

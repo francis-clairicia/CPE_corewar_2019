@@ -15,8 +15,7 @@ int corewar(char **av)
     battle_t *battle = NULL;
 
     ICHECK((battle = init_empty_battle()));
-    if (parse_arg(av, champ, battle) == 84)
-        return 84;
+    IRETURN(parse_arg(av, champ, battle));    
     free_all(champ, battle);
     return 0;
 }
