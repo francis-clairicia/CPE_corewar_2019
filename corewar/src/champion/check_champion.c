@@ -8,7 +8,7 @@
 #include "corewar.h"
 #include "macro.h"
 
-int check_champ(champ_t *champ)
+int check_champ(champ_t **champ)
 {
     sort_champ_list(champ);
     return 0;

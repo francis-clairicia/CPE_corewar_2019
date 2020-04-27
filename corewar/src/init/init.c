@@ -13,8 +13,8 @@ utils_parser_t *init_util_parser(void)
 {
     utils_parser_t *up = PMALLOC(up, sizeof(utils_parser_t));
 
-    up->address = -1;
-    up->nb_champ = -1;
+    up->address = 0;
+    up->nb_champ = 0;
     up->bool_address = false;
     up->bool_champ = false;
     up->i = 1;

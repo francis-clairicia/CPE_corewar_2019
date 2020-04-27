@@ -27,7 +27,7 @@ static int check_all_args(char **av, battle_t *battle,
 }
 
 static int parse_arg_loop(char **av, battle_t *battle,
-                        utils_parser_t *up, champ_t *champ)
+                        utils_parser_t *up, champ_t **champ)
 {
     bool check = false;
 
@@ -40,7 +40,7 @@ static int parse_arg_loop(char **av, battle_t *battle,
     }
     if (check == false) {
         if (my_strncmp(my_revstr(av[up->i]), "roc.", 4) == 0) {
-            ICHECK((champ = add_champ(champ, av[up->i], up)));
+            ICHECK((*champ = add_champ(champ, av[up->i], up)));
             battle->nb_champ += 1;
         } else {
             my_putstr_fd(2, "File name should be a .cor\n");
@@ -50,7 +50,7 @@ static int parse_arg_loop(char **av, battle_t *battle,
     return 0;
 }
 
-int parse_arg(char **av, champ_t *champ, battle_t *battle)
+int parse_arg(char **av, champ_t **champ, battle_t *battle)
 {
     utils_parser_t *up = NULL;
 

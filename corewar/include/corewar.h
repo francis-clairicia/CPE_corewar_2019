@@ -52,7 +52,7 @@ typedef struct parser_s
 } parser_t;
 
 int corewar(char **av);
-int parse_arg(char **av, champ_t *champ, battle_t *battle);
+int parse_arg(char **av, champ_t **champ, battle_t *battle);
 int dump_arg(char **av, battle_t *battle, utils_parser_t *up);
 int n_arg(char **av, battle_t *battle, utils_parser_t *up);
 int a_arg(char **av, battle_t *battle, utils_parser_t *up);
@@ -61,9 +61,9 @@ utils_parser_t *init_util_parser(void);
 void free_all(champ_t *champ, battle_t *battle);
 void free_champ(champ_t *champ);
 void free_battle(battle_t *battle);
-int check_champ(champ_t *champ);
-champ_t *add_champ(champ_t *champ, char *brut_name, utils_parser_t *up);
-void sort_champ_list(champ_t *champ);
+int check_champ(champ_t **champ);
+champ_t *add_champ(champ_t **champ, char *brut_name, utils_parser_t *up);
+void sort_champ_list(champ_t **champ);
 
 void print_help(int syntax);
 int help(int ac, char **av);
