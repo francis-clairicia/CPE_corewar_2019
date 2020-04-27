@@ -13,11 +13,12 @@ void free_champ(champ_t *champ)
     champ_t *tmp = champ;
 
     for (; champ; champ = tmp) {
-        //fclose(champ->fp);
-        //free(champ->header);
-        //free(champ->op->mnemonique);
-        //free(champ->op->comment);
-        //free(champ->op);
+        if (champ->fp)
+            fclose(champ->fp);
+        free(champ->header);
+        free(champ->op->mnemonique);
+        free(champ->op->comment);
+        free(champ->op);
         //free(champ->reg);
         //free(champ->brut_name);
         tmp = tmp->next;
