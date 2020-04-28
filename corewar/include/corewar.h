@@ -19,7 +19,7 @@ typedef struct champ_s
     header_t *header;
     op_t *op;
     int *reg;
-    int address;
+    int nb_address;
     int pc;
     int carry;
     int live;

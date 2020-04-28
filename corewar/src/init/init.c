@@ -26,8 +26,9 @@ battle_t *init_empty_battle(void)
     battle_t *battle = PMALLOC(battle, sizeof(battle_t));
 
     battle->cycle = 0;
-    battle->dump = 0;
+    battle->dump = -1;
     battle->mem = PMALLOC(battle->mem, sizeof(char) * (MEM_SIZE + 1));
+    battle->mem = my_memset(battle->mem, 48, MEM_SIZE);
     battle->mem[MEM_SIZE] = '\0';
     battle->nb_champ = 0;
     return battle;

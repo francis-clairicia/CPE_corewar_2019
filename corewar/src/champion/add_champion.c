@@ -46,19 +46,18 @@ op_t *add_empty_op(void)
 champ_t *add_champ(champ_t **champ, char *brut_name, utils_parser_t *up)
 {
     champ_t *tmp = PMALLOC(tmp, sizeof(champ_t));
-    static int last_address = 0;
     static int nb = 0;
     static int nb_prog = 0;
 
     tmp->header = add_empty_header();
     tmp->op = add_empty_op();
-    last_address = (up->bool_address == true) ? up->address : last_address;
     nb = (up->bool_champ == true) ? up->nb_champ : nb;
     tmp->brut_name = my_revstr(brut_name);
-    tmp->address = (up->bool_address == true) ? up->address % MEM_SIZE :
-    ++last_address * nb_prog;
+    tmp->nb_address = (up->bool_address == true) ? up->address : 2048 * nb_prog;
+    if (up->bool_address == false && tmp->nb_address != 0)
+        tmp->nb_address -= 1;
     tmp->nb_champ = nb++;
-    for (; tmp->address > MEM_SIZE; tmp->address -= MEM_SIZE);
+    for (; tmp->nb_address > MEM_SIZE; tmp->nb_address -= MEM_SIZE);
     tmp->reg = PMALLOC(tmp->reg, sizeof(int) * (REG_NUMBER));
     add_champ2(tmp, up);
     tmp->next = (nb_prog == 0) ? NULL : *champ;
