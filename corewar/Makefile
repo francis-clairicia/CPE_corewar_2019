@@ -17,6 +17,8 @@ SRC_TEST			=	src/help/help.c						\
 						src/free/free.c						\
 						src/free/free_battle.c				\
 						src/free/free_champ.c				\
+						src/utils/rev_nb.c					\
+						src/utils/ret_putstr_fd.c			\
 						src/corewar.c						\
 						src/op.c
 

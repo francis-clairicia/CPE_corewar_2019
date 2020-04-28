@@ -43,8 +43,7 @@ static int parse_arg_loop(char **av, battle_t *battle,
             ICHECK((*champ = add_champ(champ, av[up->i], up)));
             battle->nb_champ += 1;
         } else {
-            my_putstr_fd(2, "File name should be a .cor\n");
-            return 84;
+            return ret_putstr_fd(2, "File name should be a .cor\n");
         }
     }
     return 0;
@@ -59,12 +58,12 @@ int parse_arg(char **av, champ_t **champ, battle_t *battle)
         IRETURN(parse_arg_loop(av, battle, up, champ))
     }
     if (battle->nb_champ < 2) {
-        my_putstr_fd(2, "The number of champion load is below the limit.\n");
-        return 84;
+        return ret_putstr_fd(2, "The number of champion load is below the "
+        "limit.\n");
     }
     if (battle->nb_champ > 4) {
-        my_putstr_fd(2, "The number of champion load is above the limit.\n");
-        return 84;
+        return ret_putstr_fd(2, "The number of champion load is above the "
+        "limit.\n");
     }
     free(up);
     return 0;

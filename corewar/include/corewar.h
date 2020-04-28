@@ -64,8 +64,10 @@ void free_battle(battle_t *battle);
 int check_champ(champ_t **champ);
 champ_t *add_champ(champ_t **champ, char *brut_name, utils_parser_t *up);
 void sort_champ_list(champ_t **champ);
+int rev_nb(int nb);
 
 void print_help(int syntax);
 int help(int ac, char **av);
+int ret_putstr_fd(int fd, char *str);
 
 #endif
