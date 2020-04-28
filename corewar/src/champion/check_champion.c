@@ -21,7 +21,6 @@ static int file_header(champ_t *tmp)
     if (tmp->header->magic != COREWAR_EXEC_MAGIC) {
         return ret_putstr_fd(2, "Error on the magic number.\n");
     }
-    printf("%d   %d\n", tmp->header->magic, tmp->header->prog_size);
     return 0;
 }
 
