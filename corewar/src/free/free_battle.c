@@ -11,5 +11,6 @@
 void free_battle(battle_t *battle)
 {
     free(battle->mem);
+    free(battle->check_mem);
     free(battle);
 }

@@ -13,8 +13,6 @@ void free_champ(champ_t *champ)
     champ_t *tmp = champ;
 
     for (; champ; champ = tmp) {
-        if (champ->fp)
-            fclose(champ->fp);
         free(champ->header);
         free(champ->op->mnemonique);
         free(champ->op->comment);

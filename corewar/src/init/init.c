@@ -6,7 +6,7 @@
 */
 
 #include "corewar.h"
-#include "macro.h"
+#include "mymacros.h"
 #include "string.h"
 
 utils_parser_t *init_util_parser(void)
@@ -28,7 +28,9 @@ battle_t *init_empty_battle(void)
     battle->cycle = 0;
     battle->dump = -1;
     battle->mem = PMALLOC(battle->mem, sizeof(char) * (MEM_SIZE + 1));
-    battle->mem = my_memset(battle->mem, 48, MEM_SIZE);
+    my_memset(battle->mem, 0, MEM_SIZE);
+    battle->check_mem = PMALLOC(battle->mem, sizeof(bool) * (MEM_SIZE));
+    my_memset(battle->check_mem, 0, MEM_SIZE);
     battle->mem[MEM_SIZE] = '\0';
     battle->nb_champ = 0;
     return battle;

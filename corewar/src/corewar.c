@@ -6,7 +6,7 @@
 */
 
 #include "corewar.h"
-#include "macro.h"
+#include "mymacros.h"
 
 int corewar(char **av)
 {
@@ -15,8 +15,8 @@ int corewar(char **av)
 
     ICHECK((battle = init_empty_battle()));
     IRETURN(parse_arg(av, &champ, battle));
-    IRETURN(check_champ(&champ));
-    champ = champ->next;
+    IRETURN(check_champ(&champ, battle));
+    IRETURN(fill_mem(champ, battle));
     free_all(champ, battle);
     return 0;
 }

@@ -6,13 +6,13 @@
 */
 
 #include "corewar.h"
-#include "macro.h"
+#include "mymacros.h"
 
 static void add_champ2(champ_t *tmp, utils_parser_t *up)
 {
     tmp->carry = 0;
     tmp->live = 0;
-    tmp->pc = 0;
+    tmp->pc = tmp->nb_address;
     up->address = 0;
     up->nb_champ = 0;
     up->bool_address = false;
@@ -54,8 +54,6 @@ champ_t *add_champ(champ_t **champ, char *brut_name, utils_parser_t *up)
     nb = (up->bool_champ == true) ? up->nb_champ : nb;
     tmp->brut_name = my_revstr(brut_name);
     tmp->nb_address = (up->bool_address == true) ? up->address : 2048 * nb_prog;
-    if (up->bool_address == false && tmp->nb_address != 0)
-        tmp->nb_address -= 1;
     tmp->nb_champ = nb++;
     for (; tmp->nb_address > MEM_SIZE; tmp->nb_address -= MEM_SIZE);
     tmp->reg = PMALLOC(tmp->reg, sizeof(int) * (REG_NUMBER));

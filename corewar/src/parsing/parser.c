@@ -6,7 +6,7 @@
 */
 
 #include "corewar.h"
-#include "macro.h"
+#include "mymacros.h"
 
 static const parser_t parser_list[] =
 {
