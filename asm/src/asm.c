@@ -52,13 +52,14 @@ static bool write_all(char const *file, header_t *header, char const *buffer)
 
     if (output_file == NULL)
         return (false);
-    output = fopen(output_file, "w");
+    output = fopen(output_file, "wb");
     if (output != NULL) {
-        print_number(header->magic, output);
-        fwrite(header->prog_name, sizeof(char), PROG_NAME_LENGTH, output);
-        print_number(header->prog_size, output);
-        fwrite(header->comment, sizeof(char), COMMENT_LENGTH, output);
-        fwrite(buffer, sizeof(char), header->prog_size, output);
+        header->magic = REVERSED_NB(header->magic);
+        header->prog_size = REVERSED_NB(header->prog_size);
+        fwrite(header, sizeof(*header), 1, output);
+        header->prog_size = REVERSED_NB(header->prog_size);
+        if (buffer != NULL)
+            fwrite(buffer, sizeof(char), header->prog_size, output);
         fclose(output);
     }
     free(output_file);
@@ -68,16 +69,18 @@ static bool write_all(char const *file, header_t *header, char const *buffer)
 int assembly(char const *file)
 {
     header_t header;
-    char *buffer = my_strdup("");
-    char **array = read_file(file);
+    char *buffer = NULL;
+    char **content = read_file(file);
 
-    if (array == NULL || buffer == NULL)
+    if (content == NULL)
         return (84);
-    remove_comments(array);
-    if (!setup_header(array, &header))
+    remove_comments(content);
+    my_memset(&header, 0, sizeof(header));
+    if (!setup_header(content, &header))
         return (84);
     write_all(file, &header, buffer);
-    my_free_array(array);
-    free(buffer);
+    my_free_array(content);
+    if (buffer != NULL)
+        free(buffer);
     return (0);
 }

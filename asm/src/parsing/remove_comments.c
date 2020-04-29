@@ -19,20 +19,20 @@ static void move_all_up(char **array, int index)
     }
 }
 
-void remove_comments(char **array)
+void remove_comments(char **content)
 {
     int sharp = 0;
 
-    if (array == NULL)
+    if (content == NULL)
         return;
-    for (register int i = 0; array[i]; i += 1) {
-        if (array[i][0] == COMMENT_CHAR || array[i][0] == '\0') {
-            move_all_up(array, i);
+    for (register int i = 0; content[i]; i += 1) {
+        if (content[i][0] == COMMENT_CHAR || content[i][0] == '\0') {
+            move_all_up(content, i);
             i -= 1;
             continue;
         }
-        sharp = my_strchr_index(array[i], COMMENT_CHAR);
+        sharp = my_strchr_index(content[i], COMMENT_CHAR);
         if (sharp > 0)
-            array[i][sharp] = '\0';
+            content[i][sharp] = '\0';
     }
 }

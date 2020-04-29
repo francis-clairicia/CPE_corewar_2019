@@ -8,3 +8,5 @@ corewar/corewar
 unit_tests
 coverage
 vgcore.*
+*.s
+*.cor
