@@ -22,6 +22,11 @@ int fill_mem(champ_t *champ, battle_t *battle)
                 "is not consistent with this length.\n");
             battle->mem[stock] = c;
         }
+        if (fread(&c, sizeof(char), 1, tmp->fp) == 1) {
+            return ret_putstr_fd(2, "The content of the program"
+            "is not consistent with this length.\n");
+        }
+        fclose(tmp->fp);
     }
     return 0;
 }
