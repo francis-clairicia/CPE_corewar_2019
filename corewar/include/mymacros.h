@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2019
 ** CPE_corewar_2019
 ** File description:
-** macro.h
+** mymacros.h
 */
 
-#ifndef MACRO_H
-#define MACRO_H
+#ifndef MYMACROS_H
+#define MYMACROS_H
 
 #include <stdlib.h>
 #include <unistd.h>

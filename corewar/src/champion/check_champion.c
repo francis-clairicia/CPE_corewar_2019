@@ -6,9 +6,22 @@
 */
 
 #include "corewar.h"
-#include "macro.h"
+#include "mymacros.h"
 
-static int file_header(champ_t *tmp)
+static int check_champ_mem(champ_t *tmp, battle_t *battle)
+{
+    for (int i = 0; i < MEM_SIZE; i++) {
+        if (i >= tmp->nb_address && i < tmp->nb_address +
+        tmp->header->prog_size) {
+            if (battle->check_mem[i] == true)
+                return ret_putstr_fd(2, "Overlap detected.\n");
+            battle->check_mem[i] = true;
+        }
+    }
+    return 0;
+}
+
+static int file_header(champ_t *tmp, battle_t *battle)
 {
     if (fread(tmp->header, sizeof(header_t), 1, tmp->fp) != 1)
         return 84;
@@ -21,10 +34,11 @@ static int file_header(champ_t *tmp)
     if (tmp->header->magic != COREWAR_EXEC_MAGIC) {
         return ret_putstr_fd(2, "Error on the magic number.\n");
     }
+    IRETURN(check_champ_mem(tmp, battle));
     return 0;
 }
 
-int check_champ(champ_t **champ)
+int check_champ(champ_t **champ, battle_t *battle)
 {
     sort_champ_list(champ);
     for (champ_t *tmp = (*champ); tmp; tmp = tmp->next) {
@@ -33,7 +47,7 @@ int check_champ(champ_t **champ)
             my_dprintf(2, "Can't open %s file.\n", tmp->brut_name);
             return 84;
         }
-        IRETURN(file_header(tmp));
+        IRETURN(file_header(tmp, battle));
     }
     return 0;
 }

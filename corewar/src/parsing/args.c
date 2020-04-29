@@ -6,7 +6,7 @@
 */
 
 #include "corewar.h"
-#include "macro.h"
+#include "mymacros.h"
 #include "my.h"
 
 int dump_arg(char **av, battle_t *battle, utils_parser_t *up)
@@ -18,7 +18,7 @@ int dump_arg(char **av, battle_t *battle, utils_parser_t *up)
     if (my_str_isnum(av[up->i + 1]) == 0)
         return 84;
     battle->dump = my_getnbr(av[up->i + 1]);
-    if (battle->dump < 1)
+    if (battle->dump < 0)
         return 84;
     up->i += 1;
     check = true;

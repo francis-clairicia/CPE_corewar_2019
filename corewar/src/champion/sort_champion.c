@@ -6,7 +6,7 @@
 */
 
 #include "corewar.h"
-#include "macro.h"
+#include "mymacros.h"
 
 static void change_order_champ(champ_t **champ)
 {
