@@ -10,7 +10,6 @@ SRC_NO_TEST			=	src/main.c
 SRC_TEST			=	src/asm.c							\
 						src/parsing/read_file.c				\
 						src/parsing/remove_comments.c		\
-						src/parsing/parse_ignoring_quotes.c	\
 						src/parsing/header.c				\
 						src/print_number.c
 
