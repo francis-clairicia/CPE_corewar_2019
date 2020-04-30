@@ -20,6 +20,7 @@ int assembly(char const *file);
 char **read_file(char const *file);
 void remove_comments(char **array);
 bool setup_header(char **array, header_t *header);
+char **parse_line(char const *input, char const separators[], bool remove);
 void print_number(int nb, FILE *file);
 
 #endif /* !ASM_H_ */
