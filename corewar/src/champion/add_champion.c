@@ -8,7 +8,7 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-static void add_champ2(champ_t *tmp, utils_parser_t *up)
+static void add_champ_two(champ_t *tmp, utils_parser_t *up)
 {
     tmp->carry = 0;
     tmp->live = 0;
@@ -57,7 +57,7 @@ champ_t *add_champ(champ_t **champ, char *brut_name, utils_parser_t *up)
     tmp->nb_champ = nb++;
     for (; tmp->nb_address > MEM_SIZE; tmp->nb_address -= MEM_SIZE);
     tmp->reg = PMALLOC(tmp->reg, sizeof(int) * (REG_NUMBER));
-    add_champ2(tmp, up);
+    add_champ_two(tmp, up);
     tmp->next = (nb_prog == 0) ? NULL : *champ;
     nb_prog++;
     return tmp;
