@@ -38,8 +38,33 @@ static int file_header(champ_t *tmp, battle_t *battle)
     return 0;
 }
 
+static int check_nb_champ(champ_t *champ, battle_t *battle)
+{
+    int nb[battle->nb_champ];
+    int i = 0;
+    bool verif_nb[4];
+    int j = 0;
+
+    my_memset(verif_nb, false, 4);
+    for (champ_t *tmp = champ; tmp; tmp = tmp->next, i++) {
+        nb[i] = tmp->nb_champ;
+        if (nb[i] != 0 && verif_nb[nb[i] - 1] == true)
+            return ret_putstr_fd(2, "double definition of prog_number.\n");
+        if (nb[i] != 0)
+            verif_nb[nb[i] - 1] = true;
+    } i = 0;
+    for (champ_t *tmp = champ; tmp; tmp = tmp->next, i++) {
+        if (nb[i] == 0) {
+            for (j = 3; j > 0 && verif_nb[j] == true; j--);
+            tmp->nb_champ = j + 1;
+            verif_nb[j] = true;
+        }
+    } return 0;
+}
+
 int check_champ(champ_t **champ, battle_t *battle)
 {
+    IRETURN(check_nb_champ(*champ, battle));
     sort_champ_list(champ);
     for (champ_t *tmp = (*champ); tmp; tmp = tmp->next) {
         tmp->fp = fopen(tmp->brut_name, "r");
@@ -47,6 +72,7 @@ int check_champ(champ_t **champ, battle_t *battle)
             my_dprintf(2, "Can't open %s file.\n", tmp->brut_name);
             return 84;
         }
+        tmp->reg[0] = tmp->nb_champ;
         IRETURN(file_header(tmp, battle));
     }
     return 0;

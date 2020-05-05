@@ -17,6 +17,9 @@ int corewar(char **av)
     IRETURN(parse_arg(av, &champ, battle));
     IRETURN(check_champ(&champ, battle));
     IRETURN(fill_mem(champ, battle));
+    for (champ_t *tmp = champ; tmp; tmp = tmp->next) {
+        printf("%d\n", tmp->nb_champ);
+    }
     free_all(champ, battle);
     return 0;
 }
