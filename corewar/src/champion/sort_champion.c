@@ -8,26 +8,33 @@
 #include "corewar.h"
 #include "mymacros.h"
 
+static void change_order_champ_two(champ_t **save, champ_t **save_two,
+                                    champ_t **tmp)
+{
+    if ((*save) && (*save)->nb_champ > (*tmp)->nb_champ) {
+        (*save)->next = (*tmp)->next;
+        (*tmp)->next = (*save);
+        if ((*save_two))
+            (*save_two)->next = (*tmp);
+    }
+}
+
 static void change_order_champ(champ_t **champ)
 {
     champ_t *save = NULL;
-    champ_t *save2 = NULL;
+    champ_t *save_two = NULL;
     int i = 0;
 
     for (champ_t *tmp = *champ; tmp; tmp = tmp->next, i++) {
-        if (save && save->nb_champ > tmp->nb_champ) {
-            save->next = tmp->next;
-            tmp->next = save;
-            if (save2)
-                save2->next = tmp;
-        } if (i == 1 && save->nb_champ > tmp->nb_champ)
+        change_order_champ_two(&save, &save_two, &tmp);
+        if (i == 1 && save->nb_champ > tmp->nb_champ)
             *champ = tmp;
         else if (i == 1)
             *champ = save;
         if (i > 0 && save->nb_champ < tmp->nb_champ)
-            save2 = save;
+            save_two = save;
         else if (i > 0)
-            save2 = tmp;
+            save_two = tmp;
         save = tmp;
     }
 }

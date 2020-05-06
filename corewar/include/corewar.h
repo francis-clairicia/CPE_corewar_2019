@@ -22,7 +22,7 @@ typedef struct champ_s
     int nb_address;
     int pc;
     int carry;
-    int live;
+    bool live;
     char *brut_name;
     int nb_champ;
     struct champ_s *next;
@@ -33,8 +33,11 @@ typedef struct battle_s
     int nb_champ;
     int dump;
     int cycle;
+    int cycle_die;
+    int nb_live;
     bool *check_mem;
     unsigned char *mem;
+    champ_t *last_live;
 } battle_t;
 
 typedef struct utils_parser_s
@@ -68,6 +71,8 @@ void sort_champ_list(champ_t **champ);
 int rev_nb(int nb);
 int fill_mem(champ_t *champ, battle_t *battle);
 void print_dump(unsigned char *memory);
+int game_loop(champ_t *champ, battle_t *battle);
+bool no_end(battle_t *battle);
 
 void print_help(int syntax);
 int help(int ac, char **av);

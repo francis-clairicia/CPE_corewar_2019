@@ -20,7 +20,6 @@ static int check_all_args(char **av, battle_t *battle,
                         utils_parser_t *up, int j)
 {
     if (parser_list[j].parse(av, battle, up) == 84) {
-        print_help(2);
         return 84;
     }
     return 0;
