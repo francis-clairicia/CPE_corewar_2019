@@ -17,7 +17,7 @@ typedef struct champ_s
     FILE *fp;
     int status;
     header_t *header;
-    op_t *op;
+    op_t op;
     int *reg;
     int nb_address;
     int pc;
