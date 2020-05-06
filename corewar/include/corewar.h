@@ -71,6 +71,8 @@ void sort_champ_list(champ_t **champ);
 int rev_nb(int nb);
 int fill_mem(champ_t *champ, battle_t *battle);
 void print_dump(unsigned char *memory);
+int game_loop(champ_t *champ, battle_t *battle);
+bool no_end(battle_t *battle);
 
 void print_help(int syntax);
 int help(int ac, char **av);

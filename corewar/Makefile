@@ -16,6 +16,8 @@ SRC_TEST			=	src/help/help.c						\
 						src/champion/sort_champion.c		\
 						src/memory/handle_mem.c				\
 						src/memory/print_dump.c				\
+						src/game/game_loop.c				\
+						src/game/check_end.c				\
 						src/free/free.c						\
 						src/free/free_battle.c				\
 						src/free/free_champ.c				\

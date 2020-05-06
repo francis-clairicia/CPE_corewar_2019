@@ -12,9 +12,10 @@ static int check_champ_mem(champ_t *tmp, battle_t *battle)
 {
     for (int i = 0; i < MEM_SIZE; i++) {
         if (i >= tmp->nb_address && i < tmp->nb_address +
+        tmp->header->prog_size && battle->check_mem[i] == true) {
+            return ret_putstr_fd(2, "Overlap detected.\n");
+        } else if (i >= tmp->nb_address && i < tmp->nb_address +
         tmp->header->prog_size) {
-            if (battle->check_mem[i] == true)
-                return ret_putstr_fd(2, "Overlap detected.\n");
             battle->check_mem[i] = true;
         }
     }

@@ -17,9 +17,8 @@ void free_champ(champ_t *champ)
         free(champ->op->mnemonique);
         free(champ->op->comment);
         free(champ->op);
-        //free(champ->reg);
-        //free(champ->brut_name);
+        free(champ->reg);
         tmp = tmp->next;
-        //free(champ);
+        free(champ);
     }
 }
