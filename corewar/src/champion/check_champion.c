@@ -39,12 +39,30 @@ static int file_header(champ_t *tmp, battle_t *battle)
     return 0;
 }
 
+static void check_nb_champ_two(champ_t *champ, battle_t *battle,
+                        int nb[battle->nb_champ], bool verif_nb[4])
+{
+    int j = 0;
+    int a = 1;
+    int i = 0;
+
+    for (champ_t *tmp = champ; a <= battle->nb_champ; a++, tmp = champ) {
+        for (; i != battle->nb_champ - a; i++, tmp = tmp->next);
+        if (nb[i] == 0) {
+            for (j = 0; j < 4 && verif_nb[j] == true; j++);
+            tmp->nb_champ = j + 1;
+            verif_nb[j] = true;
+            nb[i] = j + 1;
+        }
+        i = 0;
+    }
+}
+
 static int check_nb_champ(champ_t *champ, battle_t *battle)
 {
     int nb[battle->nb_champ];
     int i = 0;
     bool verif_nb[4];
-    int j = 0;
 
     my_memset(verif_nb, false, 4);
     for (champ_t *tmp = champ; tmp; tmp = tmp->next, i++) {
@@ -53,14 +71,9 @@ static int check_nb_champ(champ_t *champ, battle_t *battle)
             return ret_putstr_fd(2, "double definition of prog_number.\n");
         if (nb[i] != 0)
             verif_nb[nb[i] - 1] = true;
-    } i = 0;
-    for (champ_t *tmp = champ; tmp; tmp = tmp->next, i++) {
-        if (nb[i] == 0) {
-            for (j = 3; j > 0 && verif_nb[j] == true; j--);
-            tmp->nb_champ = j + 1;
-            verif_nb[j] = true;
-        }
-    } return 0;
+    }
+    check_nb_champ_two(champ, battle, nb, verif_nb);
+    return 0;
 }
 
 int check_champ(champ_t **champ, battle_t *battle)
