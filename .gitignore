@@ -10,3 +10,4 @@ coverage
 vgcore.*
 *.s
 *.cor
+*.sh

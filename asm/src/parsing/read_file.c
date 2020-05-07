@@ -6,13 +6,12 @@
 */
 
 #include <stdlib.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include "my.h"
 
-static void *free_and_return(char **array, char *line, void *value)
+static void *free_and_return(char *line, void *value)
 {
-    if (array != NULL)
-        my_free_array(array);
     if (line != NULL)
         free(line);
     return (value);
@@ -31,8 +30,11 @@ static char **my_realloc_array(char **array, unsigned int to_add)
             new_array[i] = NULL;
             i += 1;
         }
+        if (array != NULL)
+            free(array);
+    } else {
+        my_free_array(array);
     }
-    free(array);
     return (new_array);
 }
 
@@ -45,14 +47,13 @@ char **read_file(char const *file)
 
     if (fd < 0)
         return NULL;
-    while (get_next_line(&line, fd)) {
+    while ((line = get_next_line(fd))) {
         array = my_realloc_array(array, 1);
         if (array == NULL)
-            return (free_and_return(array, line, NULL));
-        array[i] = my_strdup(line);
-        if (array[i] == NULL)
-            return (free_and_return(array, line, NULL));
+            return (free_and_return(line, NULL));
+        array[i] = line;
         i += 1;
     }
+    close(fd);
     return (array);
 }

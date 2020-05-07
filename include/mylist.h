@@ -49,7 +49,7 @@ void my_free_list(list_t *list, void (*free_function)());
 void my_delete_node(list_t *list, int index, void (*free_function)());
 //
 // Delete the first occurence of a node according to a data
-#define my_delete_node_data(list, data, type, func) \
+#define my_delete_node_from_data(list, data, type, func) \
     _DEL_DATA(list, data, type, func)
 //
 // Remove a node pointer from a list and free it
@@ -70,12 +70,10 @@ int my_insert_node(list_t *list, node_t *node, int index, int copy);
     _INSERT_DATA(list, data, type, index)
 //
 // Insert a data at the begin of the list
-#define my_put_in_list(list, data, type) \
-    _INSERT_DATA(list, data, type, 0)
+#define my_put_in_list(list, data, type) _INSERT_DATA(list, data, type, 0)
 //
 // Insert a data at the end of the list
-#define my_append_to_list(list, data, type) \
-    _INSERT_DATA(list, data, type, -1)
+#define my_append_to_list(list, data, type) _INSERT_DATA(list, data, type, -1)
 //////////////////////////////////////////////////
 
 ///////////// Get/Find node in list /////////////

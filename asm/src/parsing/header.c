@@ -24,7 +24,7 @@ static bool copy_str_value(char *line, char *cmd, int max_length)
     return (true);
 }
 
-bool setup_header(char **array, header_t *header)
+bool setup_header(char * const *array, header_t *header)
 {
     int len_name = my_strlen(NAME_CMD_STRING);
     int len_comment = my_strlen(COMMENT_CMD_STRING);

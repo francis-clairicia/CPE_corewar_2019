@@ -57,10 +57,12 @@ static int my_strcat_l(char **dest, char const *src, char limit)
 static int read_file(int fd, char *buffer, char **save)
 {
     int i = 0;
-    int size = read(fd, buffer, READ_SIZE);
+    int size = -1;
 
     free(*save);
     *save = NULL;
+    if (buffer != NULL)
+        size = read(fd, buffer, READ_SIZE);
     if (size <= 0)
         return (0);
     buffer[size] = '\0';
@@ -74,25 +76,26 @@ static int read_file(int fd, char *buffer, char **save)
     return (1);
 }
 
-int get_next_line(char **line, int fd)
+char *get_next_line(int fd)
 {
-    char buffer[READ_SIZE + 1];
+    char *buffer = NULL;
+    char *line = NULL;
     static char *save = NULL;
     char *new_save = NULL;
     int read_status = 1;
 
-    free(*line);
-    *line = NULL;
-    if (my_strcat_l(line, save, '\n') == 2) {
-        my_strcat_l(&new_save, &save[my_strlen_with_limit(*line, 0) + 1], 0);
+    if (my_strcat_l(&line, save, '\n') == 2) {
+        my_strcat_l(&new_save, &save[my_strlen_with_limit(line, 0) + 1], 0);
         free(save);
         save = new_save;
-        return (1);
+        return (line);
     }
-    while (fd >= 0 && READ_SIZE > 0 && read_status == 1) {
+    buffer = malloc(sizeof(char) * (READ_SIZE + 1));
+    while (fd >= 0 && read_status == 1) {
         read_status = read_file(fd, buffer, &save);
-        if (read_status != 0 && !my_strcat_l(line, buffer, '\n'))
+        if (read_status != 0 && !my_strcat_l(&line, buffer, '\n'))
             break;
     }
-    return (*line != NULL);
+    free(buffer);
+    return (line);
 }

@@ -32,11 +32,11 @@ static char *get_output_file(char const *file)
     char extension[] = ".cor";
     char *file_without_extension = NULL;
     char *new_file = NULL;
-    int dot = my_strchr_index(file, '.');
+    int dot = my_strlen(file) - 1;
 
-    if (dot < 0)
+    for (; dot >= 0 && !my_strchr("/.", file[dot]); dot -= 1);
+    if (dot < 0 || file[dot] == '/')
         return (my_strcat_malloc(file, extension));
-    for (dot = my_strlen(file) - 1; file[dot] != '.'; dot -= 1);
     file_without_extension = my_strndup(file, dot);
     if (file_without_extension != NULL) {
         new_file = my_strcat_malloc(file_without_extension, extension);
@@ -71,16 +71,19 @@ int assembly(char const *file)
     header_t header;
     char *buffer = NULL;
     char **content = read_file(file);
+    line_t **lines = create_lines(content);
 
-    if (content == NULL)
+    if (lines == NULL) {
+        my_free_array(content);
         return (84);
-    remove_comments(content);
+    }
     my_memset(&header, 0, sizeof(header));
     if (!setup_header(content, &header))
         return (84);
+    buffer = make_instructions(file, lines, &(header.prog_size));
     write_all(file, &header, buffer);
     my_free_array(content);
-    if (buffer != NULL)
-        free(buffer);
+    my_free_array(lines);
+    free(buffer);
     return (0);
 }

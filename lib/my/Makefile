@@ -48,6 +48,7 @@ SRC			=	my_put_nbr.c				\
 				my_nbr_to_str.c				\
 				my_nbr_len.c				\
 				get_next_line.c				\
+				get_next_line_2.c			\
 				join_path.c					\
 				my_str_contains_only.c		\
 				my_memset.c					\

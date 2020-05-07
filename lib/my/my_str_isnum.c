@@ -11,7 +11,7 @@ int my_str_isnum(char const *str)
 {
     int i = 0;
 
-    if (str == NULL)
+    if (str == NULL || str[0] == '\0')
         return (0);
     if (str[0] == '-') {
         if (str[1] == '\0')

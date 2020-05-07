@@ -7,11 +7,23 @@
 
 SRC_NO_TEST			=	src/main.c
 
-SRC_TEST			=	src/asm.c							\
-						src/parsing/read_file.c				\
-						src/parsing/remove_comments.c		\
-						src/parsing/header.c				\
-						src/print_number.c
+SRC_TEST			=	src/asm.c									\
+						src/op.c									\
+						src/my_errno.c								\
+						src/print_error.c							\
+						src/parsing/read_file.c						\
+						src/parsing/create_lines.c					\
+						src/parsing/header.c						\
+						src/parsing/parse_line.c					\
+						src/parsing/valid_instruction.c				\
+						src/parsing/valid_parameters.c				\
+						src/parsing/valid_label.c					\
+						src/parsing/my_strip_str.c					\
+						src/instructions/instructions.c				\
+						src/instructions/init_instruction.c			\
+						src/instructions/add_new_instruction.c		\
+						src/instructions/get_parameters.c			\
+						src/instructions/add_parameters.c
 
 SRC					=	$(SRC_NO_TEST) $(SRC_TEST)
 
@@ -55,6 +67,7 @@ clean:
 	$(RM) unit_tests *.gc*
 
 fclean:	clean
+	make fclean -s -C ../lib/my
 	rm -f $(NAME)
 
 re:	fclean all
