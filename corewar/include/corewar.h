@@ -78,4 +78,25 @@ void print_help(int syntax);
 int help(int ac, char **av);
 int ret_putstr_fd(int fd, char *str);
 
+int mne_add(champ_t *champ, battle_t *battle);
+int mne_aff(champ_t *champ, battle_t *battle);
+int mne_and(champ_t *champ, battle_t *battle);
+int mne_fork(champ_t *champ, battle_t *battle);
+int mne_ld(champ_t *champ, battle_t *battle);
+int mne_ldi(champ_t *champ, battle_t *battle);
+int mne_lfork(champ_t *champ, battle_t *battle);
+int mne_live(champ_t *champ, battle_t *battle);
+int mne_lld(champ_t *champ, battle_t *battle);
+int mne_lldi(champ_t *champ, battle_t *battle);
+int mne_or(champ_t *champ, battle_t *battle);
+int mne_st(champ_t *champ, battle_t *battle);
+int mne_sti(champ_t *champ, battle_t *battle);
+int mne_sub(champ_t *champ, battle_t *battle);
+int mne_xor(champ_t *champ, battle_t *battle);
+int mne_zjmp(champ_t *champ, battle_t *battle);
+
+int is_register(int nb);
+int get_value(champ_t *champ, battle_t *battle);
+int puissance(int number, int nb);
+
 #endif
