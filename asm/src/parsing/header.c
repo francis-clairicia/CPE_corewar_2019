@@ -18,20 +18,18 @@ static bool copy_str_value(char *line, char *cmd, int max_length)
     name = &name[1];
     my_memset(cmd, '\0', max_length + 1);
     end = my_strchr_index(name, '"');
-    if (end < 0)
-        return (false);
-    if (end > max_length)
+    if (end < 0 || end > max_length)
         return (false);
     my_strncpy(cmd, name, end);
     return (true);
 }
 
-bool setup_header(char **array, header_t *header)
+bool setup_header(char * const *array, header_t *header)
 {
     int len_name = my_strlen(NAME_CMD_STRING);
     int len_comment = my_strlen(COMMENT_CMD_STRING);
 
-    if (array == NULL || header == NULL)
+    if (array == NULL || my_array_len(array) < 2 || header == NULL)
         return (false);
     if (my_strncmp(array[0], NAME_CMD_STRING, len_name) != 0)
         return (false);

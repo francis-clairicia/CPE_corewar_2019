@@ -30,8 +30,8 @@ static int file_header(champ_t *tmp, battle_t *battle)
     || tmp->header->prog_name[0] == '\0' || tmp->header->prog_size == 0) {
         return ret_putstr_fd(2, "Error on champ's header.\n");
     }
-    tmp->header->magic = rev_nb(tmp->header->magic);
-    tmp->header->prog_size = rev_nb(tmp->header->prog_size);
+    tmp->header->magic = reverse_number(tmp->header->magic);
+    tmp->header->prog_size = reverse_number(tmp->header->prog_size);
     if (tmp->header->magic != COREWAR_EXEC_MAGIC) {
         return ret_putstr_fd(2, "Error on the magic number.\n");
     }

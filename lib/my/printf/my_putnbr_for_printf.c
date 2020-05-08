@@ -22,7 +22,7 @@ int my_putnbr_base_u(unsigned long nb, modifier_t *infos, char const *base)
 
     infos->sharp = (infos->sharp == 1 && nb > 0);
     len += print_before(infos, size);
-    my_putstr(nb_converted);
+    my_putstr_fd(infos->fd, nb_converted);
     len += print_after(infos, size);
     free(nb_converted);
     return (len);
@@ -39,7 +39,7 @@ int my_putnbr_long(long nb, modifier_t *infos)
     if (infos->sign == 1)
         infos->sign = (nb >= 0) ? '+' : '-';
     len += print_before(infos, size);
-    my_putstr(nb_converted);
+    my_putstr_fd(infos->fd, nb_converted);
     len += print_after(infos, size);
     free(nb_converted);
     return (len);

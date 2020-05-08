@@ -31,7 +31,7 @@ int dump_arg(char **av, battle_t *battle, utils_parser_t *up)
     return 0;
 }
 
-int n_arg(char **av, __attribute__((unused)) battle_t *battle,
+int flag_n(char **av, __attribute__((unused)) battle_t *battle,
             utils_parser_t *up)
 {
     if (up->bool_champ == true || !av[up->i + 1]) {
@@ -50,7 +50,7 @@ int n_arg(char **av, __attribute__((unused)) battle_t *battle,
     return 0;
 }
 
-int a_arg(char **av, __attribute__((unused)) battle_t *battle,
+int flag_a(char **av, __attribute__((unused)) battle_t *battle,
             utils_parser_t *up)
 {
     if (up->bool_address == true || !av[up->i + 1]) {

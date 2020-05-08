@@ -32,11 +32,11 @@ static char *get_output_file(char const *file)
     char extension[] = ".cor";
     char *file_without_extension = NULL;
     char *new_file = NULL;
-    int dot = my_strchr_index(file, '.');
+    int dot = my_strlen(file) - 1;
 
-    if (dot < 0)
+    for (; dot >= 0 && !my_strchr("/.", file[dot]); dot -= 1);
+    if (dot < 0 || file[dot] == '/')
         return (my_strcat_malloc(file, extension));
-    for (dot = my_strlen(file) - 1; file[dot] != '.'; dot -= 1);
     file_without_extension = my_strndup(file, dot);
     if (file_without_extension != NULL) {
         new_file = my_strcat_malloc(file_without_extension, extension);
@@ -52,13 +52,14 @@ static bool write_all(char const *file, header_t *header, char const *buffer)
 
     if (output_file == NULL)
         return (false);
-    output = fopen(output_file, "w");
+    output = fopen(output_file, "wb");
     if (output != NULL) {
-        print_number(header->magic, output);
-        fwrite(header->prog_name, sizeof(char), PROG_NAME_LENGTH, output);
-        print_number(header->prog_size, output);
-        fwrite(header->comment, sizeof(char), COMMENT_LENGTH, output);
-        fwrite(buffer, sizeof(char), header->prog_size, output);
+        header->magic = REVERSED_NB(header->magic);
+        header->prog_size = REVERSED_NB(header->prog_size);
+        fwrite(header, sizeof(*header), 1, output);
+        header->prog_size = REVERSED_NB(header->prog_size);
+        if (buffer != NULL)
+            fwrite(buffer, sizeof(char), header->prog_size, output);
         fclose(output);
     }
     free(output_file);
@@ -68,16 +69,21 @@ static bool write_all(char const *file, header_t *header, char const *buffer)
 int assembly(char const *file)
 {
     header_t header;
-    char *buffer = my_strdup("");
-    char **array = read_file(file);
+    char *buffer = NULL;
+    char **content = read_file(file);
+    line_t **lines = create_lines(content);
 
-    if (array == NULL || buffer == NULL)
+    if (lines == NULL) {
+        my_free_array(content);
         return (84);
-    remove_comments(array);
-    if (!setup_header(array, &header))
+    }
+    my_memset(&header, 0, sizeof(header));
+    if (!setup_header(content, &header))
         return (84);
+    buffer = make_instructions(file, lines, &(header.prog_size));
     write_all(file, &header, buffer);
-    my_free_array(array);
+    my_free_array(content);
+    my_free_array(lines);
     free(buffer);
     return (0);
 }

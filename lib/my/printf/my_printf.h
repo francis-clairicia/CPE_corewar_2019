@@ -23,6 +23,7 @@ typedef struct format
 
 typedef struct modifier_s
 {
+    int fd;
     char type;
     int padding;
     char char_to_print;

@@ -31,7 +31,7 @@ int print_char(va_list args, modifier_t *infos)
     unsigned char c = va_arg(args, int);
 
     len += print_before(infos, 1);
-    len += write(1, &c, 1);
+    len += write(infos->fd, &c, 1);
     len += print_after(infos, 1);
     return (len);
 }
@@ -43,7 +43,7 @@ int print_str(va_list args, modifier_t *infos)
     int size = get_str_size(str);
 
     len += print_before(infos, size);
-    my_putstr(str);
+    my_putstr_fd(infos->fd, str);
     len += print_after(infos, size);
     return (size + len);
 }
@@ -57,14 +57,14 @@ int print_str_non_printable(va_list args, modifier_t *infos)
 
     len += print_before(infos, size);
     if (str == NULL) {
-        my_putstr(NULL);
+        my_putstr_fd(infos->fd, NULL);
         len += print_after(infos, size);
         return (len + size);
     } while (str[i] != '\0') {
         if (str[i] < 32 || str[i] >= 127)
-            my_printf("\\%.3o", str[i]);
+            my_dprintf(infos->fd, "\\%.3o", str[i]);
         else
-            my_putchar(str[i]);
+            write(infos->fd, &str[i], 1);
         i += 1;
     }
     len += print_after(infos, size);
