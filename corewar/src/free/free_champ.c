@@ -14,9 +14,6 @@ void free_champ(champ_t *champ)
 
     for (; champ; champ = tmp) {
         free(champ->header);
-        free(champ->op->mnemonique);
-        free(champ->op->comment);
-        free(champ->op);
         free(champ->reg);
         tmp = tmp->next;
         free(champ);

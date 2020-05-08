@@ -15,9 +15,9 @@
 typedef struct champ_s
 {
     FILE *fp;
-    int wait;
+    int status;
     header_t *header;
-    op_t *op;
+    op_t op;
     int *reg;
     int nb_address;
     int pc;
@@ -25,6 +25,7 @@ typedef struct champ_s
     bool live;
     char *brut_name;
     int nb_champ;
+    bool act;
     struct champ_s *next;
 } champ_t;
 
@@ -37,6 +38,7 @@ typedef struct battle_s
     int nb_live;
     bool *check_mem;
     unsigned char *mem;
+    champ_t *champ_tab[4];
     champ_t *last_live;
 } battle_t;
 
@@ -55,6 +57,11 @@ typedef struct parser_s
     int (*parse)(char **, battle_t *, utils_parser_t *);
 } parser_t;
 
+typedef struct mnemonic_s
+{
+    int (*mnemonic)(champ_t *, battle_t *);
+} mnemonic_t;
+
 int corewar(char **av);
 int parse_arg(char **av, champ_t **champ, battle_t *battle);
 int dump_arg(char **av, battle_t *battle, utils_parser_t *up);
@@ -72,10 +79,31 @@ int reverse_number(int nb);
 int fill_mem(champ_t *champ, battle_t *battle);
 void print_dump(unsigned char *memory);
 int game_loop(champ_t *champ, battle_t *battle);
-bool no_end(battle_t *battle);
+bool no_end(battle_t *battle, champ_t *champ);
 
 void print_help(int syntax);
 int help(int ac, char **av);
 int ret_putstr_fd(int fd, char *str);
+
+int mne_add(champ_t *champ, battle_t *battle);
+int mne_aff(champ_t *champ, battle_t *battle);
+int mne_and(champ_t *champ, battle_t *battle);
+int mne_fork(champ_t *champ, battle_t *battle);
+int mne_ld(champ_t *champ, battle_t *battle);
+int mne_ldi(champ_t *champ, battle_t *battle);
+int mne_lfork(champ_t *champ, battle_t *battle);
+int mne_live(champ_t *champ, battle_t *battle);
+int mne_lld(champ_t *champ, battle_t *battle);
+int mne_lldi(champ_t *champ, battle_t *battle);
+int mne_or(champ_t *champ, battle_t *battle);
+int mne_st(champ_t *champ, battle_t *battle);
+int mne_sti(champ_t *champ, battle_t *battle);
+int mne_sub(champ_t *champ, battle_t *battle);
+int mne_xor(champ_t *champ, battle_t *battle);
+int mne_zjmp(champ_t *champ, battle_t *battle);
+
+int is_register(int nb);
+int get_value(champ_t *champ, battle_t *battle);
+int pows(int number, int nb);
 
 #endif
