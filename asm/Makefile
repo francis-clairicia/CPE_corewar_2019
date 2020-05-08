@@ -9,7 +9,6 @@ SRC_NO_TEST			=	src/main.c
 
 SRC_TEST			=	src/asm.c									\
 						src/op.c									\
-						src/my_errno.c								\
 						src/print_error.c							\
 						src/parsing/read_file.c						\
 						src/parsing/create_lines.c					\
