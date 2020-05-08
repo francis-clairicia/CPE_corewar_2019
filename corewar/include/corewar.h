@@ -97,6 +97,6 @@ int mne_zjmp(champ_t *champ, battle_t *battle);
 
 int is_register(int nb);
 int get_value(champ_t *champ, battle_t *battle);
-int puissance(int number, int nb);
+int pows(int number, int nb);
 
 #endif
