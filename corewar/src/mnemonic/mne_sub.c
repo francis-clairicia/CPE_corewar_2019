@@ -9,9 +9,9 @@
 
 int mne_sub(champ_t *champ, battle_t *battle)
 {
-    int fst_param = get_value(champ, battle);
-    int scd_param = get_value(champ, battle);
-    int thd_param = get_value(champ, battle);
+    int fst_param = battle->mem[champ->pc + 2];
+    int scd_param = battle->mem[champ->pc + 3];
+    int thd_param = battle->mem[champ->pc + 4];
 
     if (is_register(fst_param) == 84 || is_register(fst_param) == 84
     || is_register(thd_param) == 84)
@@ -19,5 +19,6 @@ int mne_sub(champ_t *champ, battle_t *battle)
     champ->reg[thd_param - 1] = champ->reg[fst_param - 1]
     - champ->reg[scd_param - 1];
     champ->carry = 1;
-    return (0);
+    champ->pc += 5;
+    return 0;
 }
