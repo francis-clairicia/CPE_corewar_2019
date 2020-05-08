@@ -47,7 +47,7 @@ bool setup_header(char * const *array, header_t *header);
 
 /* Instruction and Parameters validation */
 errno_t parse_line(char const *line, list_t *list);
-bool valid_instruction(char const *mnemonique, int *instruction, errno_t *err);
+bool valid_instruction(char const *mnemonic, int *instruction, errno_t *err);
 bool valid_parameters(char * const *parameters, int instruction, errno_t *err);
 bool valid_label(char const *label, errno_t *errno);
 

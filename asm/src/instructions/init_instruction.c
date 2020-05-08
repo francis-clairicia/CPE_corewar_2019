@@ -36,11 +36,11 @@ static args_type_t get_parameter_type(char const *parameter)
 }
 
 static void get_parameter_size(instruction_t *instruction, int param_index,
-    char const *mnemonique)
+    char const *mnemonic)
 {
     int type = instruction->type[param_index];
 
-    if (type == T_DIR && my_array_contains(two_bytes_direct_param, mnemonique))
+    if (type == T_DIR && my_array_contains(two_bytes_direct_param, mnemonic))
         instruction->param_size[param_index] = SIZE_TYPE[T_IND];
     else
         instruction->param_size[param_index] = SIZE_TYPE[type];
@@ -49,7 +49,7 @@ static void get_parameter_size(instruction_t *instruction, int param_index,
 instruction_t init_instruction(int index, char **params, char *label)
 {
     instruction_t instruction;
-    char *command = op_tab[index].mnemonique;
+    char *command = op_tab[index].mnemonic;
 
     my_memset(&instruction, 0, sizeof(instruction));
     instruction.label = label;

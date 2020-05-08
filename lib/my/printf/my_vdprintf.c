@@ -29,9 +29,9 @@ static int print_replacing_flag(char type, int fd,
     modifier_t infos = {fd, type, my_getnbr(modifiers), ' ', 0, 0, 0, NULL};
 
     if (non_valid_flags(modifiers)) {
-        my_putchar('%');
-        my_putstr(modifiers);
-        my_putchar(type);
+        write(fd, "%", 1);
+        my_putstr_fd(fd, modifiers);
+        write(fd, &type, 1);
         return (my_strlen(modifiers) + 2);
     }
     get_infos(modifiers, &infos);
@@ -51,7 +51,7 @@ static int my_printf_part2(char const *format, int fd, int *i, va_list args)
 
     modifiers = get_modifiers(i, &format[*i]);
     if (format[*i] == '%' || modifiers == NULL){
-        my_putchar('%');
+        write(fd, "%", 1);
         if (modifiers == NULL)
             *i = index_save;
         n = 1;
@@ -68,7 +68,7 @@ int my_vdprintf(int fd, char const *format, va_list args)
 
     while (format[i] != '\0') {
         if (format[i] != '%') {
-            my_putchar(format[i]);
+            write(fd, &format[i], 1);
             nb_print += 1;
         } else {
             i += 1;

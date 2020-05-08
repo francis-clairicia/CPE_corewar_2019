@@ -52,7 +52,7 @@ static char const *check_for_label(char const *line, int *space, char **label)
     return (line);
 }
 
-static errno_t parse_instruction(list_t *list, char *mnemonique, char **params,
+static errno_t parse_instruction(list_t *list, char *mnemonic, char **params,
     char *label)
 {
     int index = -1;
@@ -60,19 +60,19 @@ static errno_t parse_instruction(list_t *list, char *mnemonique, char **params,
     errno_t error = E_SUCCESS;
 
     if (!valid_label(label, &error))
-        return (free_and_return(mnemonique, label, params, error));
-    if (mnemonique != NULL && !valid_instruction(mnemonique, &index, &error))
-        return (free_and_return(mnemonique, label, params, error));
-    if (mnemonique != NULL && !valid_parameters(params, index, &error))
-        return (free_and_return(mnemonique, label, params, error));
+        return (free_and_return(mnemonic, label, params, error));
+    if (mnemonic != NULL && !valid_instruction(mnemonic, &index, &error))
+        return (free_and_return(mnemonic, label, params, error));
+    if (mnemonic != NULL && !valid_parameters(params, index, &error))
+        return (free_and_return(mnemonic, label, params, error));
     instruction = init_instruction(index, params, label);
     my_append_to_list(list, instruction, instruction_t);
-    return (free_and_return(mnemonique, NULL, NULL, E_SUCCESS));
+    return (free_and_return(mnemonic, NULL, NULL, E_SUCCESS));
 }
 
 errno_t parse_line(char const *line, list_t *list)
 {
-    char *mnemonique = NULL;
+    char *mnemonic = NULL;
     char **params = NULL;
     char separator[] = {SEPARATOR_CHAR, '\0'};
     char *label = NULL;
@@ -85,8 +85,8 @@ errno_t parse_line(char const *line, list_t *list)
     if (my_strlen(line) > 0) {
         if (space < 0)
             space = my_strlen(line);
-        mnemonique = my_strndup(line, space);
+        mnemonic = my_strndup(line, space);
         params = my_str_to_word_array(&line[space], separator);
     }
-    return (parse_instruction(list, mnemonique, params, label));
+    return (parse_instruction(list, mnemonic, params, label));
 }

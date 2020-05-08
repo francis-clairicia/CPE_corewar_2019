@@ -41,7 +41,7 @@ typedef char args_type_t;
 
 typedef struct op_s
 {
-    char *mnemonique;
+    char *mnemonic;
     char nbr_args;
     args_type_t type[MAX_ARGS_NUMBER];
     char code;

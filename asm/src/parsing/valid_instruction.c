@@ -8,17 +8,17 @@
 #include "asm.h"
 #include "my.h"
 
-bool valid_instruction(char const *mnemonique, int *instruction, errno_t *err)
+bool valid_instruction(char const *mnemonic, int *instruction, errno_t *err)
 {
     int len = 0;
 
-    if (!mnemonique || !instruction)
+    if (!mnemonic || !instruction)
         return (set_errno(err, E_INTERNAL_ERROR));
-    len = my_strlen(mnemonique);
+    len = my_strlen(mnemonic);
     if (len == 0)
         return (set_errno(err, E_INVALID_INSTRUCTION));
-    for (register int i = 0; op_tab[i].mnemonique != NULL; i += 1) {
-        if (my_strncmp(mnemonique, op_tab[i].mnemonique, len) == 0) {
+    for (register int i = 0; op_tab[i].mnemonic != NULL; i += 1) {
+        if (my_strncmp(mnemonic, op_tab[i].mnemonic, len) == 0) {
             *instruction = i;
             return (true);
         }

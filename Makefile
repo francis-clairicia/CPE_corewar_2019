@@ -32,6 +32,10 @@ tests_run:
 	$(MAKE) tests_run -C $(ASM)
 	$(MAKE) tests_run -C $(COREWAR)
 
+bonus:
+	$(MAKE) -C $(ASM)
+	cp $(ASM)/$(ASM) bonus/$(ASM)/asm_compiler
+
 re:	fclean all
 
-.PHONY: all lib clean fclean tests_run re
+.PHONY: all lib clean fclean tests_run bonus re
