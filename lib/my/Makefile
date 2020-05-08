@@ -72,6 +72,7 @@ LINKED_LIST	=	list/my_list.c				\
 
 PRINTF		=	printf/my_printf.c					\
 				printf/my_dprintf.c					\
+				printf/my_vdprintf.c				\
 				printf/my_printf_number.c			\
 				printf/my_printf_str.c				\
 				printf/my_printf_pointer.c			\

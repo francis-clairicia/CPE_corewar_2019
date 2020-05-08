@@ -7,20 +7,6 @@
 
 #include "my_printf.h"
 
-int my_vdprintf(int fd, char const *format, va_list ap)
-{
-    int save_stdout = 0;
-    int nb_print = 0;
-
-    if (fd < 0)
-        return (-1);
-    save_stdout = dup(STDOUT_FILENO);
-    dup2(fd, STDOUT_FILENO);
-    nb_print = my_vprintf(format, ap);
-    dup2(save_stdout, STDOUT_FILENO);
-    return (nb_print);
-}
-
 int my_dprintf(int fd, char const *format, ...)
 {
     va_list ap;
