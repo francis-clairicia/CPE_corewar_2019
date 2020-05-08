@@ -36,5 +36,7 @@ battle_t *init_empty_battle(void)
     my_memset(battle->check_mem, 0, MEM_SIZE);
     battle->mem[MEM_SIZE] = '\0';
     battle->nb_champ = 0;
+    for (int i = 0; i < 4; i++)
+        battle->champ_tab[i] = NULL;
     return battle;
 }

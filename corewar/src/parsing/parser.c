@@ -40,6 +40,7 @@ static int parse_arg_loop(char **av, battle_t *battle,
     if (check == false) {
         if (my_strncmp(my_revstr(av[up->i]), "roc.", 4) == 0) {
             ICHECK((*champ = add_champ(champ, av[up->i], up)));
+            battle->champ_tab[battle->nb_champ] = *champ;
             battle->nb_champ += 1;
         } else {
             return ret_putstr_fd(2, "File name should be a .cor\n");

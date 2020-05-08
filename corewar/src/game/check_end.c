@@ -8,7 +8,7 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-bool no_end(battle_t *battle)
+bool no_end(battle_t *battle, champ_t *champ)
 {
     if (battle->dump != -1 && battle->cycle >= battle->dump) {
         print_dump(battle->mem);
@@ -22,5 +22,11 @@ bool no_end(battle_t *battle)
         battle->nb_live = 0;              //
     }                                     //
     battle->cycle += 1;
+    for (champ_t *tmp = champ; tmp; tmp = tmp->next) {
+        if (tmp->status == 1)
+            tmp->act = true;
+        if (tmp->status > 0)
+            tmp->status -= 1;
+    }
     return true;
 }

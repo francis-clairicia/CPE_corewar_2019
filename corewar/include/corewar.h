@@ -25,6 +25,7 @@ typedef struct champ_s
     bool live;
     char *brut_name;
     int nb_champ;
+    bool act;
     struct champ_s *next;
 } champ_t;
 
@@ -37,6 +38,7 @@ typedef struct battle_s
     int nb_live;
     bool *check_mem;
     unsigned char *mem;
+    champ_t *champ_tab[4];
     champ_t *last_live;
 } battle_t;
 
@@ -55,6 +57,11 @@ typedef struct parser_s
     int (*parse)(char **, battle_t *, utils_parser_t *);
 } parser_t;
 
+typedef struct mnemonic_s
+{
+    int (*mnemonic)(champ_t *, battle_t *);
+} mnemonic_t;
+
 int corewar(char **av);
 int parse_arg(char **av, champ_t **champ, battle_t *battle);
 int dump_arg(char **av, battle_t *battle, utils_parser_t *up);
@@ -72,7 +79,7 @@ int reverse_number(int nb);
 int fill_mem(champ_t *champ, battle_t *battle);
 void print_dump(unsigned char *memory);
 int game_loop(champ_t *champ, battle_t *battle);
-bool no_end(battle_t *battle);
+bool no_end(battle_t *battle, champ_t *champ);
 
 void print_help(int syntax);
 int help(int ac, char **av);
