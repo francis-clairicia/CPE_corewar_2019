@@ -11,8 +11,8 @@
 static const parser_t parser_list[] =
 {
     {"-dump", &dump_arg},
-    {"-n", &n_arg},
-    {"-a", &a_arg},
+    {"-n", &flag_n},
+    {"-a", &flag_a},
     {NULL, NULL}
 };
 
