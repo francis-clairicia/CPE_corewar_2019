@@ -29,13 +29,13 @@ static char const *get_filename(char const *file)
     return (file);
 }
 
-void print_error(char const *file, int line)
+void print_error(char const *file, int line, errno_t error)
 {
-    char const *message = error_messages[my_errno];
+    char const *message = error_messages[error];
     char const *filename = get_filename(file);
     char format[] = "\033[1;37masm, %s, line %d: \033[1;31m%s.\n\033[0m";
 
-    if (my_errno == E_SUCCESS)
+    if (error == E_SUCCESS)
         return;
     my_dprintf(2, format, filename, line, message);
 }

@@ -23,12 +23,10 @@ typedef enum MY_ERRNO_VALUES
     E_UNDEFINED_LABEL
 } errno_t;
 
-extern errno_t my_errno;
-
-static inline bool set_errno(errno_t value)
+static inline bool set_errno(errno_t *errno, errno_t value)
 {
-    my_errno = value;
-    return (my_errno == E_SUCCESS);
+    *errno = value;
+    return (*errno == E_SUCCESS);
 }
 
 #endif

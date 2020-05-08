@@ -26,27 +26,26 @@ static void destroy_instruction_list(list_t *list)
 static int get_whole_size(list_t list, int *size)
 {
     *size = 0;
-    for (node_t *node = list.start; node; node = node->next)
+    for (node_t *node = list.start; node; node = node->next) {
+        NODE_DATA_PTR(node, instruction_t)->address = *size;
         *size += NODE_DATA_PTR(node, instruction_t)->size;
+    }
     return (*size);
 }
 
 static char *set_all_instructions_into_buffer(list_t list, int *size)
 {
     char *buffer = malloc(sizeof(char) * get_whole_size(list, size));
-    int start = 0;
     instruction_t *instruction;
+    errno_t errno = E_SUCCESS;
 
     if (!buffer)
         return (NULL);
     for (node_t *node = list.start; node; node = node->next) {
-        NODE_DATA_PTR(node, instruction_t)->address = start;
-        start += NODE_DATA_PTR(node, instruction_t)->size;
-    }
-    for (node_t *node = list.start; node; node = node->next) {
         instruction = NODE_DATA_PTR(node, instruction_t);
-        if (!add_instruction(buffer, list, *instruction)) {
-            print_error(instruction->file, instruction->line->nb);
+        errno = add_instruction(buffer, list, *instruction);
+        if (errno != E_SUCCESS) {
+            print_error(instruction->file, instruction->line, errno);
             free(buffer);
             return (NULL);
         }
@@ -60,7 +59,7 @@ static void set_instruction_line(char const *file, line_t *line, list_t list)
 
     if (!node)
         return;
-    NODE_DATA_PTR(node, instruction_t)->line = line;
+    NODE_DATA_PTR(node, instruction_t)->line = line->nb;
     NODE_DATA_PTR(node, instruction_t)->file = file;
 }
 
@@ -68,13 +67,15 @@ char *make_instructions(char const *file, line_t **lines, int *size)
 {
     char *buffer = NULL;
     list_t instructions = my_list();
+    errno_t result = E_SUCCESS;
 
     if (!lines || !size || !(lines[0]) || !(lines[1]) || !(lines[2]))
         return (NULL);
     for (register int i = 2; lines[i] != NULL; i += 1) {
-        if (!parse_line(lines[i]->content, &instructions)) {
+        result = parse_line(lines[i]->content, &instructions);
+        if (result != E_SUCCESS) {
             destroy_instruction_list(&instructions);
-            print_error(file, lines[i]->nb);
+            print_error(file, lines[i]->nb, result);
             return (NULL);
         }
         set_instruction_line(file, lines[i], instructions);

@@ -10,7 +10,8 @@
 #include "my.h"
 #include "mylist.h"
 
-static bool free_and_return(char *str1, char *str2, char **array)
+static errno_t free_and_return(char *str1, char *str2, char **array,
+    errno_t errno)
 {
     if (str1 != NULL)
         free(str1);
@@ -18,7 +19,7 @@ static bool free_and_return(char *str1, char *str2, char **array)
         free(str2);
     if (array != NULL)
         my_free_array(array);
-    return (my_errno == E_SUCCESS);
+    return (errno);
 }
 
 static char const *skip_first_spaces(char const *str)
@@ -51,24 +52,25 @@ static char const *check_for_label(char const *line, int *space, char **label)
     return (line);
 }
 
-static bool parse_instruction(list_t *list, char *mnemonique, char **params,
+static errno_t parse_instruction(list_t *list, char *mnemonique, char **params,
     char *label)
 {
     int index = -1;
     instruction_t instruction;
+    errno_t error = E_SUCCESS;
 
-    if (!valid_label(label))
-        return (free_and_return(mnemonique, label, params));
-    if (mnemonique != NULL && !valid_instruction(mnemonique, &index))
-        return (free_and_return(mnemonique, label, params));
-    if (mnemonique != NULL && !valid_parameters(params, index))
-        return (free_and_return(mnemonique, label, params));
+    if (!valid_label(label, &error))
+        return (free_and_return(mnemonique, label, params, error));
+    if (mnemonique != NULL && !valid_instruction(mnemonique, &index, &error))
+        return (free_and_return(mnemonique, label, params, error));
+    if (mnemonique != NULL && !valid_parameters(params, index, &error))
+        return (free_and_return(mnemonique, label, params, error));
     instruction = init_instruction(index, params, label);
     my_append_to_list(list, instruction, instruction_t);
-    return (free_and_return(mnemonique, NULL, NULL));
+    return (free_and_return(mnemonique, NULL, NULL, E_SUCCESS));
 }
 
-bool parse_line(char const *line, list_t *list)
+errno_t parse_line(char const *line, list_t *list)
 {
     char *mnemonique = NULL;
     char **params = NULL;
@@ -77,7 +79,7 @@ bool parse_line(char const *line, list_t *list)
     int space = 0;
 
     if (!line || !list)
-        return (set_errno(E_INTERNAL_ERROR));
+        return (E_INTERNAL_ERROR);
     line = skip_first_spaces(line);
     line = check_for_label(line, &space, &label);
     if (my_strlen(line) > 0) {

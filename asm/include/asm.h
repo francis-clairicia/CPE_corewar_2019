@@ -39,44 +39,45 @@ static int const CODING_BYTE_DESCRIPTION_TYPE[] = {
 int assembly(char const *file);
 char *make_instructions(char const *file, line_t **lines, int *size);
 void print_number_in_file(int nb, FILE *file);
-void print_error(char const *file, int line);
+void print_error(char const *file, int line, errno_t error);
 
 char **read_file(char const *file);
 line_t **create_lines(char **content);
 bool setup_header(char * const *array, header_t *header);
 
 /* Instruction and Parameters validation */
-bool parse_line(char const *line, list_t *list);
-bool valid_instruction(char const *mnemonique, int *instruction);
-bool valid_parameters(char * const *parameters, int instruction);
-bool valid_label(char const *label);
+errno_t parse_line(char const *line, list_t *list);
+bool valid_instruction(char const *mnemonique, int *instruction, errno_t *err);
+bool valid_parameters(char * const *parameters, int instruction, errno_t *err);
+bool valid_label(char const *label, errno_t *errno);
 
 /* Add instruction to buffer */
 typedef struct instruction
 {
     char const *file;
-    line_t const *line;
+    int line;
     char *label;
     int address;
     char code;
     bool coding_byte;
     args_type_t type[MAX_ARGS_NUMBER];
+    int param_size[MAX_ARGS_NUMBER];
     char *params[MAX_ARGS_NUMBER];
     int size;
 } instruction_t;
 
 instruction_t init_instruction(int index, char **params, char *label);
-bool add_instruction(char *buffer, list_t list, instruction_t instruction);
+errno_t add_instruction(char *buffer, list_t list, instruction_t instruction);
 // Function to get the number to print
-typedef int (*get_parameter_func_t)(list_t, int, char const *);
-int get_register_parameter(list_t list, int address, char const *parameter);
-int get_direct_parameter(list_t list, int address, char const *parameter);
-int get_indirect_parameter(list_t list, int address, char const *parameter);
-// Functions to add parameters in buffer
-typedef void (*add_parameter_func_t)(char *, int, int *);
-void add_register_parameter(char *buffer, int parameter, int *start);
-void add_direct_parameter(char *buffer, int parameter, int *start);
-void add_indirect_parameter(char *buffer, int parameter, int *start);
+typedef int (*get_parameter_func_t)(list_t, int, char const *, errno_t *);
+int get_register_parameter(list_t list, int address, char const *parameter,
+    errno_t *errno);
+int get_direct_parameter(list_t list, int address, char const *parameter,
+    errno_t *errno);
+int get_indirect_parameter(list_t list, int address, char const *parameter,
+    errno_t *errno);
+// Functions to add parameter in buffer
+void add_parameter(char *buffer, int bytes, int size, int *start);
 
 /* Utils */
 char *my_strip_str(char *str, char const characters[]);
