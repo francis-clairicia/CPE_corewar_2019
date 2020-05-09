@@ -16,7 +16,7 @@ int mne_sub(champ_t *champ, battle_t *battle)
     int thd_param = battle->mem[(champ->pc + 4) % MEM_SIZE];
 
     if (param[0] != T_REG || param[1] != T_REG || param[2] != T_REG) {
-        champ->pc += 1;
+        champ->pc += 5;
         return 0;
     }
     if (is_register(fst_param) == 84 || is_register(fst_param) == 84
