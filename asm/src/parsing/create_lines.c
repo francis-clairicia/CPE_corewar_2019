@@ -34,12 +34,14 @@ static bool remove_comments(char **content, int i)
     return (false);
 }
 
-static bool add_new_line(list_t *list, int line_nb, char *line_str)
+static bool add_new_line(list_t *list, char const *file,
+    int line_nb, char *line_str)
 {
     line_t *line = malloc(sizeof(*line));
 
     if (!line)
         return (false);
+    line->file = file;
     line->nb = line_nb;
     line->content = line_str;
     if (!my_append_to_list(list, line, line_t *)) {
@@ -50,7 +52,7 @@ static bool add_new_line(list_t *list, int line_nb, char *line_str)
     return (true);
 }
 
-line_t **create_lines(char **content)
+line_t **create_lines(char const *file, char **content)
 {
     register int i = 0;
     int line_nb = 0;
@@ -62,7 +64,7 @@ line_t **create_lines(char **content)
         line_nb += 1;
         if (remove_comments(content, i))
             continue;
-        if (!add_new_line(&list, line_nb, content[i]))
+        if (!add_new_line(&list, file, line_nb, content[i]))
             return (NULL);
         i += 1;
     }

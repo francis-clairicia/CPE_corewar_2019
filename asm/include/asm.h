@@ -16,6 +16,7 @@
 
 typedef struct line
 {
+    char const *file;
     int nb;
     char const *content;
 } line_t;
@@ -37,15 +38,23 @@ static int const CODING_BYTE_DESCRIPTION_TYPE[] = {
     (nb & 0x00FF0000U) >> 8 | (nb & 0xFF000000U) >> 24
 
 int assembly(char const *file);
-char *make_instructions(char const *file, line_t **lines, int *size);
+char *make_instructions(line_t * const *lines, int *size);
 void print_number_in_file(int nb, FILE *file);
 void print_error(char const *file, int line, errno_t error);
 
 char **read_file(char const *file);
-line_t **create_lines(char **content);
-bool setup_header(char * const *array, header_t *header);
+line_t **create_lines(char const *file, char **content);
+bool setup_header(line_t * const *array, header_t *header);
 
 /* Instruction and Parameters validation */
+static inline char const *skip_first_spaces(char const *str)
+{
+    if (str != NULL) {
+        while (str[0] != '\0' && (str[0] == ' ' || str[0] == '\t'))
+            str = &str[1];
+    }
+    return (str);
+}
 errno_t parse_line(char const *line, list_t *list);
 bool valid_instruction(char const *mnemonic, int *instruction, errno_t *err);
 bool valid_parameters(char * const *parameters, int instruction, errno_t *err);
@@ -54,8 +63,7 @@ bool valid_label(char const *label, errno_t *errno);
 /* Add instruction to buffer */
 typedef struct instruction
 {
-    char const *file;
-    int line;
+    line_t const *line;
     char *label;
     int address;
     char code;

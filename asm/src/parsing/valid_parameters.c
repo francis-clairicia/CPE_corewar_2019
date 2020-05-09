@@ -55,7 +55,7 @@ bool valid_parameters(char * const *parameters, int instruction, errno_t *err)
     if (parameters == NULL || my_array_len(parameters) != operation->nbr_args)
         return (set_errno(err, E_INVALID_ARG));
     for (int i = 0; parameters[i] != NULL; i += 1) {
-        my_strip_str(parameters[i], " ");
+        my_strip_str(parameters[i], " \t");
         if (!valid_one_parameter(parameters[i], operation->type[i], err))
             return (false);
     }

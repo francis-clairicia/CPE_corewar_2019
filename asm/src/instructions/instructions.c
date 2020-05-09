@@ -45,7 +45,7 @@ static char *set_all_instructions_into_buffer(list_t list, int *size)
         instruction = NODE_DATA_PTR(node, instruction_t);
         errno = add_instruction(buffer, list, *instruction);
         if (errno != E_SUCCESS) {
-            print_error(instruction->file, instruction->line, errno);
+            print_error(instruction->line->file, instruction->line->nb, errno);
             free(buffer);
             return (NULL);
         }
@@ -53,17 +53,16 @@ static char *set_all_instructions_into_buffer(list_t list, int *size)
     return (buffer);
 }
 
-static void set_instruction_line(char const *file, line_t *line, list_t list)
+static void set_instruction_line(line_t *line, list_t list)
 {
     node_t *node = my_node(list, -1);
 
     if (!node)
         return;
-    NODE_DATA_PTR(node, instruction_t)->line = line->nb;
-    NODE_DATA_PTR(node, instruction_t)->file = file;
+    NODE_DATA_PTR(node, instruction_t)->line = line;
 }
 
-char *make_instructions(char const *file, line_t **lines, int *size)
+char *make_instructions(line_t * const *lines, int *size)
 {
     char *buffer = NULL;
     list_t instructions = my_list();
@@ -75,10 +74,10 @@ char *make_instructions(char const *file, line_t **lines, int *size)
         result = parse_line(lines[i]->content, &instructions);
         if (result != E_SUCCESS) {
             destroy_instruction_list(&instructions);
-            print_error(file, lines[i]->nb, result);
+            print_error(lines[i]->file, lines[i]->nb, result);
             return (NULL);
         }
-        set_instruction_line(file, lines[i], instructions);
+        set_instruction_line(lines[i], instructions);
     }
     buffer = set_all_instructions_into_buffer(instructions, size);
     destroy_instruction_list(&instructions);

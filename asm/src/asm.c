@@ -45,13 +45,13 @@ static char *get_output_file(char const *file)
     return (new_file);
 }
 
-static bool write_all(char const *file, header_t *header, char const *buffer)
+static int write_all(char const *file, header_t *header, char const *buffer)
 {
     char *output_file = get_output_file(file);
     FILE *output = NULL;
 
     if (output_file == NULL)
-        return (false);
+        return (84);
     output = fopen(output_file, "wb");
     if (output != NULL) {
         header->magic = REVERSED_NB(header->magic);
@@ -63,7 +63,7 @@ static bool write_all(char const *file, header_t *header, char const *buffer)
         fclose(output);
     }
     free(output_file);
-    return (output != NULL);
+    return (84 * (output == NULL));
 }
 
 int assembly(char const *file)
@@ -71,19 +71,18 @@ int assembly(char const *file)
     header_t header;
     char *buffer = NULL;
     char **content = read_file(file);
-    line_t **lines = create_lines(content);
+    line_t **lines = create_lines(file, content);
+    int output = 0;
 
-    if (lines == NULL) {
-        my_free_array(content);
-        return (84);
-    }
     my_memset(&header, 0, sizeof(header));
-    if (!setup_header(content, &header))
-        return (84);
-    buffer = make_instructions(file, lines, &(header.prog_size));
-    write_all(file, &header, buffer);
+    if (!setup_header(lines, &header)) {
+        output = 84;
+    } else {
+        buffer = make_instructions(lines, &(header.prog_size));
+        output = write_all(file, &header, buffer);
+    }
     my_free_array(content);
     my_free_array(lines);
     free(buffer);
-    return (0);
+    return (output);
 }

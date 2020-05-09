@@ -22,34 +22,35 @@ static errno_t free_and_return(char *str1, char *str2, char **array,
     return (errno);
 }
 
-static char const *skip_first_spaces(char const *str)
+static char const *check_for_label(char const *line, char **label)
 {
-    if (str != NULL) {
-        while (str[0] != '\0' && str[0] == ' ')
-            str = &str[1];
+    int last = 0;
+    char **parsed = my_str_to_word_array(line, " \t");
+
+    if (!parsed || !(parsed[0]))
+        return (line);
+    last = my_strlen(parsed[0]) - 1;
+    if (parsed[0][last] == LABEL_CHAR) {
+        *label = my_strndup(parsed[0], last);
+        line = my_strstr((char *)(&line[last + 1]), parsed[1]);
     }
-    return (str);
+    my_free_array(parsed);
+    return (line);
 }
 
-static char const *check_for_label(char const *line, int *space, char **label)
+static void get_mnemonic_and_params(char const *line,
+    char **mnemonic, char ***params)
 {
-    int last = my_strlen(line) - 1;
+    char **parsed = my_str_to_word_array(line, " \t");
+    char separator[] = {SEPARATOR_CHAR, '\0'};
 
-    *space = my_strchr_index(line, ' ');
-    if (*space < 0) {
-        if (line[last] == LABEL_CHAR) {
-            *label = my_strndup(line, last);
-            line = skip_first_spaces(&(line[last + 1]));
-        }
-        return (line);
-    }
-    last = *space - 1;
-    if (line[last] != LABEL_CHAR)
-        return (line);
-    *label = my_strndup(line, last);
-    line = skip_first_spaces(&(line[last + 1]));
-    *space = my_strchr_index(line, ' ');
-    return (line);
+    if (!parsed)
+        return;
+    *mnemonic = parsed[0];
+    *params = my_str_to_word_array(&line[my_strlen(parsed[0])], separator);
+    for (int i = 1; parsed[i] != NULL; i += 1)
+        free(parsed[i]);
+    free(parsed);
 }
 
 static errno_t parse_instruction(list_t *list, char *mnemonic, char **params,
@@ -74,19 +75,13 @@ errno_t parse_line(char const *line, list_t *list)
 {
     char *mnemonic = NULL;
     char **params = NULL;
-    char separator[] = {SEPARATOR_CHAR, '\0'};
     char *label = NULL;
-    int space = 0;
 
     if (!line || !list)
         return (E_INTERNAL_ERROR);
     line = skip_first_spaces(line);
-    line = check_for_label(line, &space, &label);
-    if (my_strlen(line) > 0) {
-        if (space < 0)
-            space = my_strlen(line);
-        mnemonic = my_strndup(line, space);
-        params = my_str_to_word_array(&line[space], separator);
-    }
+    line = check_for_label(line, &label);
+    if (my_strlen(line) > 0)
+        get_mnemonic_and_params(line, &mnemonic, &params);
     return (parse_instruction(list, mnemonic, params, label));
 }

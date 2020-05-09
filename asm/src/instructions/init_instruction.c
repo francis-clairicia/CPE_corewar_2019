@@ -46,24 +46,31 @@ static void get_parameter_size(instruction_t *instruction, int param_index,
         instruction->param_size[param_index] = SIZE_TYPE[type];
 }
 
+static void set_instruction_values(int index, char * const *params,
+    instruction_t *instruction)
+{
+    char *command = op_tab[index].mnemonic;
+
+    instruction->code = op_tab[index].code;
+    instruction->size += sizeof(instruction->code);
+    instruction->coding_byte = !my_array_contains(no_coding_byte, command);
+    instruction->size += (instruction->coding_byte != false);
+    for (int i = 0; params && params[i] != NULL; i += 1) {
+        instruction->params[i] = params[i];
+        instruction->type[i] = get_parameter_type(params[i]);
+        get_parameter_size(instruction, i, command);
+        instruction->size += instruction->param_size[i];
+    }
+}
+
 instruction_t init_instruction(int index, char **params, char *label)
 {
     instruction_t instruction;
-    char *command = op_tab[index].mnemonic;
 
     my_memset(&instruction, 0, sizeof(instruction));
     instruction.label = label;
     if (index >= 0) {
-        instruction.code = op_tab[index].code;
-        instruction.size += sizeof(instruction.code);
-        instruction.coding_byte = !my_array_contains(no_coding_byte, command);
-        instruction.size += (instruction.coding_byte != false);
-        for (int i = 0; params && params[i] != NULL; i += 1) {
-            instruction.params[i] = params[i];
-            instruction.type[i] = get_parameter_type(params[i]);
-            get_parameter_size(&instruction, i, command);
-            instruction.size += instruction.param_size[i];
-        }
+        set_instruction_values(index, params, &instruction);
         free(params);
     }
     return (instruction);

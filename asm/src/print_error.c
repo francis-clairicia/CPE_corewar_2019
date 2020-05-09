@@ -11,7 +11,11 @@
 static const char * const error_messages[] = {
     [E_SUCCESS] = NULL,
     [E_INTERNAL_ERROR] = "Internal error",
-    [E_INVALID_SYNTAX] = "Syntax invalid",
+    [E_NO_NAME] = "The first instruction should be '.name'",
+    [E_NO_COMMENT] = "The second instruction should be '.comment'",
+    [E_TOO_LONG_NAME] = "The program name is too long",
+    [E_TOO_LONG_COMMENT] = "The comment is too long",
+    [E_INVALID_SYNTAX] = "Syntax error",
     [E_INVALID_INSTRUCTION] = "Invalid instruction",
     [E_INVALID_ARG] = "The argument given to the instruction is invalid",
     [E_INVALID_REGISTER] = "Invalid register number",

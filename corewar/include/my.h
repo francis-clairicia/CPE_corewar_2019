@@ -31,7 +31,7 @@ int my_sqrt(int nb);
 int my_is_prime(int nb);
 int my_find_prime_sup(int nb);
 char **my_str_to_word_array(char const *str, char const *separators);
-int my_array_len(char * const *array);
+int my_array_len(const void *array);
 char **my_array_dup(char * const * src);
 int my_array_contains(char * const *array, char const *to_find);
 void my_show_word_array(char * const *array);
