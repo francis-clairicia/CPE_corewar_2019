@@ -37,6 +37,7 @@ typedef struct battle_s
     int cycle_die;
     int nb_live;
     bool *check_mem;
+    bool graphic;
     unsigned char *mem;
     champ_t *champ_tab[4];
     champ_t *last_live;
@@ -67,6 +68,7 @@ int parse_arg(char **av, champ_t **champ, battle_t *battle);
 int dump_arg(char **av, battle_t *battle, utils_parser_t *up);
 int flag_n(char **av, battle_t *battle, utils_parser_t *up);
 int flag_a(char **av, battle_t *battle, utils_parser_t *up);
+int flag_g(char **av, battle_t *battle, utils_parser_t *up);
 battle_t *init_empty_battle(void);
 utils_parser_t *init_util_parser(void);
 void free_all(champ_t *champ, battle_t *battle);
@@ -80,6 +82,7 @@ int fill_mem(champ_t *champ, battle_t *battle);
 void print_dump(unsigned char *memory);
 int game_loop(champ_t *champ, battle_t *battle);
 bool no_end(battle_t *battle, champ_t *champ);
+void champ_address(champ_t *champ, int nb_champ);
 
 void print_help(int syntax);
 int help(int ac, char **av);

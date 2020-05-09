@@ -10,6 +10,11 @@
 
 void print_dump(unsigned char *memory)
 {
+    static bool check_first = false;
+
+    if (check_first == true)
+        my_putchar('\n');
+    check_first = true;
     for (int i = 0; i < MEM_SIZE;) {
         if (i == 0)
             my_printf("%X    :", i);

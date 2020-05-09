@@ -16,8 +16,10 @@ bool no_end(battle_t *battle, champ_t *champ)
     }
     if (battle->cycle_die <= 0)
         return false;
-    battle->nb_live += 1;                    //
+    battle->nb_live += 1;                 //
     if (battle->nb_live >= NBR_LIVE) {    //
+        if (battle->graphic == true)      //
+            print_dump(battle->mem);      //
         battle->cycle_die -= CYCLE_DELTA; // mettre dans live
         battle->nb_live = 0;              //
     }                                     //

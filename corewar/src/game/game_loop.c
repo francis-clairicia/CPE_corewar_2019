@@ -42,7 +42,7 @@ static int game_act(battle_t *battle, champ_t *champ)
         } else
             champ->pc += 1;
     } else {
-        IRETURN(mnemonic_list[c - 1].mnemonic(champ, battle));
+        //IRETURN(mnemonic_list[c - 1].mnemonic(champ, battle));
         champ->act = false;
     }
     return 0;
@@ -55,6 +55,8 @@ int game_loop(champ_t *champ, battle_t *battle)
             IRETURN(game_act(battle, tmp));
         }
     }
+    if (battle->dump == -1 && battle->graphic == true)
+        print_dump(battle->mem);
     if (battle->last_live) {
         my_printf("The player %d (%s) has won.\n", battle->last_live->nb_champ,
         battle->last_live->header->prog_name);
