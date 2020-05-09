@@ -9,7 +9,7 @@
 
 int mne_aff(champ_t *chp, battle_t *bat)
 {
-    int param[4] = get_param_type(&param, bat->mem[(chp->pc + 1) % MEM_SIZE]);
+    int *param = get_param_type(bat->mem[(chp->pc + 1) % MEM_SIZE]);
     int fst_param = bat->mem[(chp->pc + 2) % MEM_SIZE];
     int value_to_print = 0;
 
@@ -20,7 +20,7 @@ int mne_aff(champ_t *chp, battle_t *bat)
     if (is_register(fst_param) == 1) {
         value_to_print = chp->reg[fst_param - 1] % 256;
         my_putchar(value_to_print);
-        chp->pc += 3;
     }
+    chp->pc += 3;
     return 0;
 }

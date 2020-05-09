@@ -9,14 +9,13 @@
 
 int mne_sub(champ_t *champ, battle_t *battle)
 {
-    int param[4] = get_param_type(&param,
-    battle->mem[(champ->pc + 1) % MEM_SIZE]);
+    int *param = get_param_type(battle->mem[(champ->pc + 1) % MEM_SIZE]);
     int fst_param = battle->mem[(champ->pc + 2) % MEM_SIZE];
     int scd_param = battle->mem[(champ->pc + 3) % MEM_SIZE];
     int thd_param = battle->mem[(champ->pc + 4) % MEM_SIZE];
 
     if (param[0] != T_REG || param[1] != T_REG || param[2] != T_REG) {
-        champ->pc += 5;
+        champ->pc += 1;
         return 0;
     }
     if (is_register(fst_param) == 84 || is_register(fst_param) == 84

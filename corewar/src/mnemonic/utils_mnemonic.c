@@ -21,14 +21,11 @@ int is_register(int nb)
     return 84;
 }
 
-void get_param_type(int *param, int cha)
+int *get_param_type(int cha)
 {
     int i = 1;
+    int param[4] = {0, 0, 0, 0};
 
-    param[0] = 0;
-    param[1] = 0;
-    param[2] = 0;
-    param[3] = 0;
     while (i < 4) {
         if ((cha & 0b11000000) == 0b01000000)
             param[i - 1] = T_REG;
@@ -39,6 +36,7 @@ void get_param_type(int *param, int cha)
         cha = cha << 2;
         i += 1;
     }
+    return param;
 }
 
 int read_from_mem(battle_t *battle, int start, int nb_to_read)

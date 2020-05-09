@@ -24,7 +24,7 @@ int get_two_value(battle_t *battle, champ_t *champ, int *idx, int param)
 
 int mne_ld(champ_t *chp, battle_t *bat)
 {
-    int param[4] = get_param_type(&param, bat->mem[(chp->pc + 1) % MEM_SIZE]);
+    int *param = get_param_type(bat->mem[(chp->pc + 1) % MEM_SIZE]);
     int idx = chp->pc + 1;
     int fst_param = 0;
     int scd_param = 0;
