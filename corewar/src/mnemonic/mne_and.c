@@ -25,8 +25,7 @@ int mne_and(champ_t *chp, battle_t *bat)
         thd_param = bat->mem[(idx + 1) % MEM_SIZE];
         chp->reg[thd_param - 1] = fst_param & scd_param;
         chp->carry = 1;
-        chp->pc = idx + 1;
-    } else
-        chp->pc += 1;
+    }
+    chp->pc += param[0] + param[1] + param[2] + 2;
     return 0;
 }
