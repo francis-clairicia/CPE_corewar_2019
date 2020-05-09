@@ -6,6 +6,7 @@
 */
 
 #include "corewar.h"
+#include "mymacros.h"
 
 int pows(int number, int nb)
 {
@@ -24,7 +25,8 @@ int is_register(int nb)
 int *get_param_type(int cha)
 {
     int i = 1;
-    int param[4] = {0, 0, 0, 0};
+    int *param = PMALLOC(param, sizeof(int) * 4);
+    my_memset(param, 0, 4);
 
     while (i < 4) {
         if ((cha & 0b11000000) == 0b01000000)
@@ -42,13 +44,12 @@ int *get_param_type(int cha)
 int read_from_mem(battle_t *battle, int start, int nb_to_read)
 {
     int nb = 0;
-    int idx = 0;
 
-    while (idx < nb_to_read) {
-        nb = (nb << 8);
-        nb = nb | battle->mem[(start + idx) % MEM_SIZE];
+    for (int i = 0; i < nb_to_read; i += 1, start += 1) {
+        nb = (nb << 8),
+        nb = nb | battle->mem[(start) % MEM_SIZE];
     }
-    return nb;
+    return (nb);
 }
 
 int get_three_value(battle_t *battle, champ_t *champ, int *idx, int param)

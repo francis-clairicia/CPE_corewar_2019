@@ -6,6 +6,7 @@
 */
 
 #include "corewar.h"
+#include "mymacros.h"
 
 int mne_sub(champ_t *champ, battle_t *battle)
 {
@@ -14,6 +15,7 @@ int mne_sub(champ_t *champ, battle_t *battle)
     int scd_param = battle->mem[(champ->pc + 3) % MEM_SIZE];
     int thd_param = battle->mem[(champ->pc + 4) % MEM_SIZE];
 
+    ICHECK(param);
     if (param[0] != T_REG || param[1] != T_REG || param[2] != T_REG) {
         champ->pc += 1;
         return 0;

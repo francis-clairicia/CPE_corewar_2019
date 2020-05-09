@@ -6,6 +6,7 @@
 */
 
 #include "corewar.h"
+#include "mymacros.h"
 
 int mne_or(champ_t *chp, battle_t *bat)
 {
@@ -15,6 +16,7 @@ int mne_or(champ_t *chp, battle_t *bat)
     int scd_param = 0;
     int thd_param = 0;
 
+    ICHECK(param);
     if (param[0] == 0 || param[1] == 0 || param[2] != T_REG) {
         chp->pc += 1;
         return 0;
@@ -26,7 +28,6 @@ int mne_or(champ_t *chp, battle_t *bat)
         chp->reg[thd_param - 1] = fst_param | scd_param;
         chp->carry = 1;
         chp->pc = idx + 1;
-    }
-    chp->pc += param[0] + param[1] + param[2] + 2;
+    } chp->pc += param[0] + param[1] + param[2] + 2;
     return 0;
 }

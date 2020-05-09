@@ -6,6 +6,7 @@
 */
 
 #include "corewar.h"
+#include "mymacros.h"
 
 int mne_aff(champ_t *chp, battle_t *bat)
 {
@@ -13,6 +14,7 @@ int mne_aff(champ_t *chp, battle_t *bat)
     int fst_param = bat->mem[(chp->pc + 2) % MEM_SIZE];
     int value_to_print = 0;
 
+    ICHECK(param);
     if (param[0] != T_REG) {
         chp->pc += 3;
         return 0;

@@ -18,6 +18,23 @@ SRC_TEST			=	src/help/help.c						\
 						src/memory/print_dump.c				\
 						src/game/game_loop.c				\
 						src/game/check_end.c				\
+						src/mnemonic/mne_add.c				\
+						src/mnemonic/mne_aff.c				\
+						src/mnemonic/mne_and.c				\
+						src/mnemonic/mne_fork.c				\
+						src/mnemonic/mne_ld.c				\
+						src/mnemonic/mne_ldi.c				\
+						src/mnemonic/mne_lfork.c			\
+						src/mnemonic/mne_live.c				\
+						src/mnemonic/mne_lld.c				\
+						src/mnemonic/mne_lldi.c				\
+						src/mnemonic/mne_or.c				\
+						src/mnemonic/mne_st.c				\
+						src/mnemonic/mne_sti.c				\
+						src/mnemonic/mne_sub.c				\
+						src/mnemonic/mne_xor.c				\
+						src/mnemonic/mne_zjmp.c				\
+						src/mnemonic/utils_mnemonic.c		\
 						src/free/free.c						\
 						src/free/free_battle.c				\
 						src/free/free_champ.c				\

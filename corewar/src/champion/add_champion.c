@@ -12,7 +12,7 @@ static void add_champ_two(champ_t *tmp, utils_parser_t *up)
 {
     tmp->carry = 0;
     tmp->live = false;
-    tmp->pc = tmp->nb_address;
+    tmp->pc = (tmp->nb_address != -1) ? tmp->nb_address : -1;
     tmp->act = false;
     tmp->status = 0;
     up->address = 0;

@@ -42,7 +42,7 @@ static int game_act(battle_t *battle, champ_t *champ)
         } else
             champ->pc += 1;
     } else {
-        //IRETURN(mnemonic_list[c - 1].mnemonic(champ, battle));
+        IRETURN(mnemonic_list[champ->op.code - 1].mnemonic(champ, battle));
         champ->act = false;
     }
     return 0;

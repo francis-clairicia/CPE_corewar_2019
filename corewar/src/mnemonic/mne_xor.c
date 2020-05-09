@@ -6,6 +6,7 @@
 */
 
 #include "corewar.h"
+#include "mymacros.h"
 
 int mne_xor(champ_t *chp, battle_t *bat)
 {
@@ -15,6 +16,7 @@ int mne_xor(champ_t *chp, battle_t *bat)
     int scd_param = 0;
     int thd_param = 0;
 
+    ICHECK(param);
     if (param[0] == 0 || param[1] == 0 || param[2] != T_REG) {
         chp->pc += 1;
         return 0;
