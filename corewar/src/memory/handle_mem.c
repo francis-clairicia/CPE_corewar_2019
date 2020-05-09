@@ -38,3 +38,13 @@ int fill_mem(champ_t *champ, battle_t *battle)
     }
     return 0;
 }
+
+void champ_address(champ_t *champ, int nb_champ)
+{
+    int i = 0;
+
+    for (champ_t *tmp = champ; tmp; tmp = tmp->next, i++) {
+        tmp->nb_address = (tmp->nb_address != -1) ? tmp->nb_address :
+        (i * MEM_SIZE / nb_champ) % MEM_SIZE;
+    }
+}

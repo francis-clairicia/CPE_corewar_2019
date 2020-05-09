@@ -12,7 +12,7 @@ void print_help(int syntax)
     if (syntax == 2)
         my_putstr_fd(syntax, "Syntax Error\n\n");
     my_putstr_fd(syntax, "USAGE\n");
-    my_putstr_fd(syntax, "\t./corewar [-dump nbr_cycle] [[-n prog_number]"
+    my_putstr_fd(syntax, "\t./corewar [-g] [-dump nbr_cycle] [[-n prog_number]"
     " [-a load_address] prog_name] ...\n");
     if (syntax == 2)
         return;

@@ -25,6 +25,7 @@ battle_t *init_empty_battle(void)
 {
     battle_t *battle = PMALLOC(battle, sizeof(battle_t));
 
+    battle->graphic = false;
     battle->cycle = 0;
     battle->cycle_die = CYCLE_TO_DIE;
     battle->nb_live = 0;
