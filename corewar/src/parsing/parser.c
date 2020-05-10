@@ -13,6 +13,8 @@ static const parser_t parser_list[] =
     {"-dump", &dump_arg},
     {"-n", &flag_n},
     {"-a", &flag_a},
+    {"-g", &flag_g},
+    {"-h", &flag_h},
     {NULL, NULL}
 };
 
@@ -57,6 +59,7 @@ int parse_arg(char **av, champ_t **champ, battle_t *battle)
     for (; av[up->i]; up->i += 1) {
         IRETURN(parse_arg_loop(av, battle, up, champ))
     }
+    free(up);
     if (battle->nb_champ < 2) {
         return ret_putstr_fd(2, "The number of champion load is below the "
         "limit.\n");
@@ -65,6 +68,6 @@ int parse_arg(char **av, champ_t **champ, battle_t *battle)
         return ret_putstr_fd(2, "The number of champion load is above the "
         "limit.\n");
     }
-    free(up);
+    champ_address(*champ, battle->nb_champ);
     return 0;
 }

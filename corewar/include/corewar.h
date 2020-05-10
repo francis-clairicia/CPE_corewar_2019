@@ -26,6 +26,7 @@ typedef struct champ_s
     char *brut_name;
     int nb_champ;
     bool act;
+    bool die;
     struct champ_s *next;
 } champ_t;
 
@@ -37,9 +38,13 @@ typedef struct battle_s
     int cycle_die;
     int nb_live;
     bool *check_mem;
+    bool graphic;
     unsigned char *mem;
     champ_t *champ_tab[4];
-    champ_t *last_live;
+    char *last_live_name;
+    int last_live_nb;
+    int tot_cycle;
+    bool draw_dump;
 } battle_t;
 
 typedef struct utils_parser_s
@@ -67,6 +72,8 @@ int parse_arg(char **av, champ_t **champ, battle_t *battle);
 int dump_arg(char **av, battle_t *battle, utils_parser_t *up);
 int flag_n(char **av, battle_t *battle, utils_parser_t *up);
 int flag_a(char **av, battle_t *battle, utils_parser_t *up);
+int flag_g(char **av, battle_t *battle, utils_parser_t *up);
+int flag_h(char **av, battle_t *battle, utils_parser_t *up);
 battle_t *init_empty_battle(void);
 utils_parser_t *init_util_parser(void);
 void free_all(champ_t *champ, battle_t *battle);
@@ -80,6 +87,8 @@ int fill_mem(champ_t *champ, battle_t *battle);
 void print_dump(unsigned char *memory);
 int game_loop(champ_t *champ, battle_t *battle);
 bool no_end(battle_t *battle, champ_t *champ);
+void champ_address(champ_t *champ, int nb_champ);
+void end_loop(battle_t *battle);
 
 void print_help(int syntax);
 int help(int ac, char **av);
@@ -104,6 +113,10 @@ int mne_zjmp(champ_t *champ, battle_t *battle);
 
 int is_register(int nb);
 int get_value(champ_t *champ, battle_t *battle);
+int get_two_value(battle_t *battle, champ_t *champ, int *idx, int param);
+int get_three_value(battle_t *battle, champ_t *champ, int *idx, int param);
 int pows(int number, int nb);
+int *get_param_type(int cha);
+int read_from_mem(battle_t *battle, int start, int nb_to_read);
 
 #endif

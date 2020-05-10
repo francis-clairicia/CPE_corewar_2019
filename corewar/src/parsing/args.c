@@ -70,3 +70,23 @@ int flag_a(char **av, __attribute__((unused)) battle_t *battle,
     up->bool_address = true;
     return 0;
 }
+
+int flag_g(__attribute__((unused)) char **av, battle_t *battle,
+        __attribute__((unused)) utils_parser_t *up)
+{
+    if (battle->graphic == true) {
+        print_help(2);
+        return 84;
+    }
+    if (battle->graphic == false)
+        battle->graphic = true;
+    return 0;
+}
+
+int flag_h(__attribute__((unused)) char **av,
+            __attribute__((unused)) battle_t *battle,
+            __attribute__((unused)) utils_parser_t *up)
+{
+    print_help(1);
+    exit(0);
+}

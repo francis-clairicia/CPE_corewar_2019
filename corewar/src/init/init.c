@@ -25,11 +25,15 @@ battle_t *init_empty_battle(void)
 {
     battle_t *battle = PMALLOC(battle, sizeof(battle_t));
 
+    battle->graphic = false;
     battle->cycle = 0;
     battle->cycle_die = CYCLE_TO_DIE;
     battle->nb_live = 0;
     battle->dump = -1;
-    battle->last_live = NULL;
+    battle->last_live_name = NULL;
+    battle->last_live_nb = -1;
+    battle->tot_cycle = 0;
+    battle->draw_dump = false;
     battle->mem = PMALLOC(battle->mem, sizeof(char) * (MEM_SIZE + 1));
     my_memset(battle->mem, 0, MEM_SIZE);
     battle->check_mem = PMALLOC(battle->mem, sizeof(bool) * (MEM_SIZE));
