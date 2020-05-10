@@ -6,20 +6,53 @@
 */
 
 #include "corewar.h"
+#include "mymacros.h"
 
-int mne_st(champ_t *champ, battle_t *battle)
+int write_in(battle_t *bat, champ_t *chp, int nb_to_write, int param)
 {
-    //int to_adress = 0;
-    //int fst_param = get_value(champ, battle);
-    //int scd_param = get_value(champ, battle);
+    int scd_param = 0;
+    int write_at = 0;
 
-    //if (is_register(fst_param) == 84)
-    //    return 84;
-    //if (is_register(scd_param == 1))
-    //    champ->reg[scd_param - 1] = champ->reg[fst_param - 1];
-    //else {
-    //    to_adress = champ->pc + (scd_param % IDX_MOD);
-    //    // write_in_memory(champ->reg[fst_param - 1], to_adress, battle);
-    //}
+    if (param == T_REG) {
+        scd_param = bat->mem[(chp->pc + 3) % MEM_SIZE];
+        if (is_register(scd_param) == 1)
+            chp->reg[scd_param - 1] = nb_to_write;
+        else
+            return 0;
+    }
+    if (param == T_IND) {
+        scd_param = read_from_mem(bat, chp->pc + 3, T_IND);
+        write_at = (chp->pc + scd_param) % IDX_MOD;
+        add_parameter(bat->mem, T_IND, nb_to_write, write_at);
+    }
+    return 0;
+}
+
+int mne_st(champ_t *chp, battle_t *bat)
+{
+    int *param = get_param_type(bat->mem[(chp->pc + 1) % MEM_SIZE]);
+    int idx = chp->pc + 1;
+    int fst_param = 0;
+    int nb_to_write = 0;
+
+    ICHECK(param);
+    if (param[0] != T_REG || param[1] == 0 || param[1] == T_DIR) {
+        chp->pc += 1;
+        return 0;
+    }
+    fst_param = bat->mem[(idx + 1) % MEM_SIZE];
+    if (is_register(fst_param) == 1) {
+        nb_to_write = chp->reg[fst_param - 1];
+        write_in(bat, chp, nb_to_write, param[1]);
+    }
+    chp->pc += param[0] + param[1] + 2;
+    // scd_param = get_scd_value(bat, chp, &idx, param[1]);
+    // if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) == 1 && idx != -1) {
+    //     if (param[1] == T_REG)
+    //         chp->reg[scd_param - 1] = chp->reg[(bat->mem[(idx + 1) % MEM_SIZE]) - 1];
+    //     else
+    //        add_parameter(bat->mem, 4, ) 
+    // }
+    // chp->pc += param[0] + param[1] + 2;
     return 0;
 }
