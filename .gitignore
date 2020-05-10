@@ -11,3 +11,4 @@ vgcore.*
 *.s
 *.cor
 *.sh
+bonus/asm/*.sav
