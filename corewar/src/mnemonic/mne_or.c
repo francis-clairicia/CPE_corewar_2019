@@ -26,8 +26,9 @@ int mne_or(champ_t *chp, battle_t *bat)
     if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) == 1 && idx != -1) {
         thd_param = bat->mem[(idx + 1) % MEM_SIZE];
         chp->reg[thd_param - 1] = fst_param | scd_param;
-        chp->carry = 1;
+        chp->carry = (chp->carry == 0) ? 1 : 0;
         chp->pc = idx + 1;
-    } chp->pc += param[0] + param[1] + param[2] + 2;
+    }
+    chp->pc += param[0] + param[1] + param[2] + 2;
     return 0;
 }

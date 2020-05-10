@@ -68,9 +68,9 @@ int get_three_value(battle_t *battle, champ_t *champ, int *idx, int param)
     if (param == T_DIR) {
         nb = read_from_mem(battle, *idx + 1, DIR_SIZE);
         *idx += 4;
-    }
-    if (param == T_IND) {
+    } if (param == T_IND) {
         nb = read_from_mem(battle, *idx + 1, IND_SIZE);
+        nb = read_from_mem(battle, champ->pc + nb, IND_SIZE);
         *idx += 2;
     }
     return nb;

@@ -10,17 +10,16 @@
 
 int get_two_value(battle_t *battle, champ_t *champ, int *idx, int param)
 {
-    int fst_param = 0;
     int start_to_read = 0;
     int nb = 0;
 
     if (param == T_DIR) {
-        nb = read_from_mem(battle, *idx + 1, REG_SIZE);
+        nb = read_from_mem(battle, *idx + 1, DIR_SIZE);
         *idx += 4;
     }
     if (param == T_IND) {
-        fst_param = read_from_mem(battle, *idx + 1, IND_SIZE);
-        start_to_read = (champ->pc + fst_param) % IDX_MOD;
+        nb = read_from_mem(battle, *idx + 1, IND_SIZE);
+        start_to_read = (champ->pc + nb) % IDX_MOD;
         nb = read_from_mem(battle, start_to_read, REG_SIZE);
         *idx += 2;
     }
@@ -36,7 +35,7 @@ int mne_ld(champ_t *chp, battle_t *bat)
     int start_to_read = 0;
 
     ICHECK(param);
-    if (param[0] == 0 || param[0] == T_REG || param[1] != T_REG) {
+    if (param[0] == 0 || param[0] == T_REG || param[1] == T_REG) {
         chp->pc += 1;
         return 0;
     }
