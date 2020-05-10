@@ -18,7 +18,6 @@ int corewar(char **av)
     IRETURN(check_champ(&champ, battle));
     IRETURN(fill_mem(champ, battle));
     IRETURN(game_loop(champ, battle));
-    print_dump(battle->mem);
     free_all(champ, battle);
     return 0;
 }
