@@ -38,7 +38,7 @@ static int game_act(battle_t *battle, champ_t *champ)
         c = battle->mem[champ->pc % MEM_SIZE];
         if (c >= 1 && c <= 16) {
             champ->op = op_tab[c - 1];
-            champ->status = champ->op.nbr_cycles;
+            champ->status = champ->op.nbr_cycles - 1;
         } else
             champ->pc += 1;
     } else {
