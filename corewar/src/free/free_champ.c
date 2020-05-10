@@ -15,7 +15,8 @@ void free_champ(champ_t *champ)
     for (; champ; champ = tmp) {
         free(champ->header);
         free(champ->reg);
-        tmp = tmp->next;
+        tmp = champ->next;
+        champ->next = NULL;
         free(champ);
     }
 }

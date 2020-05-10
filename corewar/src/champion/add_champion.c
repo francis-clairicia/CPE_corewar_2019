@@ -14,6 +14,7 @@ static void add_champ_two(champ_t *tmp, utils_parser_t *up)
     tmp->live = false;
     tmp->pc = (tmp->nb_address != -1) ? tmp->nb_address : -1;
     tmp->act = false;
+    tmp->die = false;
     tmp->status = 0;
     up->address = 0;
     up->nb_champ = 0;
