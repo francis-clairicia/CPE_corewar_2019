@@ -73,6 +73,7 @@ int dump_arg(char **av, battle_t *battle, utils_parser_t *up);
 int flag_n(char **av, battle_t *battle, utils_parser_t *up);
 int flag_a(char **av, battle_t *battle, utils_parser_t *up);
 int flag_g(char **av, battle_t *battle, utils_parser_t *up);
+int flag_h(char **av, battle_t *battle, utils_parser_t *up);
 battle_t *init_empty_battle(void);
 utils_parser_t *init_util_parser(void);
 void free_all(champ_t *champ, battle_t *battle);

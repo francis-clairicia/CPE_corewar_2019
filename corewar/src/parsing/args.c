@@ -82,3 +82,11 @@ int flag_g(__attribute__((unused)) char **av, battle_t *battle,
         battle->graphic = true;
     return 0;
 }
+
+int flag_h(__attribute__((unused)) char **av,
+            __attribute__((unused)) battle_t *battle,
+            __attribute__((unused)) utils_parser_t *up)
+{
+    print_help(1);
+    exit(0);
+}

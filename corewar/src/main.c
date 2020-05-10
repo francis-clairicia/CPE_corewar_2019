@@ -9,7 +9,7 @@
 
 int main(int ac, char **av)
 {
-    if (ac < 2 || ac > 14) {
+    if (ac < 2) {
         print_help(2);
         return 84;
     }
