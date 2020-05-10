@@ -21,9 +21,9 @@ int write_in(battle_t *bat, champ_t *chp, int nb_to_write, int param)
             return 0;
     }
     if (param == T_IND) {
-        scd_param = read_from_mem(bat, chp->pc + 3, T_IND);
+        scd_param = read_from_mem(bat, chp->pc + 3, IND_SIZE);
         write_at = (chp->pc + scd_param) % IDX_MOD;
-        add_parameter(bat->mem, T_IND, nb_to_write, write_at);
+        add_parameter(bat->mem, nb_to_write, 4, write_at);
     }
     return 0;
 }
@@ -46,13 +46,5 @@ int mne_st(champ_t *chp, battle_t *bat)
         write_in(bat, chp, nb_to_write, param[1]);
     }
     chp->pc += param[0] + param[1] + 2;
-    // scd_param = get_scd_value(bat, chp, &idx, param[1]);
-    // if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) == 1 && idx != -1) {
-    //     if (param[1] == T_REG)
-    //         chp->reg[scd_param - 1] = chp->reg[(bat->mem[(idx + 1) % MEM_SIZE]) - 1];
-    //     else
-    //        add_parameter(bat->mem, 4, ) 
-    // }
-    // chp->pc += param[0] + param[1] + 2;
     return 0;
 }

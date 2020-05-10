@@ -118,5 +118,6 @@ int get_three_value(battle_t *battle, champ_t *champ, int *idx, int param);
 int pows(int number, int nb);
 int *get_param_type(int cha);
 int read_from_mem(battle_t *battle, int start, int nb_to_read);
+void add_parameter(unsigned char *buffer, int bytes, int size, int start);
 
 #endif

@@ -35,6 +35,7 @@ SRC_TEST			=	src/help/help.c						\
 						src/mnemonic/mne_xor.c				\
 						src/mnemonic/mne_zjmp.c				\
 						src/mnemonic/utils_mnemonic.c		\
+						src/mnemonic/utils_mnemonic_two.c	\
 						src/free/free.c						\
 						src/free/free_battle.c				\
 						src/free/free_champ.c				\
