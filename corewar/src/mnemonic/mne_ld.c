@@ -32,7 +32,7 @@ int mne_ld(champ_t *chp, battle_t *bat)
     int start_to_read = 0;
 
     ICHECK(param);
-    if (param[0] == 0 || param[0] == T_REG || param[1] == T_REG) {
+    if (param[0] == 0 || param[0] == T_REG || param[1] != T_REG) {
         chp->pc += 1;
         return 0;
     }
