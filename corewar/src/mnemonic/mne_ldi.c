@@ -72,6 +72,6 @@ int mne_ldi(champ_t *chp, battle_t *bat)
         chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1]
         = read_from_mem(bat, chp->pc + (s % IDX_MOD), REG_SIZE);
         chp->carry = (chp->carry == 0) ? 1 : 0;
-    } chp->pc += param[0] + param[1] + param[2] + 2;
+    } move_pc_special(chp, param);
     return 0;
 }

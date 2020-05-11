@@ -79,6 +79,6 @@ int mne_sti(champ_t *chp, battle_t *bat)
         if (idx != -1)
             end_sti(bat, chp, fst_param, scd_param + thd_param);
     }
-    chp->pc += param[0] + param[1] + param[2] + 2;
+    move_pc_special(chp, param);
     return 0;
 }

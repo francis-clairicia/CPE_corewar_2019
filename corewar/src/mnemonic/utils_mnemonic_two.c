@@ -25,3 +25,35 @@ void add_parameter(unsigned char *buffer, int bytes, int size, int start)
         move -= 8;
     }
 }
+
+void move_pc(champ_t *champ, int *param)
+{
+    int idx = 0;
+
+    while (idx < 4) {
+        if (param[idx] == T_REG)
+            champ->pc += REG_SIZE;
+        if (param[idx] == T_DIR)
+            champ->pc += DIR_SIZE;
+        if (param[idx] == T_IND)
+            champ->pc += IND_SIZE;
+        idx += 1;
+    }
+    champ->pc += 2;
+}
+
+void move_pc_special(champ_t *champ, int *param)
+{
+    int idx = 0;
+
+    while (idx < 4) {
+        if (param[idx] == T_REG)
+            champ->pc += REG_SIZE;
+        if (param[idx] == T_DIR)
+            champ->pc += 2;
+        if (param[idx] == T_IND)
+            champ->pc += IND_SIZE;
+        idx += 1;
+    }
+    champ->pc += 2;
+}

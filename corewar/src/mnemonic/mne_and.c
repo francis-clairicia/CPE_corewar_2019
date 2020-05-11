@@ -28,6 +28,6 @@ int mne_and(champ_t *chp, battle_t *bat)
         chp->reg[thd_param - 1] = fst_param & scd_param;
         chp->carry = (chp->carry == 0) ? 1 : 0;
     }
-    chp->pc += param[0] + param[1] + param[2] + 2;
+    move_pc(chp, param);
     return 0;
 }

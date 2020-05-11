@@ -46,6 +46,6 @@ int mne_st(champ_t *chp, battle_t *bat)
         nb_to_write = chp->reg[fst_param - 1];
         write_in(bat, chp, nb_to_write, param[1]);
     }
-    chp->pc += param[0] + param[1] + 2;
+    move_pc(chp, param);
     return 0;
 }

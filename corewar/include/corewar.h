@@ -120,5 +120,7 @@ int read_from_mem(battle_t *battle, int start, int nb_to_read);
 void add_parameter(unsigned char *buffer, int bytes, int size, int start);
 int get_fst_value(champ_t *chp, battle_t *bat, int param, int *idx);
 int get_scd_value(champ_t *chp, battle_t *bat, int param, int *idx);
+void move_pc_special(champ_t *champ, int *param);
+void move_pc(champ_t *champ, int *param);
 
 #endif
