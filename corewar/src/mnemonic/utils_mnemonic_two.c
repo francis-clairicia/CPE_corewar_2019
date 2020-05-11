@@ -32,7 +32,7 @@ void move_pc(champ_t *champ, int *param)
 
     while (idx < 4) {
         if (param[idx] == T_REG)
-            champ->pc += REG_SIZE;
+            champ->pc += 1;
         if (param[idx] == T_DIR)
             champ->pc += DIR_SIZE;
         if (param[idx] == T_IND)
@@ -48,7 +48,7 @@ void move_pc_special(champ_t *champ, int *param)
 
     while (idx < 4) {
         if (param[idx] == T_REG)
-            champ->pc += REG_SIZE;
+            champ->pc += 1;
         if (param[idx] == T_DIR)
             champ->pc += 2;
         if (param[idx] == T_IND)
