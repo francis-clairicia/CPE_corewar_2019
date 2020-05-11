@@ -41,7 +41,11 @@ int get_fst_value(champ_t *chp, battle_t *bat, int param, int *idx)
         } else
             *idx = -1;
     }
-    if (param == T_DIR || param == T_IND) {
+    if (param == T_DIR) {
+        fst_value = read_from_mem(bat, *idx + 1, IND_SIZE);
+        *idx += 2;
+    }
+    if (param == T_IND) {
         nb = read_from_mem(bat, *idx + 1, IND_SIZE);
         fst_value = read_from_mem(bat, chp->pc + nb, IND_SIZE);
         *idx += 2;
