@@ -27,7 +27,7 @@ int mne_lld(champ_t *chp, battle_t *bat)
         start_to_read = (chp->pc + fst_param);
         chp->reg[scd_param - 1] = read_from_mem(bat, start_to_read, REG_SIZE);
         chp->carry = (chp->carry == 0) ? 1 : 0;
-        chp->pc = idx + 2;
     }
+    chp->pc = param[0] + param[1] + 2;
     return 0;
 }
