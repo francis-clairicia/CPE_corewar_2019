@@ -47,7 +47,7 @@ int read_from_mem(battle_t *battle, int start, int nb_to_read)
 
     for (int i = 0; i < nb_to_read; i += 1, start += 1) {
         nb = (nb << 8),
-        nb = nb | battle->mem[(start) % MEM_SIZE];
+        nb = nb | (char)battle->mem[(start) % MEM_SIZE];
     }
     return (nb);
 }
@@ -64,12 +64,12 @@ int get_three_value(battle_t *battle, champ_t *champ, int *idx, int param)
             *idx += 1;
         } else
             *idx = -1;
-    }
-    if (param == T_DIR) {
+    } if (param == T_DIR) {
         nb = read_from_mem(battle, *idx + 1, DIR_SIZE);
         *idx += 4;
     } if (param == T_IND) {
         nb = read_from_mem(battle, *idx + 1, IND_SIZE);
+        nb = (nb < 0) ? MEM_SIZE - nb : nb;
         nb = read_from_mem(battle, champ->pc + nb, IND_SIZE);
         *idx += 2;
     }

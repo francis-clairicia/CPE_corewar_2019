@@ -10,19 +10,20 @@
 
 int write_in(battle_t *bat, champ_t *chp, int nb_to_write, int param)
 {
-    int scd_param = 0;
+    int scd = 0;
     int write_at = 0;
 
     if (param == T_REG) {
-        scd_param = bat->mem[(chp->pc + 3) % MEM_SIZE];
-        if (is_register(scd_param) == 1)
-            chp->reg[scd_param - 1] = nb_to_write;
+        scd = bat->mem[(chp->pc + 3) % MEM_SIZE];
+        if (is_register(scd) == 1)
+            chp->reg[scd - 1] = nb_to_write;
         else
             return 0;
     }
     if (param == T_IND) {
-        scd_param = read_from_mem(bat, chp->pc + 3, IND_SIZE);
-        write_at = (chp->pc + scd_param) % IDX_MOD;
+        scd = read_from_mem(bat, chp->pc + 3, IND_SIZE);
+        scd = (scd % MEM_SIZE < 0) ? MEM_SIZE - scd : scd;
+        write_at = chp->pc + (scd % IDX_MOD);
         add_parameter(bat->mem, nb_to_write, 4, write_at);
     }
     return 0;

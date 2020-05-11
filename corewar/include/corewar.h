@@ -113,11 +113,12 @@ int mne_zjmp(champ_t *champ, battle_t *battle);
 
 int is_register(int nb);
 int get_value(champ_t *champ, battle_t *battle);
-int get_two_value(battle_t *battle, champ_t *champ, int *idx, int param);
 int get_three_value(battle_t *battle, champ_t *champ, int *idx, int param);
 int pows(int number, int nb);
 int *get_param_type(int cha);
 int read_from_mem(battle_t *battle, int start, int nb_to_read);
 void add_parameter(unsigned char *buffer, int bytes, int size, int start);
+int get_fst_value(champ_t *chp, battle_t *bat, int param, int *idx);
+int get_scd_value(champ_t *chp, battle_t *bat, int param, int *idx);
 
 #endif

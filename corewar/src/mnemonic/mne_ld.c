@@ -8,9 +8,9 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-int get_two_value(battle_t *battle, champ_t *champ, int *idx, int param)
+static int get_two_value(battle_t *battle, champ_t *champ, int *idx, int param)
 {
-    int fst_param = 0;
+    int fst = 0;
     int start_to_read = 0;
     int nb = 0;
 
@@ -19,8 +19,9 @@ int get_two_value(battle_t *battle, champ_t *champ, int *idx, int param)
         *idx += 4;
     }
     if (param == T_IND) {
-        fst_param = read_from_mem(battle, *idx + 1, IND_SIZE);
-        start_to_read = (champ->pc + fst_param) % IDX_MOD;
+        fst = read_from_mem(battle, *idx + 1, IND_SIZE);
+        fst = (fst % MEM_SIZE < 0) ? MEM_SIZE - fst : fst;
+        start_to_read = champ->pc + (fst % IDX_MOD);
         nb = read_from_mem(battle, start_to_read, REG_SIZE);
         *idx += 2;
     }
@@ -33,7 +34,6 @@ int mne_ld(champ_t *chp, battle_t *bat)
     int idx = chp->pc + 1;
     int fst_param = 0;
     int scd_param = 0;
-    int start_to_read = 0;
 
     ICHECK(param);
     if (param[0] == 0 || param[0] == T_REG || param[1] != T_REG) {
@@ -46,6 +46,6 @@ int mne_ld(champ_t *chp, battle_t *bat)
         chp->reg[scd_param - 1] = fst_param;
         chp->carry = (chp->carry == 0) ? 1 : 0;
     }
-    chp->pc = param[0] + param[1] + 2;
+    chp->pc += param[0] + param[1] + 2;
     return 0;
 }
