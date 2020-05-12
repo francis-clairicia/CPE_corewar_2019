@@ -26,20 +26,6 @@ if (!var) {                             \
     return 84;                          \
 }
 
-#define PREALLOC(var, size)                 \
-realloc(var, size);                         \
-if (!var) {                                 \
-    my_putstr_fd(2, "Realloc error.\n");    \
-    return NULL;                            \
-}
-
-#define IREALLOC(var, size)                 \
-realloc(var, size);                         \
-if (!var) {                                 \
-    my_putstr_fd(2, "Realloc error.\n");    \
-    return 84;                              \
-}
-
 #define ICHECK(var)     \
 if (!var)               \
     return 84;

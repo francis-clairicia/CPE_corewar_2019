@@ -16,6 +16,7 @@ static bool check_live_champ(champ_t *champ, battle_t *battle)
         if (tmp->live == false) {
             tmp->die = true;
         }
+        tmp->live = false;
         if (tmp->die == true)
             count++;
     }

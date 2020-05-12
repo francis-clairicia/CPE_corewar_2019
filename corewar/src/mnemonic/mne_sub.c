@@ -24,7 +24,7 @@ int mne_sub(champ_t *champ, battle_t *battle)
     && is_register(thd_param)) {
         champ->reg[thd_param - 1] = champ->reg[fst_param - 1]
         - champ->reg[scd_param - 1];
-        champ->carry = (champ->carry == 0) ? 1 : 0;
+        champ->carry = (champ->reg[thd_param - 1] == 0) ? 1 : 0;
     }
     champ->pc += 5;
     return 0;

@@ -44,7 +44,7 @@ int mne_ld(champ_t *chp, battle_t *bat)
     if (is_register(bat->mem[(idx + 1) % MEM_SIZE])) {
         scd_param = bat->mem[(idx + 1) % MEM_SIZE];
         chp->reg[scd_param - 1] = fst_param;
-        chp->carry = (chp->carry == 0) ? 1 : 0;
+        chp->carry = (fst_param == 0) ? 1 : 0;
     }
     move_pc(chp, param);
     return 0;

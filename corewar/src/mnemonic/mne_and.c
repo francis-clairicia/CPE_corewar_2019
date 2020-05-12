@@ -26,7 +26,7 @@ int mne_and(champ_t *chp, battle_t *bat)
     if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) && idx != -1) {
         thd_param = bat->mem[(idx + 1) % MEM_SIZE];
         chp->reg[thd_param - 1] = fst_param & scd_param;
-        chp->carry = (chp->carry == 0) ? 1 : 0;
+        chp->carry = (chp->reg[thd_param - 1] == 0) ? 1 : 0;
     }
     move_pc(chp, param);
     return 0;
