@@ -15,7 +15,7 @@ int write_in(battle_t *bat, champ_t *chp, int nb_to_write, int param)
 
     if (param == T_REG) {
         scd = bat->mem[(chp->pc + 3) % MEM_SIZE];
-        if (is_register(scd) == 1)
+        if (is_register(scd))
             chp->reg[scd - 1] = nb_to_write;
         else
             return 0;
@@ -42,7 +42,7 @@ int mne_st(champ_t *chp, battle_t *bat)
         return 0;
     }
     fst_param = bat->mem[(idx + 1) % MEM_SIZE];
-    if (is_register(fst_param) == 1) {
+    if (is_register(fst_param)) {
         nb_to_write = chp->reg[fst_param - 1];
         write_in(bat, chp, nb_to_write, param[1]);
     }

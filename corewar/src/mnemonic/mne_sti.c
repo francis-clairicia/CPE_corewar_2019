@@ -14,16 +14,15 @@ static int get_thd_value_sti(champ_t *chp, battle_t *bat, int param, int *idx)
 
     if (*idx == -1)
         return scd_value;
-    *idx += 1;
     if (param == T_REG) {
-        if (is_register(bat->mem[(*idx + 1) % MEM_SIZE]) == 1) {
-            scd_value = chp->reg[bat->mem[(*idx + 1) % MEM_SIZE] - 1];
+        if (is_register(bat->mem[(*idx) % MEM_SIZE]) == 1) {
+            scd_value = chp->reg[bat->mem[(*idx) % MEM_SIZE] - 1];
             *idx += 1;
         } else
             *idx = -1;
     }
     if (param == T_DIR) {
-        scd_value = read_from_mem(bat, *idx + 1, IND_SIZE);
+        scd_value = read_from_mem(bat, *idx, IND_SIZE);
         *idx += 2;
     }
     return scd_value;
@@ -36,18 +35,18 @@ static int get_scd_value_sti(champ_t *chp, battle_t *bat, int param, int *idx)
 
     *idx += 2;
     if (param == T_REG) {
-        if (is_register(bat->mem[(*idx + 1) % MEM_SIZE]) == 1) {
-            fst_value = chp->reg[bat->mem[(*idx + 1) % MEM_SIZE] - 1];
+        if (is_register(bat->mem[(*idx) % MEM_SIZE])) {
+            fst_value = chp->reg[bat->mem[(*idx) % MEM_SIZE] - 1];
             *idx += 1;
         } else
             *idx = -1;
     } if (param == T_DIR) {
-        fst_value = read_from_mem(bat, *idx + 1, IND_SIZE);
+        fst_value = read_from_mem(bat, *idx, IND_SIZE);
         *idx += 2;
     } if (param == T_IND) {
         nb = read_from_mem(bat, *idx + 1, IND_SIZE);
         nb = (nb % MEM_SIZE < 0) ? MEM_SIZE - nb : nb;
-        fst_value = read_from_mem(bat, chp->pc + nb, IND_SIZE);
+        fst_value = read_from_mem(bat, *idx, IND_SIZE);
         *idx += 2;
     }
     return fst_value;

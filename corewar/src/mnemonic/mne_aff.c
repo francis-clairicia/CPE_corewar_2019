@@ -19,7 +19,7 @@ int mne_aff(champ_t *chp, battle_t *bat)
         chp->pc += 3;
         return 0;
     }
-    if (is_register(fst_param) == 1) {
+    if (is_register(fst_param)) {
         value_to_print = chp->reg[fst_param - 1] % 256;
         my_printf("%c\n", value_to_print);
     }

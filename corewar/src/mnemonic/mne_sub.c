@@ -20,14 +20,12 @@ int mne_sub(champ_t *champ, battle_t *battle)
         champ->pc += 1;
         return 0;
     }
-    if (is_register(fst_param) == 84 || is_register(fst_param) == 84
-    || is_register(thd_param) == 84) {
-        champ->pc += 5;
-        return 0;
+    if (is_register(fst_param) && is_register(fst_param)
+    && is_register(thd_param)) {
+        champ->reg[thd_param - 1] = champ->reg[fst_param - 1]
+        - champ->reg[scd_param - 1];
+        champ->carry = (champ->carry == 0) ? 1 : 0;
     }
-    champ->reg[thd_param - 1] = champ->reg[fst_param - 1]
-    - champ->reg[scd_param - 1];
-    champ->carry = (champ->carry == 0) ? 1 : 0;
     champ->pc += 5;
     return 0;
 }
