@@ -8,9 +8,9 @@
 #ifndef COREWAR_H
 #define COREWAR_H
 
+#include <stdbool.h>
+#include <stdio.h>
 #include "op.h"
-#include "stdbool.h"
-#include "stdio.h"
 
 typedef struct champ_s
 {
@@ -18,7 +18,7 @@ typedef struct champ_s
     int status;
     header_t *header;
     op_t op;
-    int *reg;
+    int reg[REG_NUMBER];
     int nb_address;
     int pc;
     int carry;
@@ -27,6 +27,7 @@ typedef struct champ_s
     int nb_champ;
     bool act;
     bool die;
+    struct champ_s *childs;
     struct champ_s *next;
 } champ_t;
 

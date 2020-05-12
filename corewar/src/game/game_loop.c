@@ -28,23 +28,33 @@ static const mnemonic_t mnemonic_list[] =
     {&mne_aff}
 };
 
-static int game_act(battle_t *battle, champ_t *champ)
+static void read_mnemonic(battle_t *battle, champ_t *champ)
 {
     char c = '\0';
 
+    c = battle->mem[champ->pc % MEM_SIZE];
+    if (c >= 1 && c <= 16) {
+        champ->op = op_tab[c - 1];
+        champ->status = champ->op.nbr_cycles - 1;
+    } else
+        champ->pc += 1;
+}
+
+static int game_act(battle_t *battle, champ_t *champ)
+{
     if (champ->status != 0 || champ->die == true)
         return 0;
     if (champ->act == false) {
-        c = battle->mem[champ->pc % MEM_SIZE];
-        if (c >= 1 && c <= 16) {
-            champ->op = op_tab[c - 1];
-            champ->status = champ->op.nbr_cycles - 1;
-        } else
-            champ->pc += 1;
+        read_mnemonic(battle, champ);
     } else {
         IRETURN(mnemonic_list[champ->op.code - 1].mnemonic(champ, battle));
         champ->act = false;
         battle->draw_dump = true;
+    }
+    for (champ_t *tmp = champ->childs; tmp; tmp = tmp->next) {
+        if (!(tmp->next) && my_strcmp(champ->op.mnemonique, "fork") == 0)
+            break;
+        IRETURN(game_act(battle, tmp));
     }
     return 0;
 }
