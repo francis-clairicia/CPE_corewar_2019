@@ -1,0 +1,7 @@
+takes 3 parameters.
+
+It performs a binary AND between the first two parameters and stores the result into the third one (which must be a register).
+
+This operation modifies the carry.
+
+and r2,%0,r3 puts (r2 & 0) into r3.

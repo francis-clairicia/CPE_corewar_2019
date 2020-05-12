@@ -1,0 +1,4 @@
+Takes 1 direct parameter, which must be an index.
+
+It creates a new program that inherits different states from the parent.
+This program is executed at the address PC + first parameter % IDX_MOD.

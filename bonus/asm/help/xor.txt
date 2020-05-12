@@ -1,0 +1,1 @@
+Similar to "and", but performing a binary XOR (exclusive OR)

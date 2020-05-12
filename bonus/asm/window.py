@@ -6,16 +6,10 @@ import subprocess
 import tkinter as tk
 from tkinter.messagebox import showinfo, showerror
 from editor import Editor
-from template import Template
 from buttons import IconButton
-
-def remove_color_characters(string: str):
-    index = string.find("\033")
-    while index != -1:
-        end = string[index:].find("m")
-        string = string[:index] + string[index + end + 1:]
-        index = string.find("\033")
-    return string
+from command_list import CommandList
+from manual import Manual
+from utils import remove_color_characters
 
 class MenuWindow(tk.Menu):
     def __init__(self, master, *args, **kwargs):
@@ -49,12 +43,17 @@ class Assembly(tk.Tk):
         self.paned_window = tk.PanedWindow(self, orient=tk.HORIZONTAL, sashwidth=5, sashrelief=tk.RAISED)
         self.paned_window.bind("<Configure>", self.set_panedwindow_size)
 
-        self.options = tk.Frame(self, width=int(width * 0.3))
-        self.paned_window.add(self.options)
-        self.build = IconButton(self.options, "build.png", tooltip="Build champion", command=self.build_code)
-        self.template = IconButton(self.options, "template.png", tooltip="Start with template", command=self.start_template)
-
         self.editor = Editor(self, width=int(width * 0.7))
+
+        self.options = tk.Frame(self, width=int(width * 0.3))
+        self.build = IconButton(self.options, "build.png", tooltip="Build champion", command=self.build_code)
+        self.template = IconButton(self.options, "template.png", tooltip="Start with template", command=self.editor.start_template)
+        self.help = IconButton(self.options, "help.png", tooltip="Manual for help", command=self.open_manual)
+        self.manual = None
+        self.command_list = CommandList(self.options)
+        self.command_list.button_add.configure(command=self.add_command)
+
+        self.paned_window.add(self.options)
         self.paned_window.add(self.editor)
 
         self.menu_bar.add_section("Files")
@@ -78,30 +77,34 @@ class Assembly(tk.Tk):
         self.menu_bar.add_section_command("Edit", "Paste", self.editor.paste_from_clipboard, accelerator="Ctrl+V")
 
         self.refresh_functions = list()
-        self.refresh_functions.append(self.editor.check_file_status)
+        self.refresh_functions.append(self.editor.update_tab)
 
-    def run(self):
+    def run(self, file=None):
+        if file is not None:
+            self.editor.open_file(file)
         self.all_binds()
         self.show_widgets()
         self.refresh()
         self.mainloop()
 
     def stop(self):
-        self.editor.save_workspace()
-        if self.editor.close_all_files():
+        if self.editor.close_workspace():
             self.destroy()
 
     def show_widgets(self):
         self.paned_window.pack(fill=tk.BOTH, expand=True)
         self.options.grid_columnconfigure(0, weight=1)
         self.options.grid_columnconfigure(1, weight=1)
-        self.build.grid(row=0, column=0)
-        self.template.grid(row=0, column=1)
+        self.options.grid_columnconfigure(2, weight=1)
+        self.build.grid(row=0, column=0, pady=20)
+        self.template.grid(row=0, column=1, pady=20)
+        self.help.grid(row=0, column=2, pady=20)
+        self.command_list.grid(row=1, column=0, columnspan=3)
 
     def refresh(self):
         for function in self.refresh_functions:
             function()
-        self.after(500, self.refresh)
+        self.after(10, self.refresh)
 
     def all_binds(self):
         self.bind_key("Control", "n", lambda event: self.editor.create_new_file())
@@ -120,6 +123,8 @@ class Assembly(tk.Tk):
     def set_panedwindow_size(self, event):
         self.paned_window.paneconfigure(self.options, minsize=0.3 * event.width)
         self.paned_window.paneconfigure(self.editor, minsize=0.5 * event.width)
+        self.editor.configure(width=int(event.width * 0.7))
+        self.options.configure(width=int(event.width * 0.3))
 
     def build_code(self):
         filepath = self.editor.get_file()
@@ -140,7 +145,15 @@ class Assembly(tk.Tk):
             output = remove_color_characters(output)[:-1]
             showerror("An error occurs", output.split(", ")[2])
 
-    def start_template(self):
-        template = Template(self)
-        if not template.validated:
+    def add_command(self):
+        command = self.command_list.selected
+        if command is None:
             return
+        self.editor.insert_command(command.get())
+        self.command_list.reset()
+
+    def open_manual(self):
+        if self.manual is None:
+            self.manual = Manual(self)
+        else:
+            self.manual.focus_set()

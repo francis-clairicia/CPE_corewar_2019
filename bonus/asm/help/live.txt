@@ -1,0 +1,4 @@
+Takes 1 direct parameter which is the player number
+
+"live %2" will say that the player 2 is alive.
+Warning: if you are not the player 2, it's a disadvantage

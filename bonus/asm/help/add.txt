@@ -1,0 +1,6 @@
+Takes 3 registers as parameters.
+It adds the content of the first two and puts the sum into the third one (which must be a register).
+
+This operation modifies the carry.
+
+"add r2,r3,r5" adds the content of r2 and r3 and puts the result into r5

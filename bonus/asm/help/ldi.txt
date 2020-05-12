@@ -1,0 +1,10 @@
+Takes 3 parameters.
+The first two must be indexes, the third one must be a register.
+
+This operation modifies the carry.
+
+Direct parameter: The direct value
+Indirect parameter: the IND_SIZE bytes at the address PC + (Indirect Value) % IDX_MOD
+
+"ldi 3,%4,r1" reads IND_SIZE bytes from the address PC + 3 % IDX_MOD, adds 4 to this value.
+The sum is named S. REG_SIZE bytes are read from the address PC + S % IDX_MOD and copied into r1

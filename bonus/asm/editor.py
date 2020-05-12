@@ -2,16 +2,16 @@
 
 import os
 import pickle
+from datetime import date
 import tkinter as tk
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
 from tkinter.messagebox import showwarning, askyesnocancel
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+from template import Template
+from color import Color
 from constants import EDITOR_SAVE_FILE
-
-def get_filename(path: str):
-    head, tail = os.path.split(path)
-    return tail or os.path.basename(head)
+from utils import get_filename
 
 class EditorTab(tk.Frame):
     def __init__(self, master, filepath: str, new_file=False):
@@ -21,14 +21,17 @@ class EditorTab(tk.Frame):
         self.filename = get_filename(filepath) if not new_file else filepath
         self.master = master
         self.modified = False
-        self.text_editor = ScrolledText(self, font=("", 15), undo=True, autoseparators=True, maxundo=-1, wrap="none")
-        self.text_editor.grid(row=0, column=0, sticky=tk.NSEW)
+        self.text_editor = ScrolledText(self, font=("", 15), undo=True, maxundo=-1, wrap="none")
+        self.text_editor.config(highlightthickness=0, bd=0)
+        self.text_editor.grid(row=0, column=1, sticky=tk.NSEW)
         self.scrollbar_x = tk.Scrollbar(self, orient=tk.HORIZONTAL, command=self.text_editor.xview)
-        self.scrollbar_x.grid(row=1, column=0, stick=tk.EW)
+        self.scrollbar_x.grid(row=1, column=0, columnspan=2, stick=tk.EW)
         self.text_editor.configure(xscrollcommand=self.scrollbar_x.set)
-        self.grid_propagate(False)
+        self.line_nb_canvas = tk.Canvas(self, bg=self.text_editor.cget("bg"), bd=0, highlightthickness=0)
+        self.line_nb_canvas.grid_propagate(False)
+        self.line_nb_canvas.grid(row=0, column=0, sticky=tk.NS)
         self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
         self.default_file_content = str()
 
     @property
@@ -38,8 +41,31 @@ class EditorTab(tk.Frame):
     def get(self) -> str:
         return self.text_editor.get("1.0", "end-1c")
 
+    @property
+    def lines(self):
+        return self.get().splitlines()
+
+    def update_lines(self):
+        self.line_nb_canvas.delete("all")
+        font = self.text_editor.cget("font")
+        i = 1
+        y = 0
+        while self.text_editor.compare(f"{i}.0", "<", tk.END):
+            dline = self.text_editor.dlineinfo(f"{i}.0")
+            if dline:
+                y = dline[1]
+            else:
+                y = -20
+            self.line_nb_canvas.create_text(1, y, anchor="ne", text=str(i), font=font, fill=Color(175, 175, 175).hex)
+            i += 1
+        all_boxes = [self.line_nb_canvas.bbox(item) for item in self.line_nb_canvas.find_all()]
+        max_width = (min(box[2] - box[0] for box in all_boxes)) * 4
+        self.line_nb_canvas.configure(width=max_width + 20)
+        for item in self.line_nb_canvas.find_all():
+            self.line_nb_canvas.move(item, max_width, 0)
+
     def get_filename_from_champion_name(self) -> (str, None):
-        content = self.get().splitlines()
+        content = self.lines
         for line in content:
             if line.startswith(".name "):
                 first_quote = line.find('"')
@@ -51,7 +77,7 @@ class EditorTab(tk.Frame):
                 name = line[first_quote + 1:second_quote]
                 if len(name) == 0:
                     break
-                return name.lower() + ".s"
+                return name.replace(" ", "_").lower() + ".s"
         return None
 
     def open(self) -> bool:
@@ -66,36 +92,37 @@ class EditorTab(tk.Frame):
         self.set_modified_status(False, on_opening=True)
         return True
 
-    def save(self) -> None:
+    def save(self) -> bool:
         if self.new_file:
-            self.master.save_file_as()
-        else:
-            self.default_file_content = self.text_editor.get("1.0", "end-1c")
-            with open(self.filepath, "w") as file:
-                file.write(self.default_file_content)
-            self.set_modified_status(False)
-            self.text_editor.edit_modified(False)
+            return self.master.save_file_as()
+        self.default_file_content = self.text_editor.get("1.0", "end-1c")
+        with open(self.filepath, "w") as file:
+            file.write(self.default_file_content)
+        self.set_modified_status(False)
+        self.text_editor.edit_modified(False)
+        return True
 
-    def save_as(self, filepath: str) -> None:
+    def save_as(self, filepath: str) -> bool:
         self.master.files_opened[filepath] = self.master.files_opened[self.filepath]
         self.master.files_opened.pop(self.filepath)
         self.filepath = filepath
         self.filename = get_filename(filepath)
         self.new_file = False
-        self.save()
+        return self.save()
 
-    def close(self) -> None:
+    def close(self) -> bool:
         if self.modified:
             save_file = askyesnocancel(
                 f"{self.filename} - Modifications not saved",
                 "This file was modified and was not saved.\nDo you want to save this file ?"
             )
             if save_file is None:
-                return
-            if save_file:
-                self.save()
+                return False
+            if save_file and not self.save():
+                return False
         self.master.forget(self.id)
         self.master.files_opened.pop(self.filepath)
+        return True
 
     def undo(self) -> None:
         try:
@@ -150,6 +177,29 @@ class EditorTab(tk.Frame):
 
     def select(self) -> None:
         self.master.select(self.id)
+        self.text_editor.focus_set()
+
+    def set_template(self, name: str, comment: str, author: str) -> None:
+        content = [line for line in self.lines if not line.startswith(".name") and not line.startswith(".comment")]
+        header = [
+            "#",
+            "# {name} champion for CoreWar".format(name=name),
+            "#",
+            "# By {author}".format(author=author),
+            "#",
+            "# {date}".format(date=date.today().strftime("%c")),
+            "#",
+            ".name \"{name}\"".format(name=name),
+            ".comment \"{comment}\"".format(comment=comment)
+        ]
+        content = header + content
+        self.text_editor.delete("1.0", "end")
+        self.text_editor.insert("1.0", "\n".join(content))
+
+    def insert_command(self, cmd: str) -> None:
+        insert = self.text_editor.index(tk.INSERT).split(".")
+        end_of_line = insert[0] + "." + tk.END
+        self.text_editor.insert(end_of_line, "\n" + cmd)
 
 class Editor(ttk.Notebook):
     def __init__(self, *args, **kwargs) -> None:
@@ -165,18 +215,24 @@ class Editor(ttk.Notebook):
             self.last_opened_folder = data["last_folder"]
             for file in data["file_list"]:
                 self.open_file(file)
-            if data.get("actual"):
+            if data.get("actual") and data["actual"] in self.files_opened:
                 self.files_opened[data["actual"]].select()
 
-    def save_workspace(self) -> None:
-        file_list = list(file for file in self.files_opened if not file.startswith("new"))
+    def close_workspace(self) -> bool:
+        file_list = list()
+        actual_file = None if not self.files_opened else self.get_current_tab().filepath
+        for tab in list(self.files_opened.values()):
+            if not tab.close():
+                return False
+            file_list.append(str(tab.filepath))
         data = {
             "file_list": file_list,
-            "actual": None if not self.files_opened else self.get_current_tab().filepath,
+            "actual": actual_file,
             "last_folder": self.last_opened_folder
         }
         with open(EDITOR_SAVE_FILE, "wb") as save:
             pickle.dump(data, save)
+        return True
 
     def create_new_file(self):
         self.index_new_file += 1
@@ -196,6 +252,8 @@ class Editor(ttk.Notebook):
             )
             if filepath is None or len(filepath) == 0:
                 return
+        if not os.path.isabs(filepath):
+            filepath = os.path.abspath(filepath)
         if filepath in self.files_opened:
             self.files_opened[filepath].select()
         else:
@@ -204,7 +262,25 @@ class Editor(ttk.Notebook):
                 self.files_opened[filepath] = new_tab
                 new_tab.add()
                 new_tab.select()
+                new_tab.update_lines()
                 self.last_opened_folder = os.path.split(filepath)[0]
+
+    def start_template(self):
+        tab = self.get_current_tab()
+        if tab is None:
+            return
+        template = Template(self.winfo_toplevel())
+        self.wait_window(template)
+        if not template.validated:
+            return
+        tab.set_template(template.name, template.comment, template.author)
+
+    def insert_command(self, cmd: str) -> None:
+        if len(cmd) == 0:
+            return
+        tab = self.get_current_tab()
+        if tab is not None:
+            tab.insert_command(cmd)
 
     def get_current_tab(self) -> EditorTab:
         if len(self.files_opened) > 0:
@@ -217,10 +293,11 @@ class Editor(ttk.Notebook):
             return str()
         return tab.filepath
 
-    def check_file_status(self):
+    def update_tab(self):
         tab = self.get_current_tab()
         if tab is not None:
             tab.check_file_status()
+            tab.update_lines()
 
     def save_in_file(self) -> None:
         tab = self.get_current_tab()
@@ -231,10 +308,10 @@ class Editor(ttk.Notebook):
         for tab in list(self.files_opened.values()):
             tab.save()
 
-    def save_file_as(self) -> None:
+    def save_file_as(self) -> bool:
         tab = self.get_current_tab()
         if tab is None:
-            return
+            return False
         filepath = asksaveasfilename(
             title="Save assembly file",
             initialdir=self.last_opened_folder,
@@ -243,18 +320,17 @@ class Editor(ttk.Notebook):
             filetypes=[("Assembly files", "*.s"), ("All files", "*")]
         )
         if filepath is None or len(filepath) == 0:
-            return
-        tab.save_as(filepath)
+            return False
+        return tab.save_as(filepath)
 
     def close_file(self) -> None:
         tab = self.get_current_tab()
         if tab is not None:
             tab.close()
 
-    def close_all_files(self) -> bool:
+    def close_all_files(self) -> None:
         for tab in list(self.files_opened.values()):
             tab.close()
-        return bool(len(self.files_opened) == 0)
 
     def undo_last_modification(self):
         tab = self.get_current_tab()
