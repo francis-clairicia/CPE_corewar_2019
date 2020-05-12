@@ -34,7 +34,7 @@ static int parse_arg_loop(char **av, battle_t *battle,
 
     for (int j = 0; parser_list[j].arg; j++) {
         if (my_strcmp(av[up->i], parser_list[j].arg) == 0) {
-            IRETURN(check_all_args(av, battle, up, j))
+            IRETURN(check_all_args(av, battle, up, j));
             check = true;
             break;
         }
@@ -57,7 +57,7 @@ int parse_arg(char **av, champ_t **champ, battle_t *battle)
 
     ICHECK((up = init_util_parser()));
     for (; av[up->i]; up->i += 1) {
-        IRETURN(parse_arg_loop(av, battle, up, champ))
+        IRETURN(parse_arg_loop(av, battle, up, champ));
     }
     free(up);
     if (battle->nb_champ < 2) {

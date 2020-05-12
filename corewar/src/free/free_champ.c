@@ -13,7 +13,8 @@ void free_champ(champ_t *champ)
     champ_t *tmp = champ;
 
     for (; champ; champ = tmp) {
-        free(champ->header);
+        if (champ->parent)
+            free(champ->header);
         if (champ->childs)
             free_champ(champ->childs);
         tmp = champ->next;

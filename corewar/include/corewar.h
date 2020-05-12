@@ -27,6 +27,7 @@ typedef struct champ_s
     int nb_champ;
     bool act;
     bool die;
+    bool parent;
     struct champ_s *childs;
     struct champ_s *next;
 } champ_t;
@@ -123,5 +124,6 @@ int get_fst_value(champ_t *chp, battle_t *bat, int param, int *idx);
 int get_scd_value(champ_t *chp, battle_t *bat, int param, int *idx);
 void move_pc_special(champ_t *champ, int *param);
 void move_pc(champ_t *champ, int *param);
+champ_t *get_child(champ_t *champ, int child_pc);
 
 #endif

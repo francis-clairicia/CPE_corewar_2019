@@ -11,6 +11,7 @@
 static void add_champ_two(champ_t *tmp, utils_parser_t *up)
 {
     tmp->pc = tmp->nb_address;
+    tmp->parent = true;
     up->address = 0;
     up->nb_champ = 0;
     up->bool_address = false;

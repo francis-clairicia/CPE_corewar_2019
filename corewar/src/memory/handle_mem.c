@@ -15,7 +15,7 @@ int fill_mem_two(champ_t *tmp, battle_t *battle)
 
     for (int i = tmp->nb_address; i != tmp->nb_address +
     tmp->header->prog_size; i++) {
-        stock = (i >= MEM_SIZE) ? i - MEM_SIZE : i;
+        stock = (i >= MEM_SIZE) ? i % MEM_SIZE : i;
         if (fread(&c, sizeof(char), 1, tmp->fp) != 1)
             return ret_putstr_fd(2, "The content of the program"
             "is not consistent with this length.\n");
