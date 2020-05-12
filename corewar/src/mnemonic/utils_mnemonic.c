@@ -19,7 +19,7 @@ int is_register(int nb)
 {
     if (nb >= 1 && nb <= REG_NUMBER)
         return 1;
-    return 84;
+    return 0;
 }
 
 int *get_param_type(int cha)
