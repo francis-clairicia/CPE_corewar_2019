@@ -35,7 +35,7 @@ static int get_scd_value_sti(champ_t *chp, battle_t *bat, int param, int *idx)
 
     *idx += 2;
     if (param == T_REG) {
-        if (is_register(bat->mem[(*idx) % MEM_SIZE]) == 1) {
+        if (is_register(bat->mem[(*idx) % MEM_SIZE])) {
             fst_value = chp->reg[bat->mem[(*idx) % MEM_SIZE] - 1];
             *idx += 1;
         } else

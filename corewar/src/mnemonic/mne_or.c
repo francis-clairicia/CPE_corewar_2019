@@ -23,7 +23,7 @@ int mne_or(champ_t *chp, battle_t *bat)
     }
     fst_param = get_three_value(bat, chp, &idx, param[0]);
     scd_param = get_three_value(bat, chp, &idx, param[1]);
-    if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) == 1 && idx != -1) {
+    if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) && idx != -1) {
         thd_param = bat->mem[(idx + 1) % MEM_SIZE];
         chp->reg[thd_param - 1] = fst_param | scd_param;
         chp->carry = (chp->carry == 0) ? 1 : 0;

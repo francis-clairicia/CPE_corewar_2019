@@ -41,7 +41,7 @@ int mne_ld(champ_t *chp, battle_t *bat)
         return 0;
     }
     fst_param = get_two_value(bat, chp, &idx, param[0]);
-    if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) == 1) {
+    if (is_register(bat->mem[(idx + 1) % MEM_SIZE])) {
         scd_param = bat->mem[(idx + 1) % MEM_SIZE];
         chp->reg[scd_param - 1] = fst_param;
         chp->carry = (chp->carry == 0) ? 1 : 0;
