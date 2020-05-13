@@ -16,11 +16,11 @@ int mne_lfork(champ_t *champ, battle_t *battle)
 
     child_pc = (child_pc % MEM_SIZE < 0) ? (MEM_SIZE - child_pc) % MEM_SIZE :
     child_pc % MEM_SIZE;
-    if (champ->childs) {
-        for (tmp = champ->childs; tmp->next; tmp = tmp->next);
+    if (champ->children) {
+        for (tmp = champ->children; tmp->next; tmp = tmp->next);
         ICHECK((tmp->next = get_child(champ, child_pc)));
     } else {
-        ICHECK((champ->childs = get_child(champ, child_pc)));
+        ICHECK((champ->children = get_child(champ, child_pc)));
     }
     champ->pc += 3;
     return 0;

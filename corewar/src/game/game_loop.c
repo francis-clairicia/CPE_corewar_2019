@@ -28,6 +28,16 @@ static const mnemonic_t mnemonic_list[] =
     {&mne_aff}
 };
 
+static char * const mnemonic_modified_memory[] =
+{
+    "st",
+    "sti",
+    "ldi",
+    "lld",
+    "lldi",
+    NULL
+};
+
 static void read_mnemonic(battle_t *battle, champ_t *champ)
 {
     char c = '\0';
@@ -40,6 +50,11 @@ static void read_mnemonic(battle_t *battle, champ_t *champ)
         champ->pc += 1;
 }
 
+static bool draw_the_dump(champ_t *champ)
+{
+    return my_array_contains(mnemonic_modified_memory, champ->op.mnemonique);
+}
+
 static int game_act(battle_t *battle, champ_t *champ)
 {
     if (champ->status != 0 || champ->die == true)
@@ -49,11 +64,9 @@ static int game_act(battle_t *battle, champ_t *champ)
     } else {
         IRETURN(mnemonic_list[champ->op.code - 1].mnemonic(champ, battle));
         champ->act = false;
-        battle->draw_dump = true;
+        battle->draw_dump |= draw_the_dump(champ);
     }
-    for (champ_t *tmp = champ->childs; tmp; tmp = tmp->next) {
-        if (!(tmp->next) && my_strcmp(champ->op.mnemonique, "fork") == 0)
-            break;
+    for (champ_t *tmp = champ->children; tmp; tmp = tmp->next) {
         IRETURN(game_act(battle, tmp));
     }
     return 0;

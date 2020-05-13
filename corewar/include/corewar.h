@@ -28,7 +28,7 @@ typedef struct champ_s
     bool act;
     bool die;
     bool parent;
-    struct champ_s *childs;
+    struct champ_s *children;
     struct champ_s *next;
 } champ_t;
 

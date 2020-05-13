@@ -16,14 +16,7 @@ void print_dump(unsigned char *memory)
         my_putchar('\n');
     check_first = true;
     for (int i = 0; i < MEM_SIZE;) {
-        if (i == 0)
-            my_printf("%X    :", i);
-        if (i > 0 && i < 256)
-            my_printf("%X   :", i);
-        if (i >= 256 && i < 4096)
-            my_printf("%X  :", i);
-        if (i >= 4096)
-            my_printf("%X :", i);
+        my_printf("%-5X:", i);
         for (int j = 0; j < 32; j++, i++) {
             my_printf(" %02X", memory[i]);
         }
