@@ -39,6 +39,7 @@ int mne_st(champ_t *chp, battle_t *bat)
     ICHECK(param);
     if (param[0] != T_REG || param[1] == 0 || param[1] == T_DIR) {
         chp->pc += 1;
+        free(param);
         return 0;
     }
     fst_param = bat->mem[(idx + 1) % MEM_SIZE];
@@ -47,5 +48,6 @@ int mne_st(champ_t *chp, battle_t *bat)
         write_in(bat, chp, nb_to_write, param[1]);
     }
     move_pc(chp, param);
+    free(param);
     return 0;
 }

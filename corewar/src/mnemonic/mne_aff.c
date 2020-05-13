@@ -17,6 +17,7 @@ int mne_aff(champ_t *chp, battle_t *bat)
     ICHECK(param);
     if (param[0] != T_REG) {
         chp->pc += 3;
+        free(param);
         return 0;
     }
     if (is_register(fst_param)) {
@@ -24,5 +25,6 @@ int mne_aff(champ_t *chp, battle_t *bat)
         my_printf("%c\n", value_to_print);
     }
     chp->pc += 3;
+    free(param);
     return 0;
 }

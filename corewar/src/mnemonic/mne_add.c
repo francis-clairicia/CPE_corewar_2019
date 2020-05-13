@@ -18,6 +18,7 @@ int mne_add(champ_t *champ, battle_t *battle)
     ICHECK(param);
     if (param[0] != T_REG || param[1] != T_REG || param[2] != T_REG) {
         champ->pc += 1;
+        free(param);
         return 0;
     }
     if (is_register(fst_param) && is_register(fst_param)
@@ -27,5 +28,6 @@ int mne_add(champ_t *champ, battle_t *battle)
         champ->carry = (champ->reg[thd_param - 1] == 0) ? 1 : 0;
     }
     champ->pc += 5;
+    free(param);
     return 0;
 }

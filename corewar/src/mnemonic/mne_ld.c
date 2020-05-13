@@ -38,6 +38,7 @@ int mne_ld(champ_t *chp, battle_t *bat)
     ICHECK(param);
     if (param[0] == 0 || param[0] == T_REG || param[1] != T_REG) {
         chp->pc += 1;
+        free(param);
         return 0;
     }
     fst_param = get_two_value(bat, chp, &idx, param[0]);
@@ -47,5 +48,6 @@ int mne_ld(champ_t *chp, battle_t *bat)
         chp->carry = (fst_param == 0) ? 1 : 0;
     }
     move_pc(chp, param);
+    free(param);
     return 0;
 }

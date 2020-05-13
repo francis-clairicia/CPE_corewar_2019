@@ -70,6 +70,7 @@ int mne_ldi(champ_t *chp, battle_t *bat)
     if (param[0] == 0 || param[1] == 0
     || param[1] == T_IND || param[2] != T_REG) {
         chp->pc += 1;
+        free(param);
         return 0;
     }
     fst_param = get_fst_value(chp, bat, param[0], &idx);
@@ -78,5 +79,6 @@ int mne_ldi(champ_t *chp, battle_t *bat)
         operation_ldi(bat, chp, idx, fst_param % IDX_MOD + scd_param);
     }
     move_pc_special(chp, param);
+    free(param);
     return 0;
 }

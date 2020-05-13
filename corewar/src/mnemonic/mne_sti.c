@@ -54,7 +54,7 @@ static int get_scd_value_sti(champ_t *chp, battle_t *bat, int param, int *idx)
 
 static void end_sti(battle_t *bat, champ_t *chp, int fst_param, int sum)
 {
-    sum = (sum % MEM_SIZE < 0) ? MEM_SIZE - sum : sum;
+    sum = (sum % IDX_MOD < 0) ? IDX_MOD - sum : sum;
     add_parameter(bat->mem, fst_param, 4, chp->pc + sum % IDX_MOD);
 }
 
@@ -70,6 +70,7 @@ int mne_sti(champ_t *chp, battle_t *bat)
     if (param[0] != T_REG || param[1] == 0
     || param[2] == T_IND || param[2] == 0) {
         chp->pc += 1;
+        free(param);
         return 0;
     } if (is_register(bat->mem[(idx + 1) % MEM_SIZE])) {
         fst_param = chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1];
@@ -77,7 +78,7 @@ int mne_sti(champ_t *chp, battle_t *bat)
         thd_param = get_thd_value_sti(chp, bat, param[2], &idx);
         if (idx != -1)
             end_sti(bat, chp, fst_param, scd_param + thd_param);
-    }
-    move_pc_special(chp, param);
+    } move_pc_special(chp, param);
+    free(param);
     return 0;
 }

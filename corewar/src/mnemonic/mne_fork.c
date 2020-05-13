@@ -16,6 +16,8 @@ champ_t *get_child(champ_t *champ, int child_pc)
     child->header = champ->header;
     child->nb_champ = champ->nb_champ;
     child->pc = child_pc;
+    for (int i = 0; i < REG_NUMBER; i++)
+        child->reg[i] = champ->reg[i];
     return child;
 }
 

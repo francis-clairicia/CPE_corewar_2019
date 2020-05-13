@@ -19,15 +19,15 @@ int mne_and(champ_t *chp, battle_t *bat)
     ICHECK(param);
     if (param[0] == 0 || param[1] == 0 || param[2] != T_REG) {
         chp->pc += 1;
+        free(param);
         return 0;
-    }
-    fst_param = get_three_value(bat, chp, &idx, param[0]);
+    } fst_param = get_three_value(bat, chp, &idx, param[0]);
     scd_param = get_three_value(bat, chp, &idx, param[1]);
     if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) && idx != -1) {
         thd_param = bat->mem[(idx + 1) % MEM_SIZE];
         chp->reg[thd_param - 1] = fst_param & scd_param;
         chp->carry = (chp->reg[thd_param - 1] == 0) ? 1 : 0;
-    }
-    move_pc(chp, param);
+    } move_pc(chp, param);
+    free(param);
     return 0;
 }
