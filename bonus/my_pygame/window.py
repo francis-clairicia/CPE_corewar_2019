@@ -6,8 +6,13 @@ import pygame
 
 class Window:
 
+    all_opened = list()
+    __sound_volume = 0.5
+    __music_volume = 0.5
+
     def __init__(self, size=(1920, 1080), flags=0, fps=30, bg_color=(0, 0, 0)):
         if not pygame.get_init():
+            pygame.mixer.pre_init(44100, -16, 2, 512)
             status = pygame.init()
             if status[1] > 0:
                 sys.exit(84)
@@ -30,6 +35,7 @@ class Window:
         self.callback_after = None
         self.bind_key(pygame.K_ESCAPE, lambda key: self.stop())
         self.bind_key(pygame.K_q, lambda key: self.stop())
+        Window.all_opened.append(self)
 
     def __setattr__(self, name, obj):
         if hasattr(obj, "draw"):
@@ -63,11 +69,13 @@ class Window:
             new_pos += self.objects.index(relative_to)
         self.objects.insert(new_pos, obj)
 
-    def set_icon(self, icon_filepath):
+    @staticmethod
+    def set_icon(icon_filepath):
         icon = pygame.image.load(icon_filepath).convert_alpha()
         pygame.display.set_icon(icon)
 
-    def set_title(self, title: str):
+    @staticmethod
+    def set_title(title: str):
         pygame.display.set_caption(title)
 
     def mainloop(self, fill_bg=True):
@@ -144,3 +152,42 @@ class Window:
         if key_list is None:
             key_list = self.key_handler_dict[key_value] = list()
         key_list.append(callback)
+
+    @property
+    def sound_volume(self):
+        return Window.__sound_volume
+
+    @sound_volume.setter
+    def sound_volume(self, value: float):
+        Window.__sound_volume += value
+        if Window.__sound_volume > 1:
+            Window.__sound_volume = 1
+        elif Window.__sound_volume < 0:
+            Window.__sound_volume = 0
+        for window in Window.all_opened:
+            for obj in window.objects:
+                for sound in obj.sounds:
+                    sound.set_volume(Window.__sound_volume)
+
+    left = property(lambda self: self.window_rect.left)
+    right = property(lambda self: self.window_rect.right)
+    top = property(lambda self: self.window_rect.top)
+    bottom = property(lambda self: self.window_rect.bottom)
+    x = left
+    y = top
+    size = property(lambda self: self.window_rect.size)
+    width = property(lambda self: self.window_rect.width)
+    height = property(lambda self: self.window_rect.height)
+    w = width
+    h = height
+    center = property(lambda self: self.window_rect.center)
+    centerx = property(lambda self: self.window_rect.centerx)
+    centery = property(lambda self: self.window_rect.centery)
+    topleft = property(lambda self: self.window_rect.topleft)
+    topright = property(lambda self: self.window_rect.topright)
+    bottomleft = property(lambda self: self.window_rect.bottomleft)
+    bottomright = property(lambda self: self.window_rect.bottomright)
+    midtop = property(lambda self: self.window_rect.midtop)
+    midbottom = property(lambda self: self.window_rect.midbottom)
+    midleft = property(lambda self: self.window_rect.midleft)
+    midright = property(lambda self: self.window_rect.midright)

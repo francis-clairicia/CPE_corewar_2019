@@ -9,11 +9,19 @@ except ImportError:
     from my_pygame.window import Window
 
 class Drawable(Sprite):
-    def __init__(self, surface=pygame.Surface((0, 0)), **kwargs):
+    def __init__(self, surface=pygame.Surface((0, 0), flags=pygame.SRCALPHA), **kwargs):
         Sprite.__init__(self)
+        self.__sounds = list()
+        self.rect = surface.get_rect()
         self.image = surface
         self.draw_sprite = True
         self.move(**kwargs)
+
+    def __setattr__(self, name, value):
+        if isinstance(value, pygame.mixer.Sound):
+            value.set_volume(Window.sound_volume)
+            self.__sounds.append(value)
+        return object.__setattr__(self, name, value)
 
     def fill(self, color):
         self.image.fill(color)
@@ -37,6 +45,10 @@ class Drawable(Sprite):
         y = self.rect.y if hasattr(self, "rect") else 0
         self.__surface = surface
         self.rect = surface.get_rect(x=x, y=y)
+
+    @property
+    def sounds(self):
+        return self.__sounds
 
     def draw(self, surface):
         if self.draw_sprite:
@@ -115,10 +127,7 @@ class Text(Drawable):
         return self.font
 
     def refresh(self):
-        save_x = self.rect.x
-        save_y = self.rect.y
         self.image = self.font.render(self.text, True, self.color)
-        self.move(x=save_x, y=save_y)
 
     def set_string(self, text: str):
         self.text = str(text)
@@ -130,7 +139,7 @@ class Text(Drawable):
 
 class RectangleShape(Drawable):
     def __init__(self, size: tuple, color: tuple, outline=0, outline_color=(0, 0, 0), **kwargs):
-        Drawable.__init__(self, surface=pygame.Surface(size), **kwargs)
+        Drawable.__init__(self, surface=pygame.Surface(size, flags=pygame.SRCALPHA), **kwargs)
         self.color = color
         self.outline = outline
         self.outline_color = outline_color
@@ -159,18 +168,18 @@ class Button(RectangleShape):
     def __init__(self, master: Window, text: str, font=None, command=None,
                  bg=(255, 255, 255), fg=(0, 0, 0),
                  outline=2, outline_color=(0, 0, 0),
-                 over_bg=(128, 128, 128), over_fg=None,
-                 active_bg=(235, 235, 235), active_fg=None,
+                 hover_bg=(235, 235, 235), hover_fg=None,
+                 active_bg=(128, 128, 128), active_fg=None,
                  **kwargs):
         if font is None:
             font = SysFont(pygame.font.get_default_font(), 15)
         self.text = Text(text, font, fg)
         size = (self.text.w + 20, self.text.h + 20)
-        RectangleShape.__init__(self, size, bg, outline, outline_color)
+        RectangleShape.__init__(self, size, bg, outline, outline_color, **kwargs)
         self.fg = fg
         self.bg = bg
-        self.over_fg = fg if over_fg is None else over_fg
-        self.over_bg = bg if over_bg is None else over_bg
+        self.hover_fg = fg if hover_fg is None else hover_fg
+        self.hover_bg = bg if hover_bg is None else hover_bg
         self.active_fg = fg if active_fg is None else active_fg
         self.active_bg = bg if active_bg is None else active_bg
         self.callback = command
@@ -200,8 +209,8 @@ class Button(RectangleShape):
 
     def mouse_motion(self, mouse_pos):
         if self.rect.collidepoint(mouse_pos):
-            self.color = self.over_bg if self.active else self.active_bg
-            self.text.set_color(self.over_fg if self.active else self.active_fg)
+            self.color = self.hover_bg if not self.active else self.active_bg
+            self.text.set_color(self.hover_fg if not self.active else self.active_fg)
         else:
             self.color = self.bg
             self.text.set_color(self.fg)
@@ -241,6 +250,25 @@ class ImageButton(Button):
         if not self._show:
             self.offset[1] = 3
 
+class TextButton(Button):
+    def __init__(self, master: Window, text: str, **kwargs):
+        kwargs["outline"] = 0
+        kwargs["bg"] = kwargs["hover_bg"] = kwargs["active_bg"] = (0, 0, 0, 0)
+        Button.__init__(self, master, text, **kwargs)
+        self.offset = [0, 0]
+
+    def draw(self, surface):
+        if self.draw_sprite:
+            self.text.move(center=self.center)
+            self.text.rect.move_ip(*self.offset)
+            self.text.draw(surface)
+
+    def on_click_up(self):
+        self.offset[1] = 0
+
+    def on_click_down(self):
+        self.offset[1] = 3
+
 class Entry(RectangleShape):
     def __init__(self, master: Window, font=None, width=10, bg=(255, 255, 255), fg=(0, 0, 0),
                  highlight_color=(128, 128, 128), **kwargs):
@@ -258,11 +286,11 @@ class Entry(RectangleShape):
     def draw(self, surface):
         if self.draw_sprite:
             self.draw_shape(surface)
-            self.text.move(left=self.rect.left + 10, centery=self.rect.centery)
+            self.text.move(left=self.left + 10, centery=self.centery)
             self.text.draw(surface)
             if self.focus:
-                cursor_start = (self.text.rect.right + 2, self.text.rect.top)
-                cursor_end = (self.text.rect.right + 2, self.text.rect.bottom)
+                cursor_start = (self.text.right + 2, self.text.top)
+                cursor_end = (self.text.right + 2, self.text.bottom)
                 pygame.draw.line(surface, self.text.color, cursor_start, cursor_end, 2)
 
     def get(self):

@@ -5,7 +5,7 @@ from my_pygame.classes import Text, RectangleShape
 from my_pygame.colors import WHITE, BLACK
 
 class Loading(Window):
-    def __init__(self, text="Loading...", bg=BLACK, opening=True, ending=True, side_opening="left", side_ending="left"):
+    def __init__(self, text="Loading...", font=("calibri", 300), bg=BLACK, opening=True, ending=True, side_opening="left", side_ending="left"):
         Window.__init__(self)
         self.master = None
         speed = 50
@@ -22,7 +22,7 @@ class Loading(Window):
             "bottom": {"top": self.window_rect.bottom + 1, "centerx": self.window_rect.centerx}
         }
         self.rectangle = RectangleShape(self.window_rect.size, bg)
-        self.text = Text(text, ("calibri", 300), WHITE)
+        self.text = Text(text, font, WHITE)
         self.animation_ending = {
             "left": lambda x=-speed, y=0: self._hide_animation(x, y),
             "right": lambda x=speed, y=0: self._hide_animation(x, y),

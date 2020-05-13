@@ -189,8 +189,10 @@ class EditorTab(tk.Frame):
             "#",
             "# {date}".format(date=date.today().strftime("%c")),
             "#",
+            ""
             ".name \"{name}\"".format(name=name),
-            ".comment \"{comment}\"".format(comment=comment)
+            ".comment \"{comment}\"".format(comment=comment),
+            ""
         ]
         content = header + content
         self.text_editor.delete("1.0", "end")
@@ -224,7 +226,8 @@ class Editor(ttk.Notebook):
         for tab in list(self.files_opened.values()):
             if not tab.close():
                 return False
-            file_list.append(str(tab.filepath))
+            if not tab.filepath.startswith("new"):
+                file_list.append(str(tab.filepath))
         data = {
             "file_list": file_list,
             "actual": actual_file,
@@ -289,7 +292,7 @@ class Editor(ttk.Notebook):
 
     def get_file(self) -> str:
         tab = self.get_current_tab()
-        if tab is None:
+        if tab is None or tab.filepath.startswith("new"):
             return str()
         return tab.filepath
 
