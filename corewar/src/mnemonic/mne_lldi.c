@@ -10,7 +10,6 @@
 
 static void operation_lldi(battle_t *bat, champ_t *chp, int idx, int s)
 {
-    s = (s % MEM_SIZE < 0) ? MEM_SIZE - s : s;
     chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1]
     = read_from_mem(bat, chp->pc + s, REG_SIZE);
     chp->carry = (chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1] == 0) ? 1 : 0;

@@ -44,7 +44,6 @@ int get_fst_value(champ_t *chp, battle_t *bat, int param, int *idx)
         *idx += 2;
     } if (param == T_IND) {
         nb = read_from_mem(bat, *idx + 1, IND_SIZE);
-        nb = (nb % MEM_SIZE < 0) ? MEM_SIZE - nb : nb;
         fst_value = read_from_mem(bat, chp->pc + nb, IND_SIZE);
         *idx += 2;
     }
@@ -53,7 +52,6 @@ int get_fst_value(champ_t *chp, battle_t *bat, int param, int *idx)
 
 static void operation_ldi(battle_t *bat, champ_t *chp, int idx, int s)
 {
-    s = (s % MEM_SIZE < 0) ? MEM_SIZE - s : s;
     chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1]
     = read_from_mem(bat, chp->pc + (s % IDX_MOD), REG_SIZE);
     chp->carry = (chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1] == 0) ? 1 : 0;

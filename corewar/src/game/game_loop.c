@@ -8,8 +8,7 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-static const mnemonic_t mnemonic_list[] =
-{
+static const mnemonic_t mnemonic_list[] = {
     {&mne_live},
     {&mne_ld},
     {&mne_st},
@@ -28,8 +27,7 @@ static const mnemonic_t mnemonic_list[] =
     {&mne_aff}
 };
 
-static char * const mnemonic_modified_memory[] =
-{
+static char * const mnemonic_modified_memory[] = {
     "st",
     "sti",
     "ldi",

@@ -24,32 +24,21 @@ int is_register(int nb)
 
 int *get_param_type(int cha)
 {
-    int i = 1;
-    int *param = PMALLOC(param, sizeof(int) * 4);
-    my_memset(param, 0, 4);
+    int i = 0;
+    int *param = PMALLOC(param, sizeof(int) * MAX_ARGS_NUMBER);
+    my_memset(param, 0, MAX_ARGS_NUMBER * sizeof(int));
 
-    while (i < 4) {
+    while (i < MAX_ARGS_NUMBER) {
         if ((cha & 0b11000000) == 0b01000000)
-            param[i - 1] = T_REG;
+            param[i] = T_REG;
         if ((cha & 0b11000000) == 0b10000000)
-            param[i - 1] = T_DIR;
+            param[i] = T_DIR;
         if ((cha & 0b11000000) == 0b11000000)
-            param[i - 1] = T_IND;
+            param[i] = T_IND;
         cha = cha << 2;
         i += 1;
     }
     return param;
-}
-
-int read_from_mem(battle_t *battle, int start, int nb_to_read)
-{
-    int nb = 0;
-
-    for (int i = 0; i < nb_to_read; i += 1, start += 1) {
-        nb = (nb << 8),
-        nb = nb | (char)battle->mem[(start) % MEM_SIZE];
-    }
-    return (nb);
 }
 
 int get_three_value(battle_t *battle, champ_t *champ, int *idx, int param)
@@ -66,12 +55,11 @@ int get_three_value(battle_t *battle, champ_t *champ, int *idx, int param)
             *idx = -1;
     } if (param == T_DIR) {
         nb = read_from_mem(battle, *idx + 1, DIR_SIZE);
-        *idx += 4;
+        *idx += DIR_SIZE;
     } if (param == T_IND) {
         nb = read_from_mem(battle, *idx + 1, IND_SIZE);
-        nb = (nb < 0) ? MEM_SIZE - nb : nb;
         nb = read_from_mem(battle, champ->pc + nb, IND_SIZE);
-        *idx += 2;
+        *idx += IND_SIZE;
     }
     return nb;
 }

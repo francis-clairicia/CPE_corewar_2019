@@ -15,12 +15,11 @@ static int get_two_value(battle_t *battle, champ_t *champ, int *idx, int param)
     int nb = 0;
 
     if (param == T_DIR) {
-        nb = read_from_mem(battle, *idx + 1, REG_SIZE);
+        nb = read_from_mem(battle, *idx + 1, DIR_SIZE);
         *idx += 4;
     }
     if (param == T_IND) {
         fst = read_from_mem(battle, *idx + 1, IND_SIZE);
-        fst = (fst % MEM_SIZE < 0) ? MEM_SIZE - fst : fst;
         start_to_read = champ->pc + (fst % IDX_MOD);
         nb = read_from_mem(battle, start_to_read, REG_SIZE);
         *idx += 2;
@@ -42,8 +41,8 @@ int mne_ld(champ_t *chp, battle_t *bat)
         return 0;
     }
     fst_param = get_two_value(bat, chp, &idx, param[0]);
-    if (is_register(bat->mem[(idx + 1) % MEM_SIZE])) {
-        scd_param = bat->mem[(idx + 1) % MEM_SIZE];
+    scd_param = bat->mem[(idx + 1) % MEM_SIZE];
+    if (is_register(scd_param)) {
         chp->reg[scd_param - 1] = fst_param;
         chp->carry = (fst_param == 0) ? 1 : 0;
     }

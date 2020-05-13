@@ -8,14 +8,26 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-static bool check_live_champ(champ_t *champ, battle_t *battle)
+static bool any_child_said_live(champ_t *children)
+{
+    if (children == NULL)
+        return (false);
+    for (champ_t *child = children; child; child = child->next) {
+        if (child->live)
+            return (true);
+        if (any_child_said_live(child->children))
+            return (true);
+    }
+    return (false);
+}
+
+static bool check_no_live_champ(champ_t *champ, battle_t *battle)
 {
     int count = 0;
 
     for (champ_t *tmp = champ; tmp; tmp = tmp->next) {
-        if (tmp->live == false) {
+        if (tmp->live == false && any_child_said_live(tmp->children) == false)
             tmp->die = true;
-        }
         tmp->live = false;
         if (tmp->die == true)
             count++;
@@ -32,8 +44,8 @@ static void check_status(champ_t *champ)
             tmp->act = true;
         if (tmp->status > 0 && tmp->die == false)
             tmp->status -= 1;
-        for (champ_t *tmpp = tmp->children; tmpp; tmpp = tmpp->next) {
-            check_status(tmpp);
+        for (champ_t *child = tmp->children; child; child = child->next) {
+            check_status(child);
         }
     }
 }
@@ -44,15 +56,15 @@ bool no_end(battle_t *battle, champ_t *champ)
         print_dump(battle->mem);
         return false;
     }
-    if (battle->cycle_die <= battle->cycle && check_live_champ(champ, battle)
-    == false)
+    if (battle->cycle >= battle->cycle_die) {
+        if (check_no_live_champ(champ, battle) == true)
+            return false;
         battle->cycle = 0;
-    else if (battle->cycle_die <= battle->cycle)
-        return false;
+    }
     if (battle->nb_live >= NBR_LIVE) {
         battle->cycle_die -= CYCLE_DELTA;
         battle->nb_live = 0;
-        if (check_live_champ(champ, battle))
+        if (check_no_live_champ(champ, battle))
             return false;
         battle->cycle = 0;
     }

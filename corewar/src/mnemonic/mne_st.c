@@ -22,7 +22,6 @@ int write_in(battle_t *bat, champ_t *chp, int nb_to_write, int param)
     }
     if (param == T_IND) {
         scd = read_from_mem(bat, chp->pc + 3, IND_SIZE);
-        scd = (scd % MEM_SIZE < 0) ? MEM_SIZE - scd : scd;
         write_at = chp->pc + (scd % IDX_MOD);
         add_parameter(bat->mem, nb_to_write, 4, write_at);
     }

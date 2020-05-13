@@ -6,6 +6,7 @@
 */
 
 #include "corewar.h"
+#include "my.h"
 
 int mne_zjmp(champ_t *champ, battle_t *battle)
 {

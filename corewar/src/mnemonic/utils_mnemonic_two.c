@@ -19,7 +19,7 @@ void add_parameter(unsigned char *buffer, int bytes, int size, int start)
         move += 8;
     }
     for (int i = 0; i < size; i += 1) {
-        buffer[start] = ((bytes & mask) >> move);
+        buffer[start % MEM_SIZE] = ((bytes & mask) >> move);
         start += 1;
         mask = (mask >> 8);
         move -= 8;
@@ -30,7 +30,7 @@ void move_pc(champ_t *champ, int *param)
 {
     int idx = 0;
 
-    while (idx < 4) {
+    while (idx < MAX_ARGS_NUMBER) {
         if (param[idx] == T_REG)
             champ->pc += 1;
         if (param[idx] == T_DIR)
@@ -46,7 +46,7 @@ void move_pc_special(champ_t *champ, int *param)
 {
     int idx = 0;
 
-    while (idx < 4) {
+    while (idx < MAX_ARGS_NUMBER) {
         if (param[idx] == T_REG)
             champ->pc += 1;
         if (param[idx] == T_DIR)

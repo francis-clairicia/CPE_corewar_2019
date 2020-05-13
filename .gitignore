@@ -10,5 +10,8 @@ coverage
 vgcore.*
 *.s
 *.cor
+*.dump
 *.sh
 bonus/asm/*.sav
+remove_spaces
+file*

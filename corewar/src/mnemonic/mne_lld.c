@@ -20,7 +20,6 @@ int get_two_value(battle_t *battle, champ_t *champ, int *idx, int param)
     }
     if (param == T_IND) {
         fst = read_from_mem(battle, *idx + 1, IND_SIZE);
-        fst = (fst % MEM_SIZE < 0) ? MEM_SIZE - fst : fst;
         start_to_read = champ->pc + fst;
         nb = read_from_mem(battle, start_to_read, REG_SIZE);
         *idx += 2;

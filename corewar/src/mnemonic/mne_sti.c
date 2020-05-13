@@ -45,8 +45,7 @@ static int get_scd_value_sti(champ_t *chp, battle_t *bat, int param, int *idx)
         *idx += 2;
     } if (param == T_IND) {
         nb = read_from_mem(bat, *idx + 1, IND_SIZE);
-        nb = (nb % MEM_SIZE < 0) ? MEM_SIZE - nb : nb;
-        fst_value = read_from_mem(bat, *idx, IND_SIZE);
+        fst_value = read_from_mem(bat, *idx + nb, IND_SIZE);
         *idx += 2;
     }
     return fst_value;
@@ -54,7 +53,6 @@ static int get_scd_value_sti(champ_t *chp, battle_t *bat, int param, int *idx)
 
 static void end_sti(battle_t *bat, champ_t *chp, int fst_param, int sum)
 {
-    sum = (sum % IDX_MOD < 0) ? IDX_MOD - sum : sum;
     add_parameter(bat->mem, fst_param, 4, chp->pc + sum % IDX_MOD);
 }
 

@@ -34,6 +34,7 @@ SRC_TEST			=	src/help/help.c						\
 						src/mnemonic/mne_sub.c				\
 						src/mnemonic/mne_xor.c				\
 						src/mnemonic/mne_zjmp.c				\
+						src/mnemonic/read_from_mem.c		\
 						src/mnemonic/utils_mnemonic.c		\
 						src/mnemonic/utils_mnemonic_two.c	\
 						src/free/free.c						\

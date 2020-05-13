@@ -16,6 +16,7 @@ champ_t *get_child(champ_t *champ, int child_pc)
     child->header = champ->header;
     child->nb_champ = champ->nb_champ;
     child->pc = child_pc;
+    child->carry = champ->carry;
     for (int i = 0; i < REG_NUMBER; i++)
         child->reg[i] = champ->reg[i];
     return child;
@@ -27,8 +28,6 @@ int mne_fork(champ_t *champ, battle_t *battle)
     int child_pc = champ->pc + (param % IDX_MOD);
     champ_t *tmp = champ;
 
-    child_pc = (child_pc % MEM_SIZE < 0) ? (MEM_SIZE - child_pc) % MEM_SIZE :
-    child_pc % MEM_SIZE;
     if (champ->children) {
         for (tmp = champ->children; tmp->next; tmp = tmp->next);
         ICHECK((tmp->next = get_child(champ, child_pc)));
