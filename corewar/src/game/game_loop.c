@@ -8,25 +8,6 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-static const mnemonic_t mnemonic_list[] = {
-    {&mne_live},
-    {&mne_ld},
-    {&mne_st},
-    {&mne_add},
-    {&mne_sub},
-    {&mne_and},
-    {&mne_or},
-    {&mne_xor},
-    {&mne_zjmp},
-    {&mne_ldi},
-    {&mne_sti},
-    {&mne_fork},
-    {&mne_lld},
-    {&mne_lldi},
-    {&mne_lfork},
-    {&mne_aff}
-};
-
 static char * const mnemonic_modified_memory[] = {
     "st",
     "sti",
@@ -60,7 +41,7 @@ static int game_act(battle_t *battle, champ_t *champ)
     if (champ->act == false) {
         read_mnemonic(battle, champ);
     } else {
-        IRETURN(mnemonic_list[champ->op.code - 1].mnemonic(champ, battle));
+        IRETURN(launch_mnemonic(champ, battle));
         champ->act = false;
         battle->draw_dump |= draw_the_dump(champ);
     }

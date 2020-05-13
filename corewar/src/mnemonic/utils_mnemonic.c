@@ -8,58 +8,72 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-int pows(int number, int nb)
-{
-    if (nb == 0)
-        return 1;
-    return number * pows(number, nb - 1);
-}
-
-int is_register(int nb)
-{
-    if (nb >= 1 && nb <= REG_NUMBER)
-        return 1;
-    return 0;
-}
-
-int *get_param_type(int cha)
+void get_param_type(param_t *params, unsigned char coding_byte)
 {
     int i = 0;
-    int *param = PMALLOC(param, sizeof(int) * MAX_ARGS_NUMBER);
-    my_memset(param, 0, MAX_ARGS_NUMBER * sizeof(int));
 
+    if (!params)
+        return;
     while (i < MAX_ARGS_NUMBER) {
-        if ((cha & 0b11000000) == 0b01000000)
-            param[i] = T_REG;
-        if ((cha & 0b11000000) == 0b10000000)
-            param[i] = T_DIR;
-        if ((cha & 0b11000000) == 0b11000000)
-            param[i] = T_IND;
-        cha = cha << 2;
+        if ((coding_byte & 0b11000000) == 0b01000000)
+            params->type[i] = T_REG;
+        if ((coding_byte & 0b11000000) == 0b10000000)
+            params->type[i] = T_DIR;
+        if ((coding_byte & 0b11000000) == 0b11000000)
+            params->type[i] = T_IND;
+        coding_byte = coding_byte << 2;
         i += 1;
     }
-    return param;
 }
 
-int get_three_value(battle_t *battle, champ_t *champ, int *idx, int param)
+bool valid_params(param_t const *params, int op_code)
 {
-    int nb = 0;
+    op_t *op = &op_tab[op_code - 1];
 
-    if (*idx == -1)
-        return 0;
-    if (param == T_REG) {
-        if (is_register(battle->mem[(*idx + 1) % MEM_SIZE])) {
-            nb = champ->reg[(battle->mem[(*idx + 1) % MEM_SIZE]) - 1];
-            *idx += 1;
-        } else
-            *idx = -1;
-    } if (param == T_DIR) {
-        nb = read_from_mem(battle, *idx + 1, DIR_SIZE);
-        *idx += DIR_SIZE;
-    } if (param == T_IND) {
-        nb = read_from_mem(battle, *idx + 1, IND_SIZE);
-        nb = read_from_mem(battle, champ->pc + nb, IND_SIZE);
-        *idx += IND_SIZE;
+    if (!params)
+        return (false);
+    for (int i = 0; i < op->nbr_args; i += 1) {
+        if ((params->type[i] & op->type[i]) == 0)
+            return (false);
     }
-    return nb;
+    return (true);
+}
+
+int set_param_values(param_t *params, unsigned char *memory,
+    int start, int dir_size)
+{
+    int size = 0;
+    int total = 0;
+
+    for (int i = 0; i < MAX_ARGS_NUMBER; i += 1) {
+        if (params->type[i] == T_REG)
+            size = sizeof(char);
+        if (params->type[i] == T_DIR)
+            size = dir_size;
+        if (params->type[i] == T_IND)
+            size = IND_SIZE;
+        params->value[i] = read_from_mem(memory, start, size);
+        start += size;
+        total += size;
+    }
+    return (total);
+}
+
+void add_parameter(unsigned char *buffer, int bytes, int size, int start)
+{
+    unsigned int mask = 0x000000FF;
+    int move = 0;
+
+    if (!buffer)
+        return;
+    for (int i = 1; i < size; i += 1) {
+        mask = (mask << 8);
+        move += 8;
+    }
+    for (int i = 0; i < size; i += 1) {
+        buffer[start % MEM_SIZE] = ((bytes & mask) >> move);
+        start += 1;
+        mask = (mask >> 8);
+        move -= 8;
+    }
 }

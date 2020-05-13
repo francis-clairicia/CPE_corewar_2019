@@ -64,10 +64,11 @@ typedef struct parser_s
     int (*parse)(char **, battle_t *, utils_parser_t *);
 } parser_t;
 
-typedef struct mnemonic_s
+typedef struct parameter
 {
-    int (*mnemonic)(champ_t *, battle_t *);
-} mnemonic_t;
+    args_type_t type[MAX_ARGS_NUMBER];
+    int value[MAX_ARGS_NUMBER];
+} param_t;
 
 int corewar(char **av);
 int parse_arg(char **av, champ_t **champ, battle_t *battle);
@@ -96,34 +97,43 @@ void print_help(int syntax);
 int help(int ac, char **av);
 int ret_putstr_fd(int fd, char *str);
 
-int mne_add(champ_t *champ, battle_t *battle);
-int mne_aff(champ_t *champ, battle_t *battle);
-int mne_and(champ_t *champ, battle_t *battle);
-int mne_fork(champ_t *champ, battle_t *battle);
-int mne_ld(champ_t *champ, battle_t *battle);
-int mne_ldi(champ_t *champ, battle_t *battle);
-int mne_lfork(champ_t *champ, battle_t *battle);
-int mne_live(champ_t *champ, battle_t *battle);
-int mne_lld(champ_t *champ, battle_t *battle);
-int mne_lldi(champ_t *champ, battle_t *battle);
-int mne_or(champ_t *champ, battle_t *battle);
-int mne_st(champ_t *champ, battle_t *battle);
-int mne_sti(champ_t *champ, battle_t *battle);
-int mne_sub(champ_t *champ, battle_t *battle);
-int mne_xor(champ_t *champ, battle_t *battle);
-int mne_zjmp(champ_t *champ, battle_t *battle);
+int launch_mnemonic(battle_t *battle, champ_t *champ);
+typedef int (*mnemonic_t)(param_t const *params, champ_t *, battle_t *);
+int mne_add(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_aff(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_and(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_fork(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_ld(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_ldi(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_lfork(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_live(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_lld(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_lldi(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_or(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_st(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_sti(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_sub(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_xor(param_t const *params, champ_t *champ, battle_t *battle);
+int mne_zjmp(param_t const *params, champ_t *champ, battle_t *battle);
 
 int is_register(int nb);
-int get_value(champ_t *champ, battle_t *battle);
 int get_three_value(battle_t *battle, champ_t *champ, int *idx, int param);
 int pows(int number, int nb);
-int *get_param_type(int cha);
-int read_from_mem(battle_t *battle, int start, int nb_to_read);
+void get_param_type(param_t *params, unsigned char coding_byte);
+bool valid_params(param_t const *params, int op_code);
+int set_param_values(param_t *params, unsigned char *memory,
+    int start, int dir_size);
+int read_from_mem(unsigned char *memory, int start, int nb_to_read);
 void add_parameter(unsigned char *buffer, int bytes, int size, int start);
 int get_fst_value(champ_t *chp, battle_t *bat, int param, int *idx);
 int get_scd_value(champ_t *chp, battle_t *bat, int param, int *idx);
 void move_pc_special(champ_t *champ, int *param);
 void move_pc(champ_t *champ, int *param);
 champ_t *get_child(champ_t *champ, int child_pc);
+
+#define get_coding_byte(mem, pc) \
+    (unsigned char)read_from_mem(mem, pc + 1, sizeof(char))
+
+#define IS_A_REGISTER(r_nb) (r_nb >= 1 && r_nb <= REG_NUMBER)
 
 #endif
