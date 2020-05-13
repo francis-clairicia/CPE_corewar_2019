@@ -12,10 +12,10 @@ int normal_get_value(unsigned char *mem, champ_t *champ, param_t *param,
                             int *idx)
 {
     int nb = 0;
-    static int idx_param = 1;
+    static int idx_param = 0;
 
     if (*idx == 2)
-        idx_param = 1;
+        idx_param = 0;
     if (param->type[idx_param] == T_REG) {
             nb = champ->reg[param->value[idx_param] - 1];
             *idx += 1;
@@ -39,7 +39,7 @@ int mne_and(param_t const *param, champ_t *champ, battle_t *battle)
     int fst_param = get_three_value(battle->mem, champ->pc, param, &idx);
     int scd_param = get_three_value(battle->mem, champ->pc, param, &idx);
 
-    champ->reg[param->value[0] - 1] = fst_param & scd_param;
-    champ->carry = (champ->reg[param->value[0] - 1] == 0) ? 1 : 0;
+    champ->reg[param->value[2] - 1] = fst_param & scd_param;
+    champ->carry = (champ->reg[param->value[2] - 1] == 0) ? 1 : 0;
     return 0;
 }

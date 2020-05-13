@@ -41,7 +41,7 @@ static int game_act(battle_t *battle, champ_t *champ)
     if (champ->act == false) {
         read_mnemonic(battle, champ);
     } else {
-        IRETURN(launch_mnemonic(champ, battle));
+        IRETURN(launch_mnemonic(battle, champ));
         champ->act = false;
         battle->draw_dump |= draw_the_dump(champ);
     }
