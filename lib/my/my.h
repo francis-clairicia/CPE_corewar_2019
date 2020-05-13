@@ -24,6 +24,7 @@ int my_putstr_error(char const *str);
 int my_putstr_fd(int fd, char const *str);
 int my_strlen(char const *str);
 int my_getnbr(char const *str);
+long my_getnbr_long(char const *str);
 int my_getnbr_base(char const *str, char const *base);
 void my_sort_int_array(int *array, int size);
 int my_pow(int nb, int p);

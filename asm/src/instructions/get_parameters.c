@@ -22,42 +22,42 @@ static instruction_t *get_instruction_by_label(list_t list, char const *label,
     return (NULL);
 }
 
-int get_register_parameter(list_t list UNUSED,
+long get_register_parameter(list_t list UNUSED,
     int address UNUSED, char const *parameter, errno_t *errno UNUSED)
 {
     if (!parameter)
         return (0);
-    return (my_getnbr(&parameter[1]));
+    return (my_getnbr_long(&parameter[1]));
 }
 
-int get_direct_parameter(list_t list, int address, char const *parameter,
+long get_direct_parameter(list_t list, int address, char const *parameter,
     errno_t *errno)
 {
-    int nb = 0;
+    long nb = 0;
     instruction_t *instruction = NULL;
 
     if (!parameter)
         return (0);
     if (parameter[1] != LABEL_CHAR)
-        return (my_getnbr(&parameter[1]));
+        return (my_getnbr_long(&parameter[1]));
     instruction = get_instruction_by_label(list, &parameter[2], errno);
     if (instruction != NULL)
         nb = instruction->address - address;
     return (nb);
 }
 
-int get_indirect_parameter(list_t list, int address, char const *parameter,
+long get_indirect_parameter(list_t list, int address, char const *parameter,
     errno_t *errno)
 {
-    short nb = 0;
+    long nb = 0;
     instruction_t *instruction = NULL;
 
     if (!parameter)
         return (0);
     if (parameter[0] != LABEL_CHAR)
-        return (my_getnbr(parameter));
+        return (my_getnbr_long(parameter));
     instruction = get_instruction_by_label(list, &parameter[1], errno);
     if (instruction != NULL)
         nb = instruction->address - address;
-    return ((int)nb);
+    return (nb);
 }

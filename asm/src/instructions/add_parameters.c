@@ -8,7 +8,7 @@
 #include "asm.h"
 #include "my.h"
 
-void add_parameter(char *buffer, int bytes, int size, int *start)
+void add_parameter(char *buffer, long bytes, int size, int *start)
 {
     unsigned int mask = 0x000000FF;
     int move = 0;

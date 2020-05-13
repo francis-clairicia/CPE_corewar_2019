@@ -53,3 +53,18 @@ int my_getnbr(char const *str)
     result = nb;
     return ((sign == 1) ? result * (-1) : result);
 }
+
+long my_getnbr_long(char const *str)
+{
+    long nb = 0;
+    int i = index_of_first_digit(str);
+    int sign = negative_nb(str, i);
+
+    if (str == NULL)
+        return (0);
+    while (str[i] >= '0' && str[i] <= '9') {
+        nb = (nb * 10) + (str[i] - 48);
+        i += 1;
+    }
+    return ((sign == 1) ?  nb * (-1) : nb);
+}

@@ -41,7 +41,7 @@ errno_t add_instruction(char *buffer, list_t list, instruction_t instruction)
     int addr = instruction.address;
     int start = addr;
     int type = 0;
-    int parameter = 0;
+    long parameter = 0;
     errno_t errno = E_SUCCESS;
     char *param = NULL;
 

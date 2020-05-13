@@ -77,15 +77,15 @@ typedef struct instruction
 instruction_t init_instruction(int index, char **params, char *label);
 errno_t add_instruction(char *buffer, list_t list, instruction_t instruction);
 // Function to get the number to print
-typedef int (*get_parameter_func_t)(list_t, int, char const *, errno_t *);
-int get_register_parameter(list_t list, int address, char const *parameter,
+typedef long (*get_parameter_func_t)(list_t, int, char const *, errno_t *);
+long get_register_parameter(list_t list, int address, char const *parameter,
     errno_t *errno);
-int get_direct_parameter(list_t list, int address, char const *parameter,
+long get_direct_parameter(list_t list, int address, char const *parameter,
     errno_t *errno);
-int get_indirect_parameter(list_t list, int address, char const *parameter,
+long get_indirect_parameter(list_t list, int address, char const *parameter,
     errno_t *errno);
 // Functions to add parameter in buffer
-void add_parameter(char *buffer, int bytes, int size, int *start);
+void add_parameter(char *buffer, long bytes, int size, int *start);
 
 /* Utils */
 char *my_strip_str(char *str, char const characters[]);
