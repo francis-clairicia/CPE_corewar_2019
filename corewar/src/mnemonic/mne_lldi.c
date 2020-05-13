@@ -8,33 +8,29 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-static void operation_lldi(battle_t *bat, champ_t *chp, int idx, int s)
+static int get_value(args_type_t type,
+    int value, champ_t *champ, unsigned char *mem)
 {
-    chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1]
-    = read_from_mem(bat, chp->pc + s, REG_SIZE);
-    chp->carry = (chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1] == 0) ? 1 : 0;
+    if (type == T_REG)
+        return (champ->reg[value - 1]);
+    if (type == T_DIR)
+        return (value);
+    return (read_from_mem(mem, champ->pc + value, IND_SIZE));
 }
 
-int mne_lldi(champ_t *chp, battle_t *bat)
+int mne_lldi(param_t const *params, champ_t *champ, battle_t *battle)
 {
-    int *param = get_param_type(bat->mem[(chp->pc + 1) % MEM_SIZE]);
-    int idx = chp->pc + 1;
-    int fst_param = 0;
-    int scd_param = 0;
+    int reg_nb = 0;
+    int sum = 0;
+    int idx = 0;
 
-    ICHECK(param);
-    if (param[0] == 0 || param[1] == 0
-    || param[1] == T_IND || param[2] != T_REG) {
-        chp->pc += 1;
-        free(param);
-        return 0;
-    }
-    fst_param = get_fst_value(chp, bat, param[0], &idx);
-    scd_param = get_scd_value(chp, bat, param[1], &idx);
-    if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) && idx != -1) {
-        operation_lldi(bat, chp, idx, fst_param + scd_param);
-    }
-    move_pc_special(chp, param);
-    free(param);
+    ICHECK(params)
+    ICHECK(champ)
+    ICHECK(battle)
+    sum += get_value(params->type[0], params->value[0], champ, battle->mem);
+    sum += get_value(params->type[1], params->value[1], champ, battle->mem);
+    reg_nb = params->value[2] - 1;
+    idx = champ->pc + sum;
+    champ->reg[reg_nb] = read_from_mem(battle->mem, idx, REG_SIZE);
     return 0;
 }

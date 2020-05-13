@@ -45,7 +45,8 @@ int set_param_values(param_t *params, unsigned char *memory,
     int size = 0;
     int total = 0;
 
-    for (int i = 0; i < MAX_ARGS_NUMBER; i += 1) {
+    for (int i = 0; params && memory && i < MAX_ARGS_NUMBER; i += 1) {
+        size = 0;
         if (params->type[i] == T_REG)
             size = sizeof(char);
         if (params->type[i] == T_DIR)
@@ -57,6 +58,18 @@ int set_param_values(param_t *params, unsigned char *memory,
         total += size;
     }
     return (total);
+}
+
+int set_param_values_without_cb(param_t *params, unsigned char *memory,
+    int start, char const *mnemonic)
+{
+    int size = 0;
+
+    if (!params || !mnemonic)
+        return (0);
+    size = (my_strcmp(mnemonic, "live") == 0) ? 4 : 2;
+    params->value[0] = read_from_mem(memory, start, size);
+    return (size);
 }
 
 void add_parameter(unsigned char *buffer, int bytes, int size, int start)

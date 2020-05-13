@@ -120,6 +120,8 @@ void get_param_type(param_t *params, unsigned char coding_byte);
 bool valid_params(param_t const *params, int op_code);
 int set_param_values(param_t *params, unsigned char *memory,
     int start, int dir_size);
+int set_param_values_without_cb(param_t *params, unsigned char *memory,
+    int start, char const *mnemonic);
 int read_from_mem(unsigned char *memory, int start, int nb_to_read);
 void add_parameter(unsigned char *buffer, int bytes, int size, int start);
 champ_t *get_child(champ_t *champ, int child_pc);
@@ -127,7 +129,7 @@ int normal_get_value(unsigned char *mem, champ_t *champ, param_t *param,
                             int *idx);
 
 #define get_coding_byte(mem, pc) \
-    (unsigned char)read_from_mem(mem, pc + 1, sizeof(char))
+    (unsigned char)read_from_mem(mem, pc, sizeof(char))
 
 #define IS_A_REGISTER(r_nb) (r_nb >= 1 && r_nb <= REG_NUMBER)
 

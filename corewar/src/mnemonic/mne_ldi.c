@@ -8,64 +8,29 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-int get_scd_value(champ_t *chp, battle_t *bat, int param, int *idx)
+static int get_value(args_type_t type,
+    int value, champ_t *champ, unsigned char *mem)
 {
-    int scd_value = 0;
-
-    if (*idx == -1)
-        return scd_value;
-    if (param == T_REG) {
-        if (is_register(bat->mem[(*idx + 1) % MEM_SIZE]) == 1) {
-            scd_value = chp->reg[bat->mem[(*idx + 1) % MEM_SIZE] - 1];
-            *idx += 1;
-        } else
-            *idx = -1;
-    }
-    if (param == T_DIR) {
-        scd_value = read_from_mem(bat, *idx + 1, IND_SIZE);
-        *idx += 2;
-    }
-    return scd_value;
+    if (type == T_REG)
+        return (champ->reg[value - 1]);
+    if (type == T_DIR)
+        return (value);
+    return (read_from_mem(mem, champ->pc + value % IDX_MOD, IND_SIZE));
 }
 
-int get_fst_value(champ_t *chp, battle_t *bat, int param, int *idx)
+int mne_ldi(param_t const *params, champ_t *champ, battle_t *battle)
 {
-    int nb = 0;
-    int fst_value = 0;
+    int reg_nb = 0;
+    int sum = 0;
+    int idx = 0;
 
-    if (param == T_REG) {
-        if (is_register(bat->mem[(*idx + 1) % MEM_SIZE]) == 1) {
-            fst_value = chp->reg[bat->mem[(*idx + 1) % MEM_SIZE] - 1];
-            *idx += 1;
-        } else
-            *idx = -1;
-    } if (param == T_DIR) {
-        fst_value = read_from_mem(bat, *idx + 1, IND_SIZE);
-        *idx += 2;
-    } if (param == T_IND) {
-        nb = read_from_mem(bat, *idx + 1, IND_SIZE);
-        fst_value = read_from_mem(bat, chp->pc + nb, IND_SIZE);
-        *idx += 2;
-    }
-    return fst_value;
-}
-
-static void operation_ldi(battle_t *bat, champ_t *chp, int idx, int s)
-{
-    chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1]
-    = read_from_mem(bat, chp->pc + (s % IDX_MOD), REG_SIZE);
-    chp->carry = (chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1] == 0) ? 1 : 0;
-}
-
-int mne_ldi(param_t const *param, champ_t *champ, battle_t *battle)
-{
-    ICHECK(param || !champ || !battle);
-    fst_param = get_fst_value(chp, bat, param[0], &idx);
-    scd_param = get_scd_value(chp, bat, param[1], &idx);
-    if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) && idx != -1) {
-        operation_ldi(bat, chp, idx, fst_param % IDX_MOD + scd_param);
-    }
-    move_pc_special(chp, param);
-    free(param);
+    ICHECK(params)
+    ICHECK(champ)
+    ICHECK(battle)
+    sum += get_value(params->type[0], params->value[0], champ, battle->mem);
+    sum += get_value(params->type[1], params->value[1], champ, battle->mem);
+    reg_nb = params->value[2] - 1;
+    idx = champ->pc + sum % IDX_MOD;
+    champ->reg[reg_nb] = read_from_mem(battle->mem, idx, REG_SIZE);
     return 0;
 }

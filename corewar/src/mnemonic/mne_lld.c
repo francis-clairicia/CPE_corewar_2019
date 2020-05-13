@@ -8,45 +8,30 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-int get_two_value(battle_t *battle, champ_t *champ, int *idx, int param)
+static int load_value(unsigned char *mem, int const pc, int const value,
+                    args_type_t const type)
 {
-    int fst = 0;
     int start_to_read = 0;
     int nb = 0;
 
-    if (param == T_DIR) {
-        nb = read_from_mem(battle, *idx + 1, REG_SIZE);
-        *idx += 4;
+    if (type == T_DIR) {
+        nb = value;
     }
-    if (param == T_IND) {
-        fst = read_from_mem(battle, *idx + 1, IND_SIZE);
-        start_to_read = champ->pc + fst;
-        nb = read_from_mem(battle, start_to_read, REG_SIZE);
-        *idx += 2;
+    if (type == T_IND) {
+        start_to_read = pc + value;
+        nb = read_from_mem(mem, start_to_read , REG_SIZE);
     }
     return nb;
 }
 
-int mne_lld(champ_t *chp, battle_t *bat)
+int mne_lld(param_t const *param, champ_t *champ, battle_t *battle)
 {
-    int *param = get_param_type(bat->mem[(chp->pc + 1) % MEM_SIZE]);
-    int idx = chp->pc + 1;
-    int fst_param = 0;
-    int scd_param = 0;
+    int reg_nb = 0;
 
-    ICHECK(param);
-    if (param[0] == 0 || param[0] == T_REG || param[1] == T_REG) {
-        chp->pc += 1;
-        free(param);
-        return 0;
-    }
-    fst_param = get_two_value(bat, chp, &idx, param[0]);
-    if (is_register(bat->mem[(idx + 1) % MEM_SIZE])) {
-        scd_param = bat->mem[(idx + 1) % MEM_SIZE];
-        chp->reg[scd_param - 1] = fst_param;
-        chp->carry = (fst_param == 0) ? 1 : 0;
-    }
-    move_pc(chp, param);
-    free(param);
+    ICHECK(param || !champ || !battle);
+    reg_nb = param->value[1] - 1;
+    champ->reg[reg_nb] = load_value(battle->mem, champ->pc,
+                                    param->value[0], param->type[0]);
+    champ->carry = (champ->reg[reg_nb] == 0);
     return 0;
 }

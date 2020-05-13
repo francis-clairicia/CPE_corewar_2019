@@ -8,12 +8,10 @@
 #include "corewar.h"
 #include "my.h"
 
-int mne_zjmp(champ_t *champ, battle_t *battle)
+int mne_zjmp(param_t const *params, champ_t *champ, battle_t *battle UNUSED)
 {
-    int param = read_from_mem(battle, champ->pc + 1, IND_SIZE);
-
     if (champ->carry == 1) {
-        champ->pc = champ->pc + (param % IDX_MOD);
+        champ->pc = champ->pc + (params->value[0] % IDX_MOD);
     } else {
         champ->pc += 3;
     }

@@ -18,7 +18,7 @@ void write_in(unsigned char *mem, champ_t *champ, int const value[4],
     }
     if (type == T_IND) {
         write_at = champ->pc + (value[1] % IDX_MOD);
-        add_parameter(mem, value[0], REG_SIZE, write_at);
+        add_parameter(mem, champ->reg[value[0] - 1], REG_SIZE, write_at);
     }
 }
 

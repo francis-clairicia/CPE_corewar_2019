@@ -18,6 +18,7 @@ SRC_TEST			=	src/help/help.c						\
 						src/memory/print_dump.c				\
 						src/game/game_loop.c				\
 						src/game/check_end.c				\
+						src/mnemonic/launch.c				\
 						src/mnemonic/mne_add.c				\
 						src/mnemonic/mne_aff.c				\
 						src/mnemonic/mne_and.c				\
@@ -86,6 +87,7 @@ clean:
 	$(RM) unit_tests *.gc*
 
 fclean:	clean
+	make fclean -C ../lib/my
 	rm -f $(NAME)
 
 re:	fclean all
