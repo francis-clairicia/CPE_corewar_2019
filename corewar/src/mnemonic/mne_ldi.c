@@ -57,20 +57,9 @@ static void operation_ldi(battle_t *bat, champ_t *chp, int idx, int s)
     chp->carry = (chp->reg[bat->mem[(idx + 1) % MEM_SIZE] - 1] == 0) ? 1 : 0;
 }
 
-int mne_ldi(champ_t *chp, battle_t *bat)
+int mne_ldi(param_t const *param, champ_t *champ, battle_t *battle)
 {
-    int *param = get_param_type(bat->mem[(chp->pc + 1) % MEM_SIZE]);
-    int idx = chp->pc + 1;
-    int fst_param = 0;
-    int scd_param = 0;
-
-    ICHECK(param);
-    if (param[0] == 0 || param[1] == 0
-    || param[1] == T_IND || param[2] != T_REG) {
-        chp->pc += 1;
-        free(param);
-        return 0;
-    }
+    ICHECK(param || !champ || !battle);
     fst_param = get_fst_value(chp, bat, param[0], &idx);
     scd_param = get_scd_value(chp, bat, param[1], &idx);
     if (is_register(bat->mem[(idx + 1) % MEM_SIZE]) && idx != -1) {
