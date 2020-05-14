@@ -10,7 +10,7 @@ class Window:
     __sound_volume = 0.5
     __music_volume = 0.5
 
-    def __init__(self, size=(1920, 1080), flags=0, fps=30, bg_color=(0, 0, 0)):
+    def __init__(self, size=(1920, 1080), flags=0, fps=30, bg_color=(0, 0, 0), bg_music=None):
         if not pygame.get_init():
             pygame.mixer.pre_init(44100, -16, 2, 512)
             status = pygame.init()
@@ -36,6 +36,7 @@ class Window:
         self.bind_key(pygame.K_ESCAPE, lambda key: self.stop())
         self.bind_key(pygame.K_q, lambda key: self.stop())
         Window.all_opened.append(self)
+        self.bg_music = bg_music
 
     def __setattr__(self, name, obj):
         if hasattr(obj, "draw"):
@@ -82,21 +83,44 @@ class Window:
         self.loop = True
         if self.time_after >= 0:
             self.time_start = time.time()
+        if self.bg_music is not None:
+            self.play_music(self.bg_music)
         while self.loop:
             self.main_clock.tick(self.fps)
             self.draw_screen(fill_bg)
             self.refresh()
             self.event_handler()
+            self.check_sound_status()
 
     def stop(self, force=False):
         self.on_quit()
         self.loop = False
+        if self.bg_music is not None:
+            self.stop_music()
         if self.main_window or force:
             pygame.quit()
             sys.exit(0)
 
     def on_quit(self):
         pass
+
+    def check_sound_status(self):
+        if self.bg_music is None:
+            return
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load(self.bg_music)
+            pygame.mixer.music.play()
+
+    @staticmethod
+    def stop_music():
+        pygame.mixer.music.stop()
+        pygame.mixer.music.unload()
+
+    @staticmethod
+    def play_music(filepath: str):
+        Window.stop_music()
+        pygame.mixer.music.load(filepath)
+        pygame.mixer.music.play()
 
     def draw_screen(self, fill=True):
         if fill:
@@ -153,12 +177,12 @@ class Window:
             key_list = self.key_handler_dict[key_value] = list()
         key_list.append(callback)
 
-    @property
-    def sound_volume(self):
+    @staticmethod
+    def sound_volume():
         return Window.__sound_volume
 
-    @sound_volume.setter
-    def sound_volume(self, value: float):
+    @staticmethod
+    def set_sound_volume(value: float):
         Window.__sound_volume += value
         if Window.__sound_volume > 1:
             Window.__sound_volume = 1

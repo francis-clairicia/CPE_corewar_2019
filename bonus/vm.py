@@ -1,7 +1,7 @@
 #! /bin/python3
 # -*- coding: Utf-8 -*
 
-from constant import IMG, FONT
+from constant import IMG, FONT, AUDIO
 from my_pygame.window import Window
 from my_pygame.colors import BLACK, BLUE_LIGHT, YELLOW, BLUE, BLUE_DARK
 from my_pygame.classes import Image, Button
@@ -10,7 +10,7 @@ from game import GameMenu
 
 class VmGame(Window):
     def __init__(self):
-        Window.__init__(self)
+        Window.__init__(self, bg_music=AUDIO["menu_bg"])
         self.set_title("Corewar")
         loading_page = Loading(font=(FONT["death_star"], 270), opening=False, side_ending="right")
         loading_page.show(self)
@@ -19,6 +19,8 @@ class VmGame(Window):
             "bg": BLUE,
             "hover_bg": BLUE_LIGHT,
             "active_bg": BLUE_DARK,
+            "hover_sound": AUDIO["clank"],
+            "on_click_sound": AUDIO["laser"],
             "active_fg": YELLOW,
             "outline": 5,
             "outline_color": BLACK

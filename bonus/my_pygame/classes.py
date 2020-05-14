@@ -19,7 +19,7 @@ class Drawable(Sprite):
 
     def __setattr__(self, name, value):
         if isinstance(value, pygame.mixer.Sound):
-            value.set_volume(Window.sound_volume)
+            value.set_volume(float(Window.sound_volume()))
             self.__sounds.append(value)
         return object.__setattr__(self, name, value)
 
@@ -168,8 +168,8 @@ class Button(RectangleShape):
     def __init__(self, master: Window, text: str, font=None, command=None,
                  bg=(255, 255, 255), fg=(0, 0, 0),
                  outline=2, outline_color=(0, 0, 0),
-                 hover_bg=(235, 235, 235), hover_fg=None,
-                 active_bg=(128, 128, 128), active_fg=None,
+                 hover_bg=(235, 235, 235), hover_fg=None, hover_sound=None,
+                 active_bg=(128, 128, 128), active_fg=None, on_click_sound=None,
                  **kwargs):
         if font is None:
             font = SysFont(pygame.font.get_default_font(), 15)
@@ -180,10 +180,13 @@ class Button(RectangleShape):
         self.bg = bg
         self.hover_fg = fg if hover_fg is None else hover_fg
         self.hover_bg = bg if hover_bg is None else hover_bg
+        self.hover_sound = None if hover_sound is None else pygame.mixer.Sound(hover_sound)
         self.active_fg = fg if active_fg is None else active_fg
         self.active_bg = bg if active_bg is None else active_bg
+        self.on_click_sound = None if on_click_sound is None else pygame.mixer.Sound(on_click_sound)
         self.callback = command
         self.active = False
+        self.hover = False
         master.bind_event(pygame.MOUSEBUTTONDOWN, self.mouse_click_down)
         master.bind_event(pygame.MOUSEBUTTONUP, self.mouse_click_up)
         master.bind_mouse(self.mouse_motion)
@@ -199,8 +202,11 @@ class Button(RectangleShape):
             return
         self.active = False
         self.on_click_up()
-        if self.rect.collidepoint(event.pos) and self.callback is not None:
-            self.callback()
+        if self.rect.collidepoint(event.pos):
+            if isinstance(self.on_click_sound, pygame.mixer.Sound):
+                self.on_click_sound.play()
+            if self.callback is not None:
+                self.callback()
 
     def mouse_click_down(self, event):
         if self.rect.collidepoint(event.pos):
@@ -209,11 +215,16 @@ class Button(RectangleShape):
 
     def mouse_motion(self, mouse_pos):
         if self.rect.collidepoint(mouse_pos):
+            if self.hover is False:
+                if isinstance(self.hover_sound, pygame.mixer.Sound):
+                    self.hover_sound.play()
+                self.hover = True
             self.color = self.hover_bg if not self.active else self.active_bg
             self.text.set_color(self.hover_fg if not self.active else self.active_fg)
         else:
             self.color = self.bg
             self.text.set_color(self.fg)
+            self.hover = False
 
     def on_click_down(self):
         pass
