@@ -40,7 +40,7 @@ static bool check_no_live_champ(champ_t *champ, battle_t *battle)
 static void check_status(champ_t *champ)
 {
     for (champ_t *tmp = champ; tmp; tmp = tmp->next) {
-        if (tmp->status == 1 && tmp->die == false)
+        if (tmp->status == 1 && tmp->die == false && tmp->op.code != 0)
             tmp->act = true;
         if (tmp->status > 0 && tmp->die == false)
             tmp->status -= 1;
