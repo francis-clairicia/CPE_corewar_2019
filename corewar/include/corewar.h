@@ -89,6 +89,7 @@ int reverse_number(int nb);
 int fill_mem(champ_t *champ, battle_t *battle);
 void print_dump(unsigned char *memory);
 int game_loop(champ_t *champ, battle_t *battle);
+int game_act(battle_t *battle, champ_t *champ);
 bool no_end(battle_t *battle, champ_t *champ);
 void champ_address(champ_t *champ, int nb_champ);
 void end_loop(battle_t *battle);

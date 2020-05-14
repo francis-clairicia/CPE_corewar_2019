@@ -83,6 +83,8 @@ void add_parameter(unsigned char *buffer, int bytes, int size, int start)
         mask = (mask << 8);
         move += 8;
     }
+    if (start < 0)
+        start = MEM_SIZE - start;
     for (int i = 0; i < size; i += 1) {
         buffer[start % MEM_SIZE] = ((bytes & mask) >> move);
         start += 1;

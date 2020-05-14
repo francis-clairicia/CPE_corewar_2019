@@ -17,6 +17,7 @@ SRC_TEST			=	src/help/help.c						\
 						src/memory/handle_mem.c				\
 						src/memory/print_dump.c				\
 						src/game/game_loop.c				\
+						src/game/game_act.c					\
 						src/game/check_end.c				\
 						src/mnemonic/launch.c				\
 						src/mnemonic/mne_add.c				\
