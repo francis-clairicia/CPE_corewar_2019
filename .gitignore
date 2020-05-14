@@ -9,8 +9,13 @@ unit_tests
 coverage
 vgcore.*
 *.s
+*.cor
+!corewar/tests/champions/*.cor
 *.dump
 *.sh
 bonus/asm/*.sav
+bonus/*.conf
+!bonus/champions/*.s
+!bonus/champions/*.cor
 remove_spaces
 file*

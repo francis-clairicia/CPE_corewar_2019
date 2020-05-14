@@ -16,12 +16,12 @@ class Loading(Window):
             "bottom": lambda x=0, y=-speed: self._show_animation(x, y)
         }
         self.animation_init_opening = {
-            "left": {"right": self.window_rect.left - 1, "centery": self.window_rect.centery},
-            "right": {"left": self.window_rect.right + 1, "centery": self.window_rect.centery},
-            "top": {"bottom": self.window_rect.top - 1, "centerx": self.window_rect.centerx},
-            "bottom": {"top": self.window_rect.bottom + 1, "centerx": self.window_rect.centerx}
+            "left": {"right": self.left - 1, "centery": self.centery},
+            "right": {"left": self.right + 1, "centery": self.centery},
+            "top": {"bottom": self.top - 1, "centerx": self.centerx},
+            "bottom": {"top": self.bottom + 1, "centerx": self.centerx}
         }
-        self.rectangle = RectangleShape(self.window_rect.size, bg)
+        self.rectangle = RectangleShape(self.w, self.h, bg)
         self.text = Text(text, font, WHITE)
         self.animation_ending = {
             "left": lambda x=-speed, y=0: self._hide_animation(x, y),
@@ -61,10 +61,10 @@ class Loading(Window):
         self.text.move(center=self.rectangle.center)
         self.master.draw_screen()
         side = self.side_opening
-        if (side == "left" and self.rectangle.left > self.window_rect.left) \
-        or (side == "right" and self.rectangle.right < self.window_rect.right) \
-        or (side == "top" and self.rectangle.top > self.window_rect.top) \
-        or (side == "bottom" and self.rectangle.bottom < self.window_rect.bottom):
+        if (side == "left" and self.rectangle.left > self.left) \
+        or (side == "right" and self.rectangle.right < self.right) \
+        or (side == "top" and self.rectangle.top > self.top) \
+        or (side == "bottom" and self.rectangle.bottom < self.bottom):
             self.rectangle.move(x=0, y=0)
             self.draw_screen()
             self.refresh()

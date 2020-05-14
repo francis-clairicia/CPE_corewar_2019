@@ -1,16 +1,18 @@
 #! /bin/python3
 # -*- coding: Utf-8 -*
 
+import pygame
 from constant import IMG, FONT, AUDIO
 from my_pygame.window import Window
-from my_pygame.colors import BLACK, BLUE_LIGHT, YELLOW, BLUE, BLUE_DARK
-from my_pygame.classes import Image, Button
+from my_pygame.colors import BLUE_LIGHT, YELLOW, BLUE, BLUE_DARK
+from my_pygame.classes import Image, Button, ImageButton
 from loading import Loading
 from game import GameMenu
+from settings import Settings
 
 class VmGame(Window):
     def __init__(self):
-        Window.__init__(self, bg_music=AUDIO["menu_bg"])
+        Window.__init__(self, bg_music=AUDIO["menu_bg"], flags=pygame.NOFRAME)
         self.set_title("Corewar")
         loading_page = Loading(font=(FONT["death_star"], 270), opening=False, side_ending="right")
         loading_page.show(self)
@@ -23,26 +25,21 @@ class VmGame(Window):
             "on_click_sound": AUDIO["laser"],
             "active_fg": YELLOW,
             "outline": 5,
-            "outline_color": BLACK
         }
         self.bg = Image(IMG["menu_bg"], self.size)
         self.logo = Image(IMG["logo"], self.size)
-        self.game_button = Button(self, "Game", command=self.play, **params_for_all_buttons)
+        self.game_button = Button(self, "Game", command=GameMenu(self).mainloop, **params_for_all_buttons)
         self.quit_button = Button(self, "Quit", command=self.stop, **params_for_all_buttons)
-        self.place_objects()
+        build_img = Image(IMG["build"], size=100)
+        self.settings_button = ImageButton(self, build_img, show_bg=True, command=Settings(self).mainloop, **params_for_all_buttons)
         loading_page.hide(self)
-        del loading_page
 
     def place_objects(self):
         self.bg.move(center=self.center)
         self.logo.move(center=self.center)
         self.game_button.move(centerx=self.centerx, centery=self.centery + 100)
         self.quit_button.move(centerx=self.centerx, top=self.game_button.bottom + 50)
-
-    def play(self):
-        game = GameMenu(self)
-        game.mainloop()
-        del game
+        self.settings_button.move(x=20, y=20)
 
 def main():
     vm = VmGame()
