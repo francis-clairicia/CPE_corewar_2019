@@ -108,8 +108,7 @@ class Window:
         if self.bg_music is None:
             return
         if not pygame.mixer.music.get_busy():
-            pygame.mixer.music.load(self.bg_music)
-            pygame.mixer.music.play()
+            self.play_music(self.bg_music)
 
     @staticmethod
     def stop_music():
@@ -120,7 +119,7 @@ class Window:
     def play_music(filepath: str):
         Window.stop_music()
         pygame.mixer.music.load(filepath)
-        pygame.mixer.music.play()
+        pygame.mixer.music.play(-1)
 
     def draw_screen(self, fill=True):
         if fill:
