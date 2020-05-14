@@ -62,7 +62,7 @@ int flag_a(char **av, __attribute__((unused)) battle_t *battle,
         return 84;
     }
     up->address = my_getnbr(av[up->i + 1]);
-    if (up->address < 1) {
+    if (up->address < 0) {
         print_help(2);
         return 84;
     }

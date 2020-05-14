@@ -9,7 +9,6 @@ unit_tests
 coverage
 vgcore.*
 *.s
-*.cor
 *.dump
 *.sh
 bonus/asm/*.sav

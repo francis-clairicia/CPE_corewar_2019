@@ -25,7 +25,7 @@ static int check_champ_mem(champ_t *tmp, battle_t *battle)
 static int file_header(champ_t *tmp, battle_t *battle)
 {
     if (fread(tmp->header, sizeof(header_t), 1, tmp->fp) != 1)
-        return 84;
+        return ret_putstr_fd(2, "Error on champ's header.\n");
     if (tmp->header->magic == 0 || tmp->header->comment[0] == '\0'
     || tmp->header->prog_name[0] == '\0' || tmp->header->prog_size == 0) {
         return ret_putstr_fd(2, "Error on champ's header.\n");
