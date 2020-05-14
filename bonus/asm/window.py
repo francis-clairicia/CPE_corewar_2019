@@ -31,7 +31,7 @@ class MenuWindow(tk.Menu):
             self.sections[section].add_separator()
 
 class Assembly(tk.Tk):
-    def __init__(self, title: str, width: int, height: int):
+    def __init__(self, title: str, width: int, height: int, load_workspace=True):
         tk.Tk.__init__(self)
         self.title(title)
         self.geometry(f"{width}x{height}+0+0")
@@ -43,7 +43,7 @@ class Assembly(tk.Tk):
         self.paned_window = tk.PanedWindow(self, orient=tk.HORIZONTAL, sashwidth=5, sashrelief=tk.RAISED)
         self.paned_window.bind("<Configure>", self.set_panedwindow_size)
 
-        self.editor = Editor(self, width=int(width * 0.7))
+        self.editor = Editor(self, width=int(width * 0.7), load_workspace=load_workspace)
 
         self.options = tk.Frame(self, width=int(width * 0.3))
         self.build = IconButton(self.options, "build.png", tooltip="Build champion", command=self.build_code)
@@ -82,6 +82,8 @@ class Assembly(tk.Tk):
     def run(self, file=None):
         if file is not None:
             self.editor.open_file(file)
+        elif not self.editor.workspace:
+            self.editor.create_new_file()
         self.all_binds()
         self.show_widgets()
         self.refresh()

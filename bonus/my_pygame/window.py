@@ -95,6 +95,7 @@ class Window:
             self.bg_music = str(Window.actual_music)
         while self.loop:
             self.main_clock.tick(self.fps)
+            self.update()
             self.draw_screen(fill_bg)
             self.refresh()
             self.alt_f4_handler()
@@ -110,6 +111,9 @@ class Window:
             sys.exit(0)
 
     def on_quit(self):
+        pass
+
+    def update(self):
         pass
 
     def draw_screen(self, fill=True):

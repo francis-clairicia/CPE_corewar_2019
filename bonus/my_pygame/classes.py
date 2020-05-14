@@ -211,6 +211,11 @@ class Button(RectangleShape):
         master.bind_event(pygame.MOUSEBUTTONUP, self.mouse_click_up)
         master.bind_mouse(self.mouse_motion)
 
+    def set_text(self, string: str):
+        self.text.set_string(string)
+        w, h = (self.text.w + 20, self.text.h + 20)
+        self.set_size(w, h)
+
     def draw(self, surface):
         if self.is_shown():
             self.draw_shape(surface)
@@ -221,17 +226,17 @@ class Button(RectangleShape):
         if not self.active:
             return
         self.active = False
-        self.on_click_up()
-        if self.rect.collidepoint(event.pos):
+        self.on_click_up(event)
+        if event.button == 1 and self.rect.collidepoint(event.pos):
             if isinstance(self.on_click_sound, pygame.mixer.Sound):
                 self.on_click_sound.play()
             if self.callback is not None:
                 self.callback()
 
     def mouse_click_down(self, event):
-        if self.rect.collidepoint(event.pos):
+        if event.button == 1 and self.rect.collidepoint(event.pos):
             self.active = True
-            self.on_click_down()
+            self.on_click_down(event)
 
     def mouse_motion(self, mouse_pos):
         if self.rect.collidepoint(mouse_pos):
@@ -246,10 +251,10 @@ class Button(RectangleShape):
             self.text.set_color(self.fg)
             self.hover = False
 
-    def on_click_down(self):
+    def on_click_down(self, event):
         pass
 
-    def on_click_up(self):
+    def on_click_up(self, event):
         pass
 
 class ImageButton(Button):
@@ -273,11 +278,11 @@ class ImageButton(Button):
             self.image_button.move_ip(*self.offset)
             self.image_button.draw(surface)
 
-    def on_click_up(self):
+    def on_click_up(self, event):
         if not self._show:
             self.offset[1] = 0
 
-    def on_click_down(self):
+    def on_click_down(self, event):
         if not self._show:
             self.offset[1] = 3
 
@@ -304,10 +309,10 @@ class TextButton(Button):
         copy_text.move_ip(0, self.__offset)
         copy_text.draw(surface)
 
-    def on_click_up(self):
+    def on_click_up(self, event):
         self.offset = 0
 
-    def on_click_down(self):
+    def on_click_down(self, event):
         self.offset = self.__offset
 
 class Entry(RectangleShape):

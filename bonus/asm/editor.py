@@ -67,7 +67,7 @@ class EditorTab(tk.Frame):
     def get_filename_from_champion_name(self) -> (str, None):
         content = self.lines
         for line in content:
-            if line.startswith(".name "):
+            if line.startswith(".name"):
                 first_quote = line.find('"')
                 if first_quote == -1:
                     break
@@ -204,14 +204,15 @@ class EditorTab(tk.Frame):
         self.text_editor.insert(end_of_line, "\n" + cmd)
 
 class Editor(ttk.Notebook):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, load_workspace=True, **kwargs) -> None:
         ttk.Notebook.__init__(self, *args, **kwargs)
         self.files_opened = dict()
         self.last_opened_folder = os.getcwd()
         self.index_new_file = 0
         self.style = ttk.Style()
         self.style.configure('TNotebook.Tab', font=("", 12))
-        if os.path.isfile(EDITOR_SAVE_FILE):
+        self.workspace = load_workspace
+        if self.workspace and os.path.isfile(EDITOR_SAVE_FILE):
             with open(EDITOR_SAVE_FILE, "rb") as save:
                 data = pickle.load(save)
             self.last_opened_folder = data["last_folder"]
@@ -221,20 +222,21 @@ class Editor(ttk.Notebook):
                 self.files_opened[data["actual"]].select()
 
     def close_workspace(self) -> bool:
-        file_list = list()
-        actual_file = None if not self.files_opened else self.get_current_tab().filepath
-        for tab in list(self.files_opened.values()):
-            if not tab.close():
-                return False
-            if not tab.filepath.startswith("new"):
-                file_list.append(str(tab.filepath))
-        data = {
-            "file_list": file_list,
-            "actual": actual_file,
-            "last_folder": self.last_opened_folder
-        }
-        with open(EDITOR_SAVE_FILE, "wb") as save:
-            pickle.dump(data, save)
+        if self.workspace:
+            file_list = list()
+            actual_file = None if not self.files_opened else self.get_current_tab().filepath
+            for tab in list(self.files_opened.values()):
+                if not tab.close():
+                    return False
+                if not tab.filepath.startswith("new"):
+                    file_list.append(str(tab.filepath))
+            data = {
+                "file_list": file_list,
+                "actual": actual_file,
+                "last_folder": self.last_opened_folder
+            }
+            with open(EDITOR_SAVE_FILE, "wb") as save:
+                pickle.dump(data, save)
         return True
 
     def create_new_file(self):
