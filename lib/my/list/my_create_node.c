@@ -19,7 +19,7 @@ static int copy_data(void *dest, void const *src, size_t n)
     return (1);
 }
 
-node_t *_create_node(const void *data, size_t size)
+node_t *create_node(const void *data, size_t size)
 {
     node_t *element = malloc(sizeof(node_t));
 

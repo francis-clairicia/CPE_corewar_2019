@@ -46,6 +46,8 @@ static int game_act(battle_t *battle, champ_t *champ)
         battle->draw_dump |= draw_the_dump(champ);
     }
     for (champ_t *tmp = champ->children; tmp; tmp = tmp->next) {
+        if (tmp->next == NULL && my_strcmp(champ->op.mnemonique, "fork") == 0)
+            break;
         IRETURN(game_act(battle, tmp));
     }
     return 0;

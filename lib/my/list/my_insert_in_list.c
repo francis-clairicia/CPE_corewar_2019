@@ -73,7 +73,7 @@ int my_insert_node(list_t *list, node_t *node, int index, int copy)
     if (list == NULL || node == NULL)
         return (0);
     if (copy != 0)
-        node_to_add = _create_node(node->data.ptr, node->data.size);
+        node_to_add = create_node(node->data.ptr, node->data.size);
     if (index >= 0) {
         if (index == 0)
             return (put_node_as_start(list, node_to_add));

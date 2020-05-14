@@ -25,7 +25,7 @@ static int compare_data(data_node_t node_data, const void *data, size_t size)
     return (1);
 }
 
-node_t *_node_from_data(list_t list, const void *data, size_t size)
+node_t *node_from_data(list_t list, const void *data, size_t size)
 {
     node_t *node = NULL;
 

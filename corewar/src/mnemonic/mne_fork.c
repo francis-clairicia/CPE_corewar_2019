@@ -30,6 +30,7 @@ int mne_fork(param_t const *params, champ_t *champ, battle_t *battle)
     ICHECK(params);
     ICHECK(champ);
     ICHECK(battle);
+    printf("Coucou\n");
     child_pc = champ->pc + (params->value[0] % IDX_MOD);
     if (champ->children) {
         for (tmp = champ->children; tmp->next; tmp = tmp->next);

@@ -111,16 +111,16 @@ void *my_list_to_2d_array(list_t *list, int free_list);
 /////////// Internal functions/Macros used for linked lists ///////////
 // You don't have to use it !
 // Use the macros above instead.
-node_t *_create_node(const void *data, size_t size);
-node_t *_node_from_data(list_t list, const void *data, size_t size);
-void _delete_node_from_data(list_t *list, const void *data, size_t size,
+node_t *create_node(const void *data, size_t size);
+node_t *node_from_data(list_t list, const void *data, size_t size);
+void delete_node_from_data(list_t *list, const void *data, size_t size,
     void (*free_func)());
 #define _FDATA(data, type) (type [1]){data}, sizeof(type)
 #define _INSERT_DATA(list, data, type, index) \
-    my_insert_node(list, _create_node(_FDATA(data, type)), index, 0)
-#define _GET_NODE(list, data, type) _node_from_data(list, _FDATA(data, type))
+    my_insert_node(list, create_node(_FDATA(data, type)), index, 0)
+#define _GET_NODE(list, data, type) node_from_data(list, _FDATA(data, type))
 #define _DEL_DATA(list, data, type, func) \
-    _delete_node_from_data(list, _FDATA(data, type), func)
+    delete_node_from_data(list, _FDATA(data, type), func)
 //////////////////////////////////////////////////////////////////////
 
 #endif

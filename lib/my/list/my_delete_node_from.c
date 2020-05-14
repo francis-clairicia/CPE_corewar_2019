@@ -7,14 +7,14 @@
 
 #include "mylist.h"
 
-void _delete_node_from_data(list_t *list, const void *data, size_t size,
+void delete_node_from_data(list_t *list, const void *data, size_t size,
     void (*free_func)())
 {
     node_t *node = NULL;
 
     if (list == NULL)
         return;
-    node = _node_from_data(*list, data, size);
+    node = node_from_data(*list, data, size);
     if (node == NULL)
         return;
     my_delete_node(list, node->index, free_func);
