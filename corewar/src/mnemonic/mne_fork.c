@@ -17,6 +17,7 @@ champ_t *get_child(champ_t *champ, int child_pc)
     child->nb_champ = champ->nb_champ;
     child->pc = child_pc;
     child->carry = champ->carry;
+    child->status = 1;
     for (int i = 0; i < REG_NUMBER; i++)
         child->reg[i] = champ->reg[i];
     return child;
@@ -30,7 +31,6 @@ int mne_fork(param_t const *params, champ_t *champ, battle_t *battle)
     ICHECK(params);
     ICHECK(champ);
     ICHECK(battle);
-    printf("Coucou\n");
     child_pc = champ->pc + (params->value[0] % IDX_MOD);
     if (champ->children) {
         for (tmp = champ->children; tmp->next; tmp = tmp->next);

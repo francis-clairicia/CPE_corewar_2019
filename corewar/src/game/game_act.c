@@ -52,8 +52,6 @@ int game_act(battle_t *battle, champ_t *champ)
 {
     IRETURN(launch_champion(battle, champ));
     for (champ_t *tmp = champ->children; tmp; tmp = tmp->next) {
-        if (tmp->next == NULL && my_strcmp(champ->op.mnemonique, "fork") == 0)
-            break;
         IRETURN(launch_champion(battle, tmp));
     }
     return 0;

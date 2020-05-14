@@ -52,7 +52,7 @@ static void check_status(champ_t *champ)
 
 bool no_end(battle_t *battle, champ_t *champ)
 {
-    if (battle->dump != -1 && battle->cycle >= battle->dump) {
+    if (battle->dump != -1 && battle->tot_cycle >= battle->dump) {
         print_dump(battle->mem);
         return false;
     }
@@ -64,8 +64,6 @@ bool no_end(battle_t *battle, champ_t *champ)
     if (battle->nb_live >= NBR_LIVE) {
         battle->cycle_die -= CYCLE_DELTA;
         battle->nb_live = 0;
-        if (check_no_live_champ(champ, battle))
-            return false;
         battle->cycle = 0;
     }
     check_status(champ);
