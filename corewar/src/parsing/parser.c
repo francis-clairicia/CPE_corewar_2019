@@ -18,13 +18,16 @@ static const parser_t parser_list[] =
     {NULL, NULL}
 };
 
-static int check_all_args(char **av, battle_t *battle,
-                        utils_parser_t *up, int j)
+static bool my_str_endswith(char const *str, char const *to_find)
 {
-    if (parser_list[j].parse(av, battle, up) == 84) {
-        return 84;
-    }
-    return 0;
+    int start = 0;
+
+    if (!str || !to_find)
+        return (false);
+    start = my_strlen(str) - my_strlen(to_find);
+    if (start < 0)
+        return (false);
+    return (my_strcmp(&str[start], to_find) == 0);
 }
 
 static int parse_arg_loop(char **av, battle_t *battle,
@@ -34,13 +37,13 @@ static int parse_arg_loop(char **av, battle_t *battle,
 
     for (int j = 0; parser_list[j].arg; j++) {
         if (my_strcmp(av[up->i], parser_list[j].arg) == 0) {
-            IRETURN(check_all_args(av, battle, up, j));
+            IRETURN(parser_list[j].parse(av, battle, up));
             check = true;
             break;
         }
     }
     if (check == false) {
-        if (my_strncmp(my_revstr(av[up->i]), "roc.", 4) == 0) {
+        if (my_str_endswith(av[up->i], ".cor")) {
             ICHECK((*champ = add_champ(champ, av[up->i], up)));
             battle->champ_tab[battle->nb_champ] = *champ;
             battle->nb_champ += 1;

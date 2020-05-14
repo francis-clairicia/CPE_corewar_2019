@@ -33,7 +33,7 @@ champ_t *add_champ(champ_t **champ, char *brut_name, utils_parser_t *up)
 
     my_memset(tmp, 0, sizeof(champ_t));
     tmp->header = add_empty_header();
-    tmp->brut_name = my_revstr(brut_name);
+    tmp->brut_name = brut_name;
     tmp->nb_address = (up->bool_address == true) ? up->address % MEM_SIZE : -1;
     tmp->nb_champ = (up->bool_champ == true) ? up->nb_champ : 0;
     tmp->reg[0] = tmp->nb_champ;
