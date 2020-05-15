@@ -12,6 +12,12 @@
 #include <stdio.h>
 #include "op.h"
 
+#define CYAN 36
+#define GREEN 32
+#define MAGENTA 35
+#define YELLOW 33
+#define RESET 0
+
 typedef struct champ_s
 {
     FILE *fp;
@@ -87,7 +93,7 @@ champ_t *add_champ(champ_t **champ, char *brut_name, utils_parser_t *up);
 void sort_champ_list(champ_t **champ);
 int reverse_number(int nb);
 int fill_mem(champ_t *champ, battle_t *battle);
-void print_dump(unsigned char *memory);
+void print_dump(battle_t *battle, champ_t *champions);
 int game_loop(champ_t *champ, battle_t *battle);
 int game_act(battle_t *battle, champ_t *champ);
 bool no_end(battle_t *battle, champ_t *champ);

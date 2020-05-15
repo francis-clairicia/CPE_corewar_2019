@@ -15,11 +15,11 @@ int game_loop(champ_t *champ, battle_t *battle)
             IRETURN(game_act(battle, tmp));
         }
         if (battle->graphic == true && battle->draw_dump == true)
-            print_dump(battle->mem);
+            print_dump(battle, champ);
         end_loop(battle);
     }
     if (battle->dump == -1 && battle->graphic == true)
-        print_dump(battle->mem);
+        print_dump(battle, champ);
     if (battle->last_live_nb != -1) {
         my_printf("The player %d (%s) has won.\n", battle->last_live_nb,
         battle->last_live_name);

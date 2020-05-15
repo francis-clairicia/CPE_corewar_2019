@@ -53,7 +53,7 @@ static void check_status(champ_t *champ)
 bool no_end(battle_t *battle, champ_t *champ)
 {
     if (battle->dump != -1 && battle->tot_cycle >= battle->dump) {
-        print_dump(battle->mem);
+        print_dump(battle, champ);
         return false;
     }
     if (battle->cycle >= battle->cycle_die) {
