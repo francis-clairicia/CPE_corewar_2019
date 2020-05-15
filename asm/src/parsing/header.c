@@ -40,9 +40,9 @@ static bool valid_command(line_t const *line, char const *cmd, errno_t cmd_err)
 
     if (my_strncmp(instruction, cmd, len) != 0)
         return (print_and_return(line->file, line->nb, cmd_err));
-    if (instruction[len] != ' ')
+    if (!my_strchr(" \t", instruction[len]))
         return (print_and_return(line->file, line->nb, E_INVALID_INSTRUCTION));
-    for (; instruction[len] == ' '; len += 1);
+    for (; my_strchr(" \t", instruction[len]); len += 1);
     if (instruction[len] != '"')
         return (print_and_return(line->file, line->nb, E_INVALID_SYNTAX));
     return (true);

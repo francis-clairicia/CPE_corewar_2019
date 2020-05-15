@@ -32,7 +32,10 @@ static bool valid_direct_parameter(char const *parameter, errno_t *err)
 
 static bool valid_indirect_parameter(char const *parameter, errno_t *err)
 {
-    if (!my_str_isnum(parameter))
+    if (parameter[0] == LABEL_CHAR) {
+        if (parameter[1] == '\0')
+            return (set_errno(err, E_UNDEFINED_LABEL));
+    } else if (!my_str_isnum(parameter))
         return (set_errno(err, E_INVALID_ARG));
     return (true);
 }
