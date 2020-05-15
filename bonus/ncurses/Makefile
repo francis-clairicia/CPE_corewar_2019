@@ -8,8 +8,12 @@
 SRC					=	src/main.c					\
 						src/check_env.c				\
 						src/bonus_vm.c				\
-						src/game/init_game.c		\
-						src/game/game_loop.c
+						src/check_champs.c			\
+						src/ncurses/init_ncurses.c	\
+						src/ncurses/create_window.c	\
+						src/ncurses/play.c			\
+						src/ncurses/choose_champs.c	\
+						src/ncurses/menu.c
 
 CFLAGS				=	-Wall -Wextra
 

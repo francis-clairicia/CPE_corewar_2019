@@ -2,13 +2,15 @@
 ** EPITECH PROJECT, 2019
 ** CPE_corewar_2019
 ** File description:
-** init_game.c
+** init_ncurses.c
 */
 
 #include "ncurses_bonus.h"
 
-void init_game(void)
+void init_ncurses(void)
 {
     initscr();
-    keypad(stdscr, TRUE);
+    noecho();
+    cbreak();
+    curs_set(0);
 }
