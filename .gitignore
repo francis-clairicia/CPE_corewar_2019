@@ -13,8 +13,8 @@ vgcore.*
 !corewar/tests/champions/*.cor
 *.dump
 *.sh
-bonus/asm/*.sav
-bonus/*.conf
+bonus/**/*.sav
+bonus/**/*.conf
 !bonus/champions/*.s
 !bonus/champions/*.cor
 remove_spaces

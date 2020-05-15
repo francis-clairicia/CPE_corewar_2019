@@ -32,9 +32,10 @@ tests_run:
 	$(MAKE) tests_run -C $(ASM)
 	$(MAKE) tests_run -C $(COREWAR)
 
-bonus:
-	$(MAKE) -C $(ASM)
-	cp $(ASM)/$(ASM) bonus/$(ASM)/asm_compiler
+bonus:	all
+	cp $(ASM)/$(ASM) bonus/python/$(ASM)/asm_compiler
+	cp $(COREWAR)/$(COREWAR) bonus/ncurses/
+	cp $(COREWAR)/$(COREWAR) bonus/python/
 
 re:	fclean all
 
