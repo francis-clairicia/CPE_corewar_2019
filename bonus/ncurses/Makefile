@@ -38,7 +38,7 @@ $(NAME):	$(LDLIBS) $(OBJ)
 
 debug:	CFLAGS += -g
 debug:	$(LDLIBS)
-	$(CC) -o $(NAME) $(SRC) $(LDFLAGS) $(LDLIBS) $(CFLAGS) $(CPPFLAGS)
+	$(CC) -o $(NAME) $(SRC) $(LDFLAGS) $(LDLIBS) $(CFLAGS) $(CPPFLAGS) -lncurses
 
 clean:
 	$(RM) $(OBJ)

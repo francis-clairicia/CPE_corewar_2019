@@ -17,7 +17,6 @@ window_t create_window(void)
     LINES * 1 / 3, COLS * 1 / 3);
     if (!window.window)
         return window;
-    box(window.window, 0, 0);
     refresh();
     wrefresh(window.window);
     keypad(window.window, TRUE);

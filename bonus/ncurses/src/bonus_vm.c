@@ -20,10 +20,14 @@ static bonus_t *init_bonus(void)
 
     bonus->quit = false;
     bonus->scene = 0;
-    bonus->args = NULL;
     bonus->champs = NULL;
     bonus->path_champs = ret_all_champs(&(bonus->champs));
     PCHECK(bonus->path_champs);
+    bonus->args = PMALLOC(bonus->args, sizeof(char *) *
+    (my_array_len(bonus->path_champs) + 1));
+    bonus->args[0] = strdup("./corewar");
+    for (int i = 1; i < my_array_len(bonus->path_champs) + 1; i++)
+        bonus->args[i] = NULL;
     return bonus;
 }
 
@@ -38,5 +42,8 @@ int bonus_vm(void)
         IRETURN(scene_list[bonus->scene](bonus));
     }
     endwin();
+    my_free_array(bonus->champs);
+    my_free_array(bonus->path_champs);
+    free(bonus);
     return ret;
 }

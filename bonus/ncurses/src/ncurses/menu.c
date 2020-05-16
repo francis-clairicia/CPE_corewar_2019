@@ -8,20 +8,28 @@
 #include "ncurses_bonus.h"
 #include "mymacros.h"
 
+static void display_menu(window_t window, int chose)
+{
+    char *list[] = {"Play", "Select your champions", "Quit"};
+
+    box(window.window, 0, 0);
+    for (int i = 0; i < 3; i++) {
+        if (i == chose)
+            wattron(window.window, A_REVERSE);
+        mvwprintw(window.window, i + window.y / 2 - 1,
+        window.x / 2 - strlen(list[i]) / 2, list[i]);
+        wattroff(window.window, A_REVERSE);
+    }
+}
+
 static int menu_loop(window_t window)
 {
     int key = 0;
     int chose = 0;
-    char *list[] = {"Play", "Select your champions", "Quit"};
 
     while (key != 'q') {
-        for (int i = 0; i < 3; i++) {
-            if (i == chose)
-                wattron(window.window, A_REVERSE);
-            mvwprintw(window.window, i + window.y / 2 - 1,
-            window.x / 2 - strlen(list[i]) / 2, list[i]);
-            wattroff(window.window, A_REVERSE);
-        } key = wgetch(window.window);
+        display_menu(window, chose);
+        key = wgetch(window.window);
         if (key == KEY_UP)
             chose = (chose - 1 < 0) ? 2 : chose - 1;
         if (key == KEY_DOWN)
@@ -34,6 +42,7 @@ static int menu_loop(window_t window)
 
 int menu(bonus_t *bonus)
 {
+    your_champs(bonus);
     window_t window = create_window();
 
     if (window.x == 0)

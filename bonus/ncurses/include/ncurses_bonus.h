@@ -47,5 +47,6 @@ bool no_env(char **env);
 int bonus_vm(void);
 void init_ncurses(void);
 char **ret_all_champs(char ***champs);
+void your_champs(bonus_t *bonus);
 
 #endif

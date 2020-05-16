@@ -43,3 +43,15 @@ char **ret_all_champs(char ***champs)
     } closedir(dir);
     return path_champs;
 }
+
+void your_champs(bonus_t *bonus)
+{
+    clear();
+    mvwprintw(stdscr, 0, 0, "Your champs :");
+    for (int i = 0; bonus->args && bonus->args[i]; i++) {
+        if (i == 0)
+            continue;
+        mvwprintw(stdscr, i, 15, "%s", bonus->args[i]);
+    }
+    refresh();
+}
