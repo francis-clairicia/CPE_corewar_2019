@@ -24,7 +24,7 @@ static bool remove_comments(char **content, int i)
     int comment = 0;
 
     if (content[i][0] == '\0' || content[i][0] == COMMENT_CHAR
-    || my_str_contains_only(content[i], " ")) {
+    || my_str_contains_only(content[i], " \t")) {
         move_all_up(content, i);
         return (true);
     }

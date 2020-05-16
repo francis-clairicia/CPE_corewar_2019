@@ -6,9 +6,10 @@
 */
 
 #include <criterion/criterion.h>
+#include <criterion/redirect.h>
 #include "corewar.h"
 
-Test(vm, error_overlap)
+Test(vm, error_overlap, .init=cr_redirect_stderr)
 {
     char *av[] = {"./corewar", "tests/champions/pdd.cor",
     "-a", "0", "tests/champions/abel.cor", "tests/champions/42.cor",

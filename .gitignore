@@ -11,6 +11,8 @@ vgcore.*
 *.s
 *.cor
 !corewar/tests/champions/*.cor
+!asm/tests/champions/*.s
+!asm/tests/output_expected/*.cor
 *.dump
 *.sh
 bonus/**/*.sav
@@ -19,3 +21,4 @@ bonus/**/*.conf
 !bonus/champions/*.cor
 remove_spaces
 file*
+bonus/ncurses/ncurses_bonus

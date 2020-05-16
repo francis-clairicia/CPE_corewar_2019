@@ -6,9 +6,10 @@
 */
 
 #include <criterion/criterion.h>
+#include <criterion/redirect.h>
 #include "corewar.h"
 
-Test(vm, test_1)
+Test(vm, test_1, .init=cr_redirect_stdout)
 {
     char *av[] = {"./corewar", "-a", "400", "tests/champions/pdd.cor",
     "-n", "4", "tests/champions/abel.cor", "tests/champions/42.cor",
@@ -17,7 +18,7 @@ Test(vm, test_1)
     cr_assert(corewar(av) == 0);
 }
 
-Test(vm, test_ldi_lldi)
+Test(vm, test_ldi_lldi, .init=cr_redirect_stdout)
 {
     char *av[] = {"./corewar", "tests/champions/test_ldi.cor",
     "tests/champions/test_ldi.cor", NULL};
@@ -25,7 +26,7 @@ Test(vm, test_ldi_lldi)
     cr_assert(corewar(av) == 0);
 }
 
-Test(vm, test_ld_lld)
+Test(vm, test_ld_lld, .init=cr_redirect_stdout)
 {
     char *av[] = {"./corewar", "tests/champions/test_ld.cor",
     "tests/champions/test_ld.cor", NULL};
@@ -33,7 +34,7 @@ Test(vm, test_ld_lld)
     cr_assert(corewar(av) == 0);
 }
 
-Test(vm, error_empty_binary_zork)
+Test(vm, error_empty_binary_zork, .init=cr_redirect_stderr)
 {
     char *av[] = {"./corewar", "tests/champions/pdd.cor",
     "tests/champions/zork.cor", NULL};
@@ -41,7 +42,7 @@ Test(vm, error_empty_binary_zork)
     cr_assert(corewar(av) == 84);
 }
 
-Test(vm, wrong_file)
+Test(vm, wrong_file, .init=cr_redirect_stderr)
 {
     char *av[] = {"./corewar", "tests/champions/wrong_file.cor",
     "tests/champions/error_magic_number.cor", NULL};

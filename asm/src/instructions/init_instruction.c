@@ -69,7 +69,7 @@ instruction_t init_instruction(int index, char **params, char *label)
 
     my_memset(&instruction, 0, sizeof(instruction));
     instruction.label = label;
-    if (index >= 0) {
+    if (index >= 0 && index < 16) {
         set_instruction_values(index, params, &instruction);
         free(params);
     }
