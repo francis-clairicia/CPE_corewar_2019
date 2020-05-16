@@ -10,6 +10,8 @@
 
 int game_loop(champ_t *champ, battle_t *battle)
 {
+    if (battle->graphic == true)
+        print_dump(battle, champ);
     while (no_end(battle, champ)) {
         for (champ_t *tmp = champ; tmp; tmp = tmp->next) {
             IRETURN(game_act(battle, tmp));

@@ -9,8 +9,12 @@ ASM		=	asm
 
 COREWAR	=	corewar
 
-all:
+all:	$(ASM) $(COREWAR)
+
+$(ASM):
 	$(MAKE) -C $(ASM)
+
+$(COREWAR):
 	$(MAKE) -C $(COREWAR)
 
 lib:
@@ -39,4 +43,4 @@ bonus:	all
 
 re:	fclean all
 
-.PHONY: all lib clean fclean tests_run bonus re
+.PHONY: all $(ASM) $(COREWAR) lib clean fclean tests_run bonus re
