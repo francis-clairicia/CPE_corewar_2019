@@ -56,14 +56,13 @@ bool no_end(battle_t *battle, champ_t *champ)
         print_dump(battle, champ);
         return false;
     }
-    if (battle->cycle >= battle->cycle_die) {
-        if (check_no_live_champ(champ, battle) == true)
-            return false;
-        battle->cycle = 0;
-    }
     if (battle->nb_live >= NBR_LIVE) {
         battle->cycle_die -= CYCLE_DELTA;
         battle->nb_live = 0;
+    }
+    if (battle->cycle >= battle->cycle_die) {
+        if (check_no_live_champ(champ, battle) == true)
+            return false;
         battle->cycle = 0;
     }
     check_status(champ);
