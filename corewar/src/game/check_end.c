@@ -32,7 +32,7 @@ static bool check_no_live_champ(champ_t *champ, battle_t *battle)
         if (tmp->die == true)
             count++;
     }
-    if (battle->nb_champ - count <= 0)
+    if (battle->nb_champ - count <= 1)
         return true;
     return false;
 }
