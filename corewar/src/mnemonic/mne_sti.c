@@ -18,7 +18,7 @@ static int get_index(args_type_t type, int value,
     if (type == T_DIR)
         index = value;
     if (type == T_IND)
-        index = read_from_mem(mem, champ->pc + (value % IDX_MOD), REG_SIZE);
+        index = read_from_mem(mem, champ->pc + (value % IDX_MOD), IND_SIZE);
     return (index);
 }
 
