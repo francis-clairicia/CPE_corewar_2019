@@ -2,9 +2,8 @@
 
 import pygame
 from constant import FONT, AUDIO
-from my_pygame.window import Window
+from my_pygame import Window, RectangleShape, TextButton, Text, Scale
 from my_pygame.colors import BLUE_LIGHT, YELLOW, BLUE, BLUE_DARK
-from my_pygame.classes import RectangleShape, TextButton, Text, Scale
 
 class Settings(Window):
     def __init__(self, master=None):

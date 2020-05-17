@@ -137,14 +137,12 @@ class Window:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.stop(force=True)
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYUP:
                 self.key_handler(event.key)
             event_list = self.event_handler_dict.get(event.type, list())
             for callback in event_list:
                 callback(event)
-        if self.time_after < 0:
-            return
-        if time.time() - self.time_start >= (self.time_after / 1000):
+        if self.time_after >= 0 and (time.time() - self.time_start) >= (self.time_after / 1000):
             self.time_after = -1
             self.callback_after()
 

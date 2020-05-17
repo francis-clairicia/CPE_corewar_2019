@@ -1,37 +1,198 @@
 # -*- coding: Utf-8 -*
 
-from constant import FONT, AUDIO
-from my_pygame.window import Window
-from my_pygame.colors import BLUE_LIGHT, YELLOW, BLUE, BLUE_DARK
-from my_pygame.classes import Button, Text
-from editor import Editor
+import os
+import re
+import subprocess
+from typing import List, Tuple
+import pygame
+from constant import FONT, AUDIO, ASM, COREWAR
+from my_pygame import Window, Text, RectangleShape
+from my_pygame.colors import YELLOW, TRANSPARENT, BLUE_LIGHT, BLUE_DARK, CYAN, GREEN, MAGENTA
+from loading import Loading
+from asm.constants import MEMSIZE
+from asm.utils import remove_color_characters
 
-class GameMenu(Window):
-    def __init__(self, master: Window):
-        Window.__init__(self)
-        self.bg = master.bg
-        self.title = Text("Game", font=(FONT["death_star"], 220), color=YELLOW)
-        params_for_all_buttons = {
-            "bg": BLUE,
-            "hover_bg": BLUE_LIGHT,
-            "active_bg": BLUE_DARK,
-            "active_fg": YELLOW,
-            "hover_sound": AUDIO["clank"],
-            "on_click_sound": AUDIO["laser"],
-            "outline": 5,
-        }
-        params_for_section_button = {
-            "font": (FONT["death_star"], 200)
-        }
-        self.button_battle = Button(self, "Battle", **params_for_all_buttons, **params_for_section_button)
-        self.button_edit = Button(self, "Editor", **params_for_all_buttons, **params_for_section_button, command=self.launch_editor)
-        self.button_menu = Button(self, "Menu", **params_for_all_buttons, font=(FONT["death_star"], 80), command=self.stop)
+class AnimationStart(Text):
+    def __init__(self, master):
+        Text.__init__(self, str(), (FONT["death_star"], 200), YELLOW, center=master.center)
+        self.ready_sound = pygame.mixer.Sound(AUDIO["ready"])
+        self.master = master
+        self.hide()
+
+    def start(self):
+        self.ready_sound.play()
+        self.show()
+        self.master.after(650, self.show_ready_message)
+
+    def show_ready_message(self):
+        self.set_string("Ready")
+        self.master.after(750, self.show_fight_message)
+
+    def show_fight_message(self):
+        self.set_string("Fight !")
+        self.master.after(900, self.hide)
+
+class Champion(Text):
+    def __init__(self, file: str, name: str):
+        Text.__init__(self, name, (FONT["death_star"], 80), YELLOW)
+        self.assembly = file
+        self.cor = os.path.splitext(file)[0] + ".cor"
+        self.name = name
+
+    def create(self) -> bool:
+        cmd = [ASM, self.assembly]
+        try:
+            output_process = subprocess.run(cmd, check=True, capture_output=True)
+        except subprocess.CalledProcessError as e:
+            output = e.stderr.decode()
+            status = e.returncode
+        else:
+            output = output_process.stderr.decode()
+            status = output_process.returncode
+        return bool(len(output) == 0 and status == 0)
+
+    def live(self, status: bool):
+        if status is True:
+            self.set_string("Live - {name}".format(name=self.name))
+        else:
+            self.set_string(self.name)
+
+class CoreWar:
+    def __init__(self, champion_list: List[Champion]):
+        self.result = ("No result", 84)
+        self.champions = champion_list
+        self.process = None
+
+    def start(self):
+        cmd = [COREWAR, "-g"] + [champion.cor for champion in self.champions]
+        cmd = " ".join(cmd)
+        self.process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+
+    def get_line(self):
+        if self.process is not None:
+            while True:
+                line = self.process.stdout.readline().rstrip().decode()
+                if not line and self.process.poll() is not None:
+                    break
+                yield line
+
+    def kill(self):
+        if self.process is not None and self.process.poll() is not None:
+            self.process.terminate()
+            self.process = None
+
+class MemoryCase(RectangleShape):
+    def __init__(self, master: Window, width: int, height: int, **kwargs):
+        self.default_color = TRANSPARENT
+        self.filled_color = BLUE_LIGHT
+        RectangleShape.__init__(self, width, height, self.default_color, outline=1, **kwargs)
+        master.add(self)
+        self.__value = 0
+
+    @property
+    def value(self):
+        return self.__value
+
+    def set_value(self, byte: (int, str), base=10):
+        highlight = 0
+        if isinstance(byte, str):
+            if byte[0] == "\033":
+                highlight = int(byte[4:6])
+                byte = remove_color_characters(byte)
+        try:
+            self.__value = int(byte, base)
+        except ValueError:
+            return
+        if self.value != 0:
+            highlight_color = {
+                36: CYAN,
+                32: GREEN,
+                35: MAGENTA,
+                33: YELLOW
+            }
+            self.color = highlight_color.get(highlight, self.filled_color)
+        else:
+            self.color = self.default_color
+
+class Game(Window):
+    def __init__(self, master: Window, champion_list: List[Tuple[str]]):
+        Window.__init__(self, bg_music=AUDIO["battle"], bg_color=BLUE_DARK)
+        self.bind_key(pygame.K_ESCAPE, lambda key: self.stop())
+        loading_page = Loading(font=(FONT["death_star"], 270))
+        loading_page.show(master)
+        self.champions = list()
+        self.not_created = list()
+        for file, name in champion_list:
+            champion = Champion(file, name)
+            if not champion.create():
+                self.not_created.append(name)
+            else:
+                self.champions.append(champion)
+                self.add(champion)
+        if len(self.not_created) == 0:
+            self.memory_size = (0, 0)
+            self.init_gameplay()
+        else:
+            msg = "\n".join(f" - {name} cannot be created" for name in self.not_created)
+            msg += "\n" + "\n" + "Press Escape to return\nto the menu"
+            self.error_message = Text(msg, (FONT["death_star"], 70), YELLOW, justify="center", center=self.center)
+        loading_page.hide(self)
+
+    def on_quit(self):
+        self.corewar.kill()
+
+    def init_gameplay(self):
+        self.memory = list()
+        self.corewar = CoreWar(self.champions)
+        self.corewar.start()
+        self.init_memory()
+        self.animation = AnimationStart(self)
+        self.after(0, self.animation.start)
+
+    def init_memory(self):
+        nb_cols = 64
+        nb_lines = MEMSIZE // nb_cols
+        width = round(self.width / (2 * nb_cols))
+        height = round((self.height - 100) / nb_lines)
+        for i in range(MEMSIZE):
+            case = MemoryCase(self, width, height)
+            case.move(x=width * (i % nb_cols), y=height * (i // nb_cols))
+            self.memory.append(case)
+        self.memory_size = self.memory[-1].right - self.memory[0].left, self.memory[-1].bottom - self.memory[0].top
+        for _, line in zip(range(len(self.memory)), self.corewar.get_line()):
+            if re.match(r"^[0-9A-F]", line):
+                self.set_line_memory(line)
+
+    def set_line_memory(self, line: str):
+        semicolon = line.find(":")
+        address = int(line[:semicolon].strip(), 16)
+        for byte in [hexa.strip() for hexa in line[semicolon + 1:].split()]:
+            self.memory[address].set_value(byte, base=16)
+            address += 1
+
+    def update(self):
+        if self.animation.is_shown():
+            return
+        line = next(self.corewar.get_line(), None)
+        while line is not None and re.match(r"^[0-9A-F]", line):
+            self.set_line_memory(line)
+            line = next(self.corewar.get_line(), None)
+        if line is None:
+            self.animation.show()
+            self.animation.set_string("Finished")
+        elif line.startswith("The player"):
+            player_id = int(line.split()[2]) - 1
+            for i, champion in enumerate(self.champions):
+                if i == player_id:
+                    champion.live(True)
+                else:
+                    champion.live(False)
 
     def place_objects(self):
-        self.title.move(centerx=self.centerx, top=10)
-        self.button_battle.move(centerx=self.centerx - (self.w // 4), centery=self.centery)
-        self.button_edit.move(centerx=self.centerx + (self.w // 4), centery=self.centery)
-        self.button_menu.move(centerx=self.centerx, bottom=self.bottom - 100)
-
-    def launch_editor(self):
-        Editor(self).mainloop()
+        if len(self.not_created) > 0:
+            return
+        centery = 0
+        offset = round(self.height / (len(self.champions) + 1))
+        for champion in self.champions:
+            centery += offset
+            champion.move(right=self.right - 20, centery=centery)

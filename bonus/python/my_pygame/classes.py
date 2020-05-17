@@ -3,19 +3,18 @@
 import pygame
 from pygame.font import Font, SysFont
 from pygame.sprite import Sprite
-try:
-    from window import Window
-except ImportError:
-    from my_pygame.window import Window
+from . import Window
 
 class Drawable(Sprite):
     def __init__(self, surface=pygame.Surface((0, 0), flags=pygame.SRCALPHA), rotate=0, **kwargs):
         Sprite.__init__(self)
         self.__sounds = list()
         self.rect = surface.get_rect()
+        self.former_moves = dict()
         self.image = surface
         self.draw_sprite = True
         self.valid_size = True
+        self.hover_continue = False
         if rotate != 0:
             self.rotate(rotate)
         self.move(**kwargs)
@@ -44,21 +43,27 @@ class Drawable(Sprite):
 
     @image.setter
     def image(self, surface):
-        x = self.rect.x if hasattr(self, "rect") else 0
-        y = self.rect.y if hasattr(self, "rect") else 0
         self.__surface = surface
-        self.rect = self.__surface.get_rect(x=x, y=y)
+        self.rect = self.__surface.get_rect()
+        self.move(**self.former_moves)
 
     @property
     def sounds(self):
         return self.__sounds
 
     def draw(self, surface):
-        if self.draw_sprite:
+        if self.is_shown():
             surface.blit(self.image, self.rect)
 
     def move(self, **kwargs):
+        x = self.rect.x if hasattr(self, "rect") else 0
+        y = self.rect.y if hasattr(self, "rect") else 0
         self.rect = self.image.get_rect(**kwargs)
+        if not any(key in kwargs for key in ["x", "left", "right", "center", "centerx", "topleft", "topright", "bottomleft", "bottomright", "midleft", "midright"]):
+            self.rect.x = x
+        if not any(key in kwargs for key in ["y", "top", "bottom", "center", "centery", "topleft", "topright", "bottomleft", "bottomright", "midleft", "midright"]):
+            self.rect.y = y
+        self.former_moves = kwargs.copy()
         return self.rect
 
     def move_ip(self, x: float, y: float):
@@ -75,7 +80,7 @@ class Drawable(Sprite):
         if not isinstance(size, (tuple, list)):
             size = (size, size)
         size = (round(size[0]), round(size[1]))
-        if size[0] != 0 and size[1] != 0:
+        if size[0] > 0 and size[1] > 0:
             if smooth:
                 self.image = pygame.transform.smoothscale(self.image, size)
             else:
@@ -84,13 +89,13 @@ class Drawable(Sprite):
         else:
             self.valid_size = False
 
-    def set_width(self, width):
+    def set_width(self, width, smooth=True):
         height = 0 if width == 0 else round(self.rect.h * width / self.rect.w)
-        self.set_size(width, height)
+        self.set_size(width, height, smooth=smooth)
 
-    def set_height(self, height):
+    def set_height(self, height, smooth=True):
         width = 0 if height == 0 else round(self.rect.w * height / self.rect.h)
-        self.set_size(width, height)
+        self.set_size(width, height, smooth=smooth)
 
     left = property(lambda self: self.rect.left)
     right = property(lambda self: self.rect.right)
@@ -123,31 +128,59 @@ class Image(Drawable):
         self.move(**kwargs)
 
 class Text(Drawable):
-    def __init__(self, text: str, font, color: tuple, **kwargs):
-        if isinstance(font, (tuple, list)):
-            if str(font[0]).endswith((".ttf", ".otf")):
-                self.font = Font(*font)
-            else:
-                self.font = SysFont(*font)
-        else:
-            self.font = font
+    def __init__(self, text: str, font, color: tuple, justify="left", **kwargs):
+        Drawable.__init__(self, **kwargs)
+        self.font = font
         self.text = str(text)
         self.color = color
-        Drawable.__init__(self, self.font.render(self.text, True, self.color), **kwargs)
+        self.justify = justify
+        self.refresh()
+
+    @property
+    def font(self):
+        return self.__font
+
+    @font.setter
+    def font(self, font):
+        if isinstance(font, (tuple, list)):
+            if str(font[0]).endswith((".ttf", ".otf")):
+                self.__font = Font(*font)
+            else:
+                self.__font = SysFont(*font)
+        else:
+            self.__font = font
 
     def copy(self):
         copy_text = Text(self.text, self.font, self.color)
-        copy_text.rect = self.rect
+        copy_text.move(center=self.center)
         return copy_text
 
     def get_string(self):
         return self.text
 
-    def get_font(self):
-        return self.font
-
     def refresh(self):
-        self.image = self.font.render(self.text, True, self.color)
+        render_lines = list()
+        for line in self.text.splitlines():
+            render = self.font.render(line, True, self.color)
+            render_lines.append(render)
+        if len(render_lines) > 0:
+            size = [
+                max(render.get_width() for render in render_lines),
+                sum(render.get_height() for render in render_lines)
+            ]
+            self.image = pygame.Surface(tuple(size), flags=pygame.SRCALPHA)
+            self.image.fill((0, 0, 0, 0))
+            y = 0
+            justify_parameters = {
+                "left": {"left": 0},
+                "right": {"right": size[0]},
+                "center": {"centerx": size[0] // 2},
+            }
+            for render in render_lines:
+                self.image.blit(render, render.get_rect(**justify_parameters[self.justify], y=y))
+                y += render.get_height()
+        else:
+            self.image = pygame.Surface((0, 0), flags=pygame.SRCALPHA)
 
     def set_string(self, text: str):
         self.text = str(text)
@@ -193,7 +226,7 @@ class Button(RectangleShape):
                  **kwargs):
         if font is None:
             font = SysFont(pygame.font.get_default_font(), 15)
-        self.text = Text(text, font, fg)
+        self.text = Text(text, font, fg, justify="center")
         w, h = (self.text.w + 20, self.text.h + 20)
         RectangleShape.__init__(self, w, h, bg, outline, outline_color, **kwargs)
         self.fg = fg
@@ -216,6 +249,9 @@ class Button(RectangleShape):
         w, h = (self.text.w + 20, self.text.h + 20)
         self.set_size(w, h)
 
+    def get_text(self):
+        return self.text.get_string()
+
     def draw(self, surface):
         if self.is_shown():
             self.draw_shape(surface)
@@ -227,34 +263,45 @@ class Button(RectangleShape):
             return
         self.active = False
         self.on_click_up(event)
-        if event.button == 1 and self.rect.collidepoint(event.pos):
+        if self.is_shown() and event.button == 1 and self.rect.collidepoint(event.pos):
             if isinstance(self.on_click_sound, pygame.mixer.Sound):
                 self.on_click_sound.play()
             if self.callback is not None:
                 self.callback()
 
     def mouse_click_down(self, event):
-        if event.button == 1 and self.rect.collidepoint(event.pos):
+        if self.is_shown() and event.button == 1 and self.rect.collidepoint(event.pos):
             self.active = True
             self.on_click_down(event)
 
     def mouse_motion(self, mouse_pos):
+        if not self.is_shown():
+            return
         if self.rect.collidepoint(mouse_pos):
             if self.hover is False:
                 if isinstance(self.hover_sound, pygame.mixer.Sound):
                     self.hover_sound.play()
+                self.on_hover()
                 self.hover = True
             self.color = self.hover_bg if not self.active else self.active_bg
             self.text.set_color(self.hover_fg if not self.active else self.active_fg)
         else:
             self.color = self.bg
             self.text.set_color(self.fg)
+            if self.hover:
+                self.on_leave()
             self.hover = False
 
     def on_click_down(self, event):
         pass
 
     def on_click_up(self, event):
+        pass
+
+    def on_hover(self):
+        pass
+
+    def on_leave(self):
         pass
 
 class ImageButton(Button):

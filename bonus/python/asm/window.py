@@ -79,11 +79,13 @@ class Assembly(tk.Tk):
         self.refresh_functions = list()
         self.refresh_functions.append(self.editor.update_tab)
 
-    def run(self, file=None):
+    def run(self, file=None, working_dir=None):
         if file is not None:
             self.editor.open_file(file)
         elif not self.editor.workspace:
             self.editor.create_new_file()
+        if working_dir is not None and os.path.isdir(working_dir):
+            self.editor.last_opened_folder = working_dir
         self.all_binds()
         self.show_widgets()
         self.refresh()

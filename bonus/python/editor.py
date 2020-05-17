@@ -1,33 +1,14 @@
 # -*- coding: Utf-8 -*
 
 import os
-import sys
 import subprocess
 from threading import Thread
 import pygame
-from constant import FONT, AUDIO, CHAMPIONS_FOLDER
-from my_pygame.window import Window
+from constant import FONT, AUDIO, CHAMPIONS_FOLDER, EDITOR
+from my_pygame import Window, Text, TextButton, RectangleShape
 from my_pygame.colors import YELLOW, BLUE_DARK
-from my_pygame.classes import Text, TextButton, RectangleShape
 from loading import Loading
-
-def get_champion_name(filepath: str) -> (str, None):
-    if not os.path.isfile(filepath):
-        return None
-    with open(filepath, "r") as file:
-        content = file.read().splitlines()
-    for line in content:
-        idx = line.find(".name")
-        if idx >= 0:
-            line = line[idx:]
-            first_quote = line.find('"')
-            if first_quote == -1:
-                break
-            second_quote = line.find('"', first_quote + 1)
-            if second_quote == -1:
-                break
-            return line[first_quote + 1:second_quote]
-    return "Unnamed"
+from utils import get_champion_name
 
 class ChampionEditor(TextButton):
     def __init__(self, master: Window, assembly_file: str, *args, **kwargs):
@@ -50,7 +31,7 @@ class ChampionEditor(TextButton):
 class Editor(Window):
     def __init__(self, master: Window):
         Window.__init__(self, bg_color=BLUE_DARK, bg_music=AUDIO["dark_techno_city"])
-        loading_page = Loading(font=(FONT["death_star"], 270), side_ending="right")
+        loading_page = Loading(font=(FONT["death_star"], 270))
         loading_page.show(master)
         self.title = Text("Editor", font=(FONT["death_star"], 150), color=YELLOW)
         self.subtitle = Text("Choose the champion to edit", font=(FONT["death_star"], 70), color=YELLOW)
@@ -94,11 +75,7 @@ class Editor(Window):
                 champion = ChampionEditor(self, file, name, **self.params_for_all_buttons)
                 self.champions.append(champion)
                 self.add(champion)
-        rect = pygame.Rect(0, self.subtitle.bottom + 50, 0, 10)
-        for champion in self.champions:
-            rect = champion.move(top=rect.top, left=rect.right + 30)
-            if rect.right >= self.right - 10:
-                rect = champion.move(top=rect.bottom + 10, left=10)
+        self.place_champions()
 
     def check_process(self):
         for process in self.editors:
@@ -109,12 +86,15 @@ class Editor(Window):
         self.title.move(centerx=self.centerx, top=10)
         self.subtitle.move(centerx=self.centerx, top=self.title.bottom + 10)
         self.button_menu.move(bottom=self.bottom - 50, right=self.right - 10)
+        self.place_champions()
+        self.new_file.move(right=self.right - 10, top=10)
+
+    def place_champions(self):
         rect = pygame.Rect(0, self.subtitle.bottom + 50, 0, 10)
         for champion in self.champions:
             rect = champion.move(top=rect.top, left=rect.right + 30)
             if rect.right >= self.right - 10:
-                rect = champion.move(top=rect.bottom + 10, left=10)
-        self.new_file.move(right=self.right - 10, top=10)
+                rect = champion.move(top=rect.bottom + 10, left=40)
 
     def on_quit(self):
         if len(self.editors) > 0:
@@ -131,9 +111,9 @@ class Editor(Window):
 
     def launch_assembly_editor(self, file=None):
         if file is not None:
-            cmd = [os.path.join(sys.path[0], "asm", "asm.py"), file, "--no-workspace"]
+            cmd = [EDITOR, file, "--no-workspace"]
         else:
-            cmd = [os.path.join(sys.path[0], "asm", "asm.py"), "--no-workspace"]
+            cmd = [EDITOR, "--no-workspace", "-d", CHAMPIONS_FOLDER]
         process = Thread(target=subprocess.run, args=(cmd,), kwargs={"check": False, "capture_output": True})
         process.start()
         self.editors.append(process)

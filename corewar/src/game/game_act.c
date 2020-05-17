@@ -11,9 +11,6 @@
 static char * const mnemonic_modified_memory[] = {
     "st",
     "sti",
-    "ldi",
-    "lld",
-    "lldi",
     NULL
 };
 

@@ -7,6 +7,8 @@ IMG_FOLDER = os.path.join(sys.path[0], "img")
 HELP_FOLDER = os.path.join(sys.path[0], "help")
 EDITOR_SAVE_FILE = os.path.join(sys.path[0], "workspace.sav")
 
+MEMSIZE = 6 * 1024
+
 PROG_NAME_LENGTH = 128
 COMMENT_LENGTH = 2048
 

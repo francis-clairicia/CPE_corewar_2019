@@ -3,18 +3,17 @@
 
 import pygame
 from constant import IMG, FONT, AUDIO
-from my_pygame.window import Window
+from my_pygame import Window, Image, Button, ImageButton
 from my_pygame.colors import BLUE_LIGHT, YELLOW, BLUE, BLUE_DARK
-from my_pygame.classes import Image, Button, ImageButton
 from loading import Loading
-from game import GameMenu
+from menu import GameMenu
 from settings import Settings
 
 class VmGame(Window):
     def __init__(self):
-        Window.__init__(self, bg_music=AUDIO["menu_bg"], flags=pygame.NOFRAME)
+        Window.__init__(self, bg_music=AUDIO["ancient_game_open"], flags=pygame.NOFRAME)
         self.set_title("Corewar")
-        loading_page = Loading(font=(FONT["death_star"], 270), opening=False, side_ending="right")
+        loading_page = Loading(font=(FONT["death_star"], 270), opening=False)
         loading_page.show(self)
         params_for_all_buttons = {
             "font": (FONT["death_star"], 120),

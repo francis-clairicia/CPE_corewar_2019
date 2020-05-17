@@ -1,11 +1,10 @@
 # -*- coding: Utf-8 -*
 
-from my_pygame.window import Window
-from my_pygame.classes import Text, RectangleShape
+from my_pygame import Window, Text, RectangleShape
 from my_pygame.colors import WHITE, BLACK
 
 class Loading(Window):
-    def __init__(self, text="Loading...", font=("calibri", 300), bg=BLACK, opening=True, ending=True, side_opening="left", side_ending="left"):
+    def __init__(self, text="Loading...", font=("calibri", 300), bg=BLACK, opening=True, ending=True, side_opening="left", side_ending="right"):
         Window.__init__(self)
         self.master = None
         speed = 50
