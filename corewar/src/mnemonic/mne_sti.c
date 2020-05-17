@@ -37,5 +37,6 @@ int mne_sti(param_t const *params, champ_t *champ, battle_t *battle)
     second = get_index(params->type[2], params->value[2], champ, battle->mem);
     idx = champ->pc + ((first + second) % IDX_MOD);
     add_parameter(battle->mem, register_value, REG_SIZE, idx);
+    add_line(battle, idx);
     return 0;
 }

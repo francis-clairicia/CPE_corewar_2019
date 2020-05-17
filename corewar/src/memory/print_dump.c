@@ -29,7 +29,7 @@ static int print_color(champ_t *champ, int i)
     return (RESET);
 }
 
-static void print_line(battle_t *battle, int index, champ_t *champions)
+static void print_byte(battle_t *battle, int index, champ_t *champions)
 {
     int color = 0;
 
@@ -43,18 +43,37 @@ static void print_line(battle_t *battle, int index, champ_t *champions)
     my_printf(" %02X", battle->mem[index]);
 }
 
+static int print_line(battle_t *battle, int index, champ_t *champions)
+{
+    my_printf("%-5X:", index);
+    for (int j = 0; j < 32 && index < MEM_SIZE; j += 1, index += 1) {
+        print_byte(battle, index, champions);
+    }
+    my_putchar('\n');
+    return (index);
+}
+
 void print_dump(battle_t *battle, champ_t *champions)
 {
-    static bool check_first = false;
-
-    if (check_first == true)
-        my_putchar('\n');
-    check_first = true;
     for (int i = 0; i < MEM_SIZE;) {
-        my_printf("%-5X:", i);
-        for (int j = 0; j < 32; j++, i++) {
-            print_line(battle, i, champions);
+        i = print_line(battle, i, champions);
+    }
+}
+
+void print_dump_graphic(battle_t *battle, champ_t *champions)
+{
+    int line = 0;
+
+    for (node_t *node = battle->lines.start; node; node = node->next)
+        print_line(battle, 32 * NODE_DATA(node, int), NULL);
+    my_free_list(&battle->lines, NULL);
+    for (champ_t *champ = champions; champ != NULL; champ = champ->next) {
+        if (champ->pc != champ->former_pc &&
+        !my_node_from_data(battle->pc_printed, (champ->pc % MEM_SIZE), int)) {
+            line = ((champ->pc % MEM_SIZE) / 32);
+            print_line(battle, 32 * line, champions);
+            my_append_to_list(&battle->pc_printed, (champ->pc % MEM_SIZE), int);
         }
-        my_putchar('\n');
+        print_dump_graphic(battle, champ->children);
     }
 }

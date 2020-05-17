@@ -21,10 +21,8 @@ utils_parser_t *init_util_parser(void)
     return up;
 }
 
-battle_t *init_empty_battle(void)
+static void set_default_values(battle_t *battle)
 {
-    battle_t *battle = PMALLOC(battle, sizeof(battle_t));
-
     battle->graphic = false;
     battle->cycle = 0;
     battle->cycle_die = CYCLE_TO_DIE;
@@ -33,12 +31,20 @@ battle_t *init_empty_battle(void)
     battle->last_live_name = NULL;
     battle->last_live_nb = -1;
     battle->tot_cycle = 0;
-    battle->draw_dump = false;
-    battle->mem = PMALLOC(battle->mem, sizeof(char) * (MEM_SIZE + 1));
+    battle->lines = my_list();
+    battle->pc_printed = my_list();
+}
+
+battle_t *init_empty_battle(void)
+{
+    battle_t *battle = PMALLOC(battle, sizeof(battle_t));
+
+    my_memset(battle, 0, sizeof(battle_t));
+    set_default_values(battle);
+    battle->mem = PMALLOC(battle->mem, sizeof(char) * MEM_SIZE);
     my_memset(battle->mem, 0, MEM_SIZE);
     battle->check_mem = PMALLOC(battle->mem, sizeof(bool) * (MEM_SIZE));
     my_memset(battle->check_mem, 0, MEM_SIZE);
-    battle->mem[MEM_SIZE] = '\0';
     battle->nb_champ = 0;
     for (int i = 0; i < 4; i++)
         battle->champ_tab[i] = NULL;

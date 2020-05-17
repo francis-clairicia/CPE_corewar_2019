@@ -71,7 +71,8 @@ bool no_end(battle_t *battle, champ_t *champ)
 
 void end_loop(battle_t *battle)
 {
+    if (battle->graphic)
+        my_free_list(&battle->pc_printed, NULL);
     battle->cycle += 1;
     battle->tot_cycle += 1;
-    battle->draw_dump = false;
 }

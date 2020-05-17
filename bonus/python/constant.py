@@ -41,6 +41,7 @@ AUDIO = {
     "crusaders": set_constant_file(AUDIO_FOLDER, "crusaders_approaching.ogg"),
     "battle": set_constant_file(AUDIO_FOLDER, "battle_of_the_ancients.ogg"),
     "ready": set_constant_file(AUDIO_FOLDER, "ready.ogg"),
+    "finish": set_constant_file(AUDIO_FOLDER, "finish_him.ogg"),
 }
 ASM = set_constant_file(sys.path[0], "asm", "asm_compiler", special_msg="'asm_compiler' binary not here")
 EDITOR = set_constant_file(sys.path[0], "asm", "asm.py", special_msg="Editor not here")

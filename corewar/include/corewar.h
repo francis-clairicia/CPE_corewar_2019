@@ -11,12 +11,21 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "op.h"
+#include "mylist.h"
 
 #define CYAN 36
 #define GREEN 32
 #define MAGENTA 35
 #define YELLOW 33
 #define RESET 0
+
+typedef struct parameter
+{
+    args_type_t type[MAX_ARGS_NUMBER];
+    int value[MAX_ARGS_NUMBER];
+    int size;
+    bool act;
+} param_t;
 
 typedef struct champ_s
 {
@@ -26,6 +35,7 @@ typedef struct champ_s
     op_t op;
     int reg[REG_NUMBER];
     int nb_address;
+    int former_pc;
     int pc;
     int carry;
     bool live;
@@ -34,6 +44,7 @@ typedef struct champ_s
     bool act;
     bool die;
     bool parent;
+    param_t params;
     struct champ_s *children;
     struct champ_s *next;
 } champ_t;
@@ -52,7 +63,8 @@ typedef struct battle_s
     char *last_live_name;
     int last_live_nb;
     int tot_cycle;
-    bool draw_dump;
+    list_t lines;
+    list_t pc_printed;
 } battle_t;
 
 typedef struct utils_parser_s
@@ -69,12 +81,6 @@ typedef struct parser_s
     char *arg;
     int (*parse)(char **, battle_t *, utils_parser_t *);
 } parser_t;
-
-typedef struct parameter
-{
-    args_type_t type[MAX_ARGS_NUMBER];
-    int value[MAX_ARGS_NUMBER];
-} param_t;
 
 int corewar(char **av);
 int parse_arg(char **av, champ_t **champ, battle_t *battle);
@@ -94,6 +100,8 @@ void sort_champ_list(champ_t **champ);
 int reverse_number(int nb);
 int fill_mem(champ_t *champ, battle_t *battle);
 void print_dump(battle_t *battle, champ_t *champions);
+void print_dump_graphic(battle_t *battle, champ_t *champions);
+void add_line(battle_t *battle, int memory_id);
 int game_loop(champ_t *champ, battle_t *battle);
 int game_act(battle_t *battle, champ_t *champ);
 bool no_end(battle_t *battle, champ_t *champ);
@@ -104,6 +112,7 @@ void print_help(int syntax);
 int help(int ac, char **av);
 int ret_putstr_fd(int fd, char *str);
 
+int fill_param(battle_t *battle, champ_t *champ);
 int launch_mnemonic(battle_t *battle, champ_t *champ);
 typedef int (*mnemonic_t)(param_t const *params, champ_t *, battle_t *);
 int mne_add(param_t const *params, champ_t *champ, battle_t *battle);

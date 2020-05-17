@@ -12,16 +12,30 @@ from loading import Loading
 from asm.constants import MEMSIZE
 from asm.utils import remove_color_characters
 
-class AnimationStart(Text):
+HIGHLIGHT_COLOR = {
+    36: CYAN,
+    32: GREEN,
+    35: MAGENTA,
+    33: YELLOW
+}
+
+PLAYER_COLOR = [
+    36,
+    32,
+    35,
+    33
+]
+
+class Animation(Text):
     def __init__(self, master):
         Text.__init__(self, str(), (FONT["death_star"], 200), YELLOW, center=master.center)
         self.ready_sound = pygame.mixer.Sound(AUDIO["ready"])
+        self.finish_sound = pygame.mixer.Sound(AUDIO["finish"])
         self.master = master
-        self.hide()
+        self.winner = None
 
     def start(self):
         self.ready_sound.play()
-        self.show()
         self.master.after(650, self.show_ready_message)
 
     def show_ready_message(self):
@@ -31,6 +45,46 @@ class AnimationStart(Text):
     def show_fight_message(self):
         self.set_string("Fight !")
         self.master.after(900, self.hide)
+
+    def end(self):
+        self.show()
+        self.finish_sound.play()
+        self.set_string(str())
+        self.master.after(300, self.show_finished_message)
+
+    def show_finished_message(self):
+        self.set_string("Finished")
+        if self.winner is not None:
+            self.master.after(1200, lambda: self.move_all_champions_up(0))
+
+    def move_all_champions_up(self, index: int):
+        if index < len(self.master.champions):
+            champion = self.master.champions[index]
+            champion.move_ip(0, -10)
+            if index == 0:
+                if champion.top <= 30:
+                    index += 1
+            else:
+                champion_at_top = self.master.champions[index - 1]
+                if champion.top <= champion_at_top.bottom + 30:
+                    index += 1
+            self.master.after(10, lambda i=index: self.move_all_champions_up(i))
+        else:
+            self.move_finished_message()
+
+    def move_finished_message(self):
+        self.move_ip(45, 0)
+        if self.right < self.master.right - 20:
+            self.master.after(10, self.move_finished_message)
+        else:
+            self.show_winner()
+
+    def show_winner(self):
+        winner = self.winner[self.winner.find("(") + 1:self.winner.find(")")] + "\nhas won."
+        text = Text(winner, self.font, YELLOW)
+        text.set_width(self.width)
+        text.move(centerx=self.centerx, top=self.bottom + 10)
+        self.master.add(text)
 
 class Champion(Text):
     def __init__(self, file: str, name: str):
@@ -59,7 +113,6 @@ class Champion(Text):
 
 class CoreWar:
     def __init__(self, champion_list: List[Champion]):
-        self.result = ("No result", 84)
         self.champions = champion_list
         self.process = None
 
@@ -88,6 +141,7 @@ class MemoryCase(RectangleShape):
         RectangleShape.__init__(self, width, height, self.default_color, outline=1, **kwargs)
         master.add(self)
         self.__value = 0
+        self.highlight = 0
 
     @property
     def value(self):
@@ -100,17 +154,15 @@ class MemoryCase(RectangleShape):
                 highlight = int(byte[4:6])
                 byte = remove_color_characters(byte)
         try:
-            self.__value = int(byte, base)
+            v = int(byte, base)
+            if v == self.__value and highlight == self.highlight:
+                return
+            self.__value = v
+            self.highlight = highlight
         except ValueError:
             return
         if self.value != 0:
-            highlight_color = {
-                36: CYAN,
-                32: GREEN,
-                35: MAGENTA,
-                33: YELLOW
-            }
-            self.color = highlight_color.get(highlight, self.filled_color)
+            self.color = HIGHLIGHT_COLOR.get(highlight, self.filled_color)
         else:
             self.color = self.default_color
 
@@ -142,11 +194,13 @@ class Game(Window):
         self.corewar.kill()
 
     def init_gameplay(self):
+        for i, champion in enumerate(self.champions):
+            champion.color = HIGHLIGHT_COLOR[PLAYER_COLOR[i]]
         self.memory = list()
         self.corewar = CoreWar(self.champions)
         self.corewar.start()
         self.init_memory()
-        self.animation = AnimationStart(self)
+        self.animation = Animation(self)
         self.after(0, self.animation.start)
 
     def init_memory(self):
@@ -178,15 +232,17 @@ class Game(Window):
             self.set_line_memory(line)
             line = next(self.corewar.get_line(), None)
         if line is None:
-            self.animation.show()
-            self.animation.set_string("Finished")
+            self.animation.end()
         elif line.startswith("The player"):
-            player_id = int(line.split()[2]) - 1
-            for i, champion in enumerate(self.champions):
-                if i == player_id:
-                    champion.live(True)
-                else:
-                    champion.live(False)
+            if line.endswith("has won."):
+                self.animation.winner = str(line)
+            else:
+                player_id = int(line.split()[2]) - 1
+                for i, champion in enumerate(self.champions):
+                    if i == player_id:
+                        champion.live(True)
+                    else:
+                        champion.live(False)
 
     def place_objects(self):
         if len(self.not_created) > 0:

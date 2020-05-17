@@ -8,12 +8,6 @@
 #include "corewar.h"
 #include "mymacros.h"
 
-static char * const mnemonic_modified_memory[] = {
-    "st",
-    "sti",
-    NULL
-};
-
 static void read_mnemonic(battle_t *battle, champ_t *champ)
 {
     char c = '\0';
@@ -22,17 +16,16 @@ static void read_mnemonic(battle_t *battle, champ_t *champ)
     if (c >= 1 && c <= 16) {
         champ->op = op_tab[c - 1];
         champ->status = champ->op.nbr_cycles - 1;
-    } else
+        fill_param(battle, champ);
+    } else {
+        add_line(battle, champ->pc);
         champ->pc += 1;
-}
-
-static bool draw_the_dump(champ_t *champ)
-{
-    return my_array_contains(mnemonic_modified_memory, champ->op.mnemonique);
+    }
 }
 
 static int launch_champion(battle_t *battle, champ_t *champ)
 {
+    champ->former_pc = champ->pc;
     if (champ->status != 0 || champ->die == true)
         return 0;
     if (champ->act == false) {
@@ -40,7 +33,6 @@ static int launch_champion(battle_t *battle, champ_t *champ)
     } else {
         IRETURN(launch_mnemonic(battle, champ));
         champ->act = false;
-        battle->draw_dump |= draw_the_dump(champ);
     }
     return (0);
 }

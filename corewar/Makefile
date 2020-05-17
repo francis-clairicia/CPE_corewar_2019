@@ -16,10 +16,12 @@ SRC_TEST			=	src/help/help.c						\
 						src/champion/sort_champion.c		\
 						src/memory/handle_mem.c				\
 						src/memory/print_dump.c				\
+						src/memory/add_line.c				\
 						src/game/game_loop.c				\
 						src/game/game_act.c					\
 						src/game/check_end.c				\
 						src/mnemonic/launch.c				\
+						src/mnemonic/params.c				\
 						src/mnemonic/mne_add.c				\
 						src/mnemonic/mne_aff.c				\
 						src/mnemonic/mne_and.c				\
