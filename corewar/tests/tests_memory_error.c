@@ -17,4 +17,3 @@ Test(vm, error_overlap, .init=cr_redirect_stderr)
 
     cr_assert(corewar(av) == 84);
 }
-
