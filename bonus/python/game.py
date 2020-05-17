@@ -8,7 +8,7 @@ import pygame
 from constant import FONT, AUDIO, ASM, COREWAR
 from my_pygame import Window, Text, RectangleShape
 from my_pygame.colors import YELLOW, TRANSPARENT, BLUE_LIGHT, BLUE_DARK, CYAN, GREEN, MAGENTA
-from loading import Loading
+from my_pygame import Loading
 from asm.constants import MEMSIZE
 from asm.utils import remove_color_characters
 
@@ -39,21 +39,21 @@ class Animation(Text):
         self.master.after(650, self.show_ready_message)
 
     def show_ready_message(self):
-        self.set_string("Ready")
+        self.string = "Ready"
         self.master.after(750, self.show_fight_message)
 
     def show_fight_message(self):
-        self.set_string("Fight !")
+        self.string = "Fight !"
         self.master.after(900, self.hide)
 
     def end(self):
         self.show()
         self.finish_sound.play()
-        self.set_string(str())
+        self.string = str()
         self.master.after(300, self.show_finished_message)
 
     def show_finished_message(self):
-        self.set_string("Finished")
+        self.string = "Finished"
         if self.winner is not None:
             self.master.after(1200, lambda: self.move_all_champions_up(0))
 
@@ -107,9 +107,9 @@ class Champion(Text):
 
     def live(self, status: bool):
         if status is True:
-            self.set_string("Live - {name}".format(name=self.name))
+            self.string = "Live - {name}".format(name=self.name)
         else:
-            self.set_string(self.name)
+            self.string = self.name
 
 class CoreWar:
     def __init__(self, champion_list: List[Champion]):
@@ -191,7 +191,8 @@ class Game(Window):
         loading_page.hide(self)
 
     def on_quit(self):
-        self.corewar.kill()
+        if hasattr(self, "corewar"):
+            self.corewar.kill()
 
     def init_gameplay(self):
         for i, champion in enumerate(self.champions):
@@ -225,7 +226,7 @@ class Game(Window):
             address += 1
 
     def update(self):
-        if self.animation.is_shown():
+        if not hasattr(self, "animation") or self.animation.is_shown():
             return
         line = next(self.corewar.get_line(), None)
         while line is not None and re.match(r"^[0-9A-F]", line):

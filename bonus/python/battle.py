@@ -7,7 +7,7 @@ import pygame
 from constant import IMG, FONT, AUDIO, CHAMPIONS_FOLDER, MAX_NB_PLAYERS
 from my_pygame import Window, Text, TextButton, RectangleShape, Image, Button
 from my_pygame.colors import YELLOW, BLUE_DARK, BLUE, BLUE_LIGHT
-from loading import Loading
+from my_pygame import Loading
 from game import Game
 from utils import get_champion_name, get_champion_comment
 
@@ -86,21 +86,21 @@ class Infos(RectangleShape):
         self.button_battle.move(centerx=self.centerx, bottom=self.bottom - 10)
 
     def update_nb_selected(self, nb):
-        self.infos_nb_selected.set_string(f"{nb}/{MAX_NB_PLAYERS}")
+        self.infos_nb_selected.string = f"{nb}/{MAX_NB_PLAYERS}"
 
     def show_infos(self, name: str, comment: str):
-        self.prog_name.set_string("Name : " + str(name))
-        self.prog_comment.set_string(comment)
+        self.prog_name.string = "Name : " + str(name)
+        self.prog_comment.string = comment
         self.default_width = self.width - 30
         for obj in [self.prog_name, self.prog_comment]:
-            length = len(obj.get_string())
+            length = len(obj.string)
             while obj.width > self.default_width:
                 length -= 1
-                obj.set_string(textwrap.fill(comment, width=length))
+                obj.string = textwrap.fill(comment, width=length)
 
     def clear_frame(self):
-        self.prog_name.set_string(str())
-        self.prog_comment.set_string(str())
+        self.prog_name.string = str()
+        self.prog_comment.string = str()
 
 class Battle(Window):
     def __init__(self, master: Window):
@@ -236,7 +236,7 @@ class Battle(Window):
         length = len(selected)
         while text.width > self.infos.default_width:
             length -= 1
-            text.set_string(textwrap.fill(selected, width=length))
+            text.string = textwrap.fill(selected, width=length)
         text.move(centerx=self.infos.centerx, top=self.infos.top + 10)
         self.add(text)
         return text

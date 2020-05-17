@@ -5,7 +5,7 @@ import pygame
 from constant import IMG, FONT, AUDIO
 from my_pygame import Window, Image, Button, ImageButton
 from my_pygame.colors import BLUE_LIGHT, YELLOW, BLUE, BLUE_DARK
-from loading import Loading
+from my_pygame import Loading
 from menu import GameMenu
 from settings import Settings
 

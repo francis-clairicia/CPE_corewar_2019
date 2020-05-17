@@ -3,23 +3,27 @@
 import os
 import sys
 
-def set_constant_directory(*path, special_msg=None) -> str:
-    all_path = os.path.join(*path)
+def set_constant_directory(path, *paths, special_msg=None) -> str:
+    all_path = os.path.join(path, *paths)
+    if not os.path.isabs(all_path):
+        all_path = os.path.join(sys.path[0], all_path)
     if not os.path.isdir(all_path):
         if special_msg is not None:
             raise FileNotFoundError(special_msg)
         raise FileNotFoundError(f"{all_path} folder not found")
     return all_path
 
-def set_constant_file(*path, special_msg=None) -> str:
-    all_path = os.path.join(*path)
+def set_constant_file(path, *paths, special_msg=None) -> str:
+    all_path = os.path.join(path, *paths)
+    if not os.path.isabs(all_path):
+        all_path = os.path.join(sys.path[0], all_path)
     if not os.path.isfile(all_path):
         if special_msg is not None:
             raise FileNotFoundError(special_msg)
         raise FileNotFoundError(f"{all_path} not found")
     return all_path
 
-RESSOURCES_FOLDER = set_constant_directory(sys.path[0], "ressources", special_msg="Ressources folder not present")
+RESSOURCES_FOLDER = set_constant_directory("ressources", special_msg="Ressources folder not present")
 IMG_FOLDER = set_constant_directory(RESSOURCES_FOLDER, "img", special_msg="Image folder not present")
 FONT_FOLDER = set_constant_directory(RESSOURCES_FOLDER, "font", special_msg="Font folder not present")
 AUDIO_FOLDER = set_constant_directory(RESSOURCES_FOLDER, "audio", special_msg="Audio folder not present")
@@ -43,8 +47,8 @@ AUDIO = {
     "ready": set_constant_file(AUDIO_FOLDER, "ready.ogg"),
     "finish": set_constant_file(AUDIO_FOLDER, "finish_him.ogg"),
 }
-ASM = set_constant_file(sys.path[0], "asm", "asm_compiler", special_msg="'asm_compiler' binary not here")
-EDITOR = set_constant_file(sys.path[0], "asm", "asm.py", special_msg="Editor not here")
-COREWAR = set_constant_file(sys.path[0], "corewar", special_msg="'corewar' binary not here")
+ASM = set_constant_file("asm", "asm_compiler", special_msg="'asm_compiler' binary not here")
+EDITOR = set_constant_file("asm", "asm.py", special_msg="Editor not here")
+COREWAR = set_constant_file("corewar", special_msg="'corewar' binary not here")
 
 MAX_NB_PLAYERS = 4

@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import pygame
+from .classes import Drawable
 
 CONFIG_FILE = os.path.join(sys.path[0], "settings.conf")
 
@@ -47,7 +48,7 @@ class Window:
         self.no_object = True
 
     def __setattr__(self, name, obj):
-        if hasattr(obj, "draw"):
+        if issubclass(type(obj), Drawable):
             if hasattr(self, name):
                 delattr(self, name)
             self.add(obj)
@@ -62,10 +63,8 @@ class Window:
         self.objects.append(obj)
 
     def remove(self, obj):
-        try:
+        if obj in self.objects:
             self.objects.remove(obj)
-        except ValueError:
-            pass
 
     @property
     def end_list(self):
@@ -93,6 +92,7 @@ class Window:
             self.time_start = time.time()
         if self.bg_music is None and Window.actual_music is not None:
             self.bg_music = str(Window.actual_music)
+        self.place_objects()
         while self.loop:
             self.main_clock.tick(self.fps)
             self.update()
@@ -119,9 +119,6 @@ class Window:
     def draw_screen(self, fill=True):
         if fill and self.bg_color is not None:
             self.window.fill(self.bg_color)
-        if self.no_object:
-            self.place_objects()
-            self.no_object = False
         for obj in self.objects:
             obj.draw(self.window)
 
@@ -181,9 +178,8 @@ class Window:
             self.stop(force=True)
 
     def check_sound_status(self):
-        if self.bg_music is None:
-            return
-        if not pygame.mixer.music.get_busy() or Window.actual_music != self.bg_music:
+        Window.update_sound_volume()
+        if self.bg_music is not None and not pygame.mixer.music.get_busy() or Window.actual_music != self.bg_music:
             self.play_music(self.bg_music)
 
     @staticmethod
@@ -213,6 +209,9 @@ class Window:
             Window.__sound_volume = 1
         elif Window.__sound_volume < 0:
             Window.__sound_volume = 0
+
+    @staticmethod
+    def update_sound_volume():
         for window in Window.all_opened:
             for obj in window.objects:
                 for sound in obj.sounds:

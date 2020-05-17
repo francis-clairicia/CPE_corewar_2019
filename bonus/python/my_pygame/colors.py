@@ -3,7 +3,10 @@
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (127, 127, 127)
+DARK_GRAY = (135, 135, 135)
+LIGHT_GRAY = (175, 175, 175)
 RED = (255, 0, 0)
+DARK_RED = (195, 0, 0)
 ORANGE = (255, 175, 0)
 YELLOW = (255, 255, 0)
 GREEN = (0, 255, 0)
@@ -14,6 +17,7 @@ BLUE = (0, 0, 255)
 BLUE_DARK = (0, 0, 128)
 BLUE_LIGHT = (128, 128, 255)
 MAGENTA = (255, 0, 255)
+PURPLE = (165, 0, 255)
 TRANSPARENT = (0, 0, 0, 0)
 
 class Color:

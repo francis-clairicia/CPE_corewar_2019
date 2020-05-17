@@ -7,7 +7,7 @@ import pygame
 from constant import FONT, AUDIO, CHAMPIONS_FOLDER, EDITOR
 from my_pygame import Window, Text, TextButton, RectangleShape
 from my_pygame.colors import YELLOW, BLUE_DARK
-from loading import Loading
+from my_pygame import Loading
 from utils import get_champion_name
 
 class ChampionEditor(TextButton):

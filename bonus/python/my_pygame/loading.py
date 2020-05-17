@@ -1,7 +1,8 @@
 # -*- coding: Utf-8 -*
 
-from my_pygame import Window, Text, RectangleShape
-from my_pygame.colors import WHITE, BLACK
+from .window import Window
+from .classes import Text, RectangleShape
+from .colors import WHITE, BLACK
 
 class Loading(Window):
     def __init__(self, text="Loading...", font=("calibri", 300), bg=BLACK, opening=True, ending=True, side_opening="left", side_ending="right"):
@@ -52,6 +53,7 @@ class Loading(Window):
             self.draw_screen()
             self.refresh()
         else:
+            self.master.place_objects()
             self.after(0, self.animation_ending[self.side_ending])
             self.mainloop(fill_bg=False)
 
